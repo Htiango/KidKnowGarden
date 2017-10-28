@@ -10,15 +10,19 @@
                 Sign In
             </button>
 {#        </a>#}
-{#        <a href="{% url 'register' %}">#}
+        <a href="{% url 'register' %}">
             <button id="sign-up-upper" class="btn btn-outline-dark mr-md-2">
                 Sign Up
             </button>
-{#        </a>#}
+        </a>
     </div>
 
 {% endblock %}
 
 {% block main-page %}
+    <div class="container title-container">
+        <h1 class="welcome-title">Start on Glumblr</h1>
+        <p class="welcome-subtitle">Where you meet new friends!</p>
+    </div>
 
 {% endblock %}
