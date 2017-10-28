@@ -16,7 +16,10 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+import kidKnowGarden.views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'kid-know-garden', include('kidKnowGarden.urls')),
+    url(r'$', kidKnowGarden.views.welcome),
 ]
