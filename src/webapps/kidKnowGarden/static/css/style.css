@@ -10,7 +10,9 @@
 
 .title-container {
     margin-top: 6rem;
-    padding: 3rem 1.5rem;
+    padding-top: 3rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
     text-align: center;
 }
 
@@ -27,4 +29,17 @@
     font-style: italic;
     font-size: 20px;
     color: #999999;
+}
+
+.container-center {
+    text-align: center;
+}
+
+.container-center .form-container {
+    padding-top: 2rem;
+    width: 30%;
+}
+
+.warning-font {
+    color: red;
 }
