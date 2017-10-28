@@ -1,0 +1,33 @@
+{% extends "pages/register.html" %}
+{% block title %} KidKnowGarden login page {% endblock %}
+
+{% block form-parts %}
+    <div class="container container-center">
+        <form action="{% url 'auto-login' %}" method="post">
+            {% csrf_token %}
+            <div class="container form-container">
+                <input type="text" class="form-control" name="username" placeholder="Username">
+            </div>
+
+            <div class="container form-container">
+                <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+
+            <div class="container form-container">
+                <a href="home.html">
+                    <input type="submit" id="sign-in-btn" class="btn btn-outline-dark btn-block" value="Sign in">
+                </a>
+            </div>
+        </form>
+
+        {% if form.errors %}
+            <div class="warning-font">
+                <p>
+                    Incorrect user name and password!
+                </p>
+            </div>
+
+        {% endif %}
+
+    </div>
+{% endblock %}
