@@ -20,6 +20,6 @@ import kidKnowGarden.views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'kid-know-garden', include('kidKnowGarden.urls')),
+    url(r'kid-know-garden/', include('kidKnowGarden.urls')),
     url(r'$', kidKnowGarden.views.welcome),
 ]
