@@ -45,4 +45,4 @@ def register(request):
 
     context['email'] = form.cleaned_data['email']
 
-    return render(request, 'pages/activate.html', context)
+    return render(request, 'pages/notification.html', context)
