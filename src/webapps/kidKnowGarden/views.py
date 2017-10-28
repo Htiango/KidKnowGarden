@@ -32,6 +32,8 @@ def register(request):
         return render(request, 'pages/register.html', context)
 
     form = RegisterForm(request.POST)
+    context['form'] = form
+
     if not form.is_valid():
         return render(request, 'pages/register.html', context)
 
