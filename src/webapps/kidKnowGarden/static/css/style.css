@@ -1,0 +1,30 @@
+.navbar-brand {
+    font-family: "Impact";
+    font-size: 32px;
+}
+
+.navbar-background {
+    background-color: #9fcdff;
+}
+
+
+.title-container {
+    margin-top: 6rem;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+
+.title-container .welcome-title {
+    font-family: Arial;
+    font-weight: 700;
+    font-size: 40px;
+    color: #155724;
+}
+
+.title-container .welcome-subtitle{
+    font-family: Arial;
+    font-style: italic;
+    font-size: 20px;
+    color: #999999;
+}
