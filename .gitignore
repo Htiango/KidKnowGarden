@@ -1,5 +1,7 @@
 # Class-specific section #
 
+# compiler section
+.idea
 
 # Java section #
 *.class
