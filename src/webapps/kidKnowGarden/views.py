@@ -141,3 +141,10 @@ def user_page_view(request, username):
 def logout_view(request):
     logout(request)
     return redirect(welcome)
+
+@login_required
+def user_list(request):
+    users = User.objects.select_related('logged_in_user')
+    for user in users:
+        user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
+    return render(request, 'pages/user_list.html', {'users': users})

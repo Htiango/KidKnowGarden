@@ -37,8 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'kidKnowGarden',
 ]
+
+CHANNEL_LAYERS = {
+    'default': {
+        # 'BACKEND': 'asgi_redis.RedisChannelLayer',
+        # 'CONFIG': {
+        #     'hosts': [('localhost', 6379)],
+        # },
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        'ROUTING': 'kidKnowGarden.routing.channel_routing',
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
