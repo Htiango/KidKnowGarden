@@ -5,6 +5,7 @@ from channels.auth import channel_session_user, channel_session_user_from_http
 @channel_session_user_from_http
 def ws_connect(message):
     Group('users').add(message.reply_channel)
+    Group('user-' + message.user.username).add(message.reply_channel)
     Group('users').send({
         'text': json.dumps({
             'username': message.user.username,
@@ -20,4 +21,5 @@ def ws_disconnect(message):
             'is_logged_in': False
         })
     })
+    Group('user-' + message.user.username).discard(message.reply_channel)
     Group('users').discard(message.reply_channel)
