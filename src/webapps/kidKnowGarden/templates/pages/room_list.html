@@ -55,11 +55,16 @@
                         "<div class='room' id='room-" + data.join + "'>" +
                         "<h2>" + data.title + "</h2>" +
                         "<div class='messages'></div>" +
-                        "<input><button>Send</button>" +
+                        "<div id='timer'></div> <div id='answer_group'>" +
+                        "<button class='answer' answerid='1'>ANSWER1</button>" +
+                        "<button class='answer' answerid='2'>ANSWER2</button>" +
+                        "<button class='answer' answerid='3'>ANSWER3</button>" +
+                        "<button class='answer' answerid='4'>ANSWER4</button> </div>" +
+                        "<input><button id='chat_send'>Send</button>" +
                         "</div>"
                     );
                     $("#chats").append(roomdiv);
-                    roomdiv.find("button").on("click", function () {
+                    $("#chat_send").on("click", function () {
                         socket.send(JSON.stringify({
                             "command": "send",
                             "room": data.join,
@@ -67,6 +72,20 @@
                         }));
                         roomdiv.find("input").val("");
                     });
+
+                    $("button.answer").click(function() {
+                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION
+                        // If I need to judge the correctness of the question
+                        // I need to get question ID from DOM.
+                        //roomId = $(this).attr("data-room-id");
+                        answerId = $(this).attr("answerid");
+                        console.log("clicked" + roomId + answerId);
+                        socket.send(JSON.stringify({
+                            "command": "answer",
+                            "room": roomId,
+                            "answer": answerId
+                        }));
+                    })
                     // Handle leaving
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
@@ -80,7 +99,14 @@
                         "</div>";
                     msgdiv.append(ok_msg);
                     msgdiv.scrollTop(msgdiv.prop("scrollHeight"));
-                } else {
+                } else if (data.answer){
+                    console.log(data);
+                    if(data.correctness === true || data.correctness === "True"){
+                        $("button.answer").attr("disabled", "disabled");
+                    }
+                }
+                else {
+                    console.log(data);
                     console.log("Cannot handle message!");
                 }
             };
@@ -110,6 +136,8 @@
                     }));
                 }
             });
+
+
         });
     </script>
 

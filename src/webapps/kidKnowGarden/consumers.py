@@ -97,3 +97,29 @@ def chat_send(message):
     room = get_room_or_error(message["room"], message.user)
     room_string = get_random_room()
     room.send_message(message["message"], message.user, room_string)
+
+
+@channel_session_user
+#@catch_client_error
+def answer(message):
+    if int(message['room']) not in message.channel_session['rooms']:
+        raise ClientError("ROOM_ACCESS_DENIED")
+    room = get_room_or_error(message["room"], message.user)
+    answer = message["answer"]
+    room.send_message(answer, message.user, "A new room status of scores")
+    message.reply_channel.send({
+        "text": json.dumps({
+            "answer": answer,
+            "correctness": True
+        }),
+    })
+
+#
+# @channel_session_user
+# #@catch_client_error
+# def testing(message):
+#     if int(message['room']) not in message.channel_session['rooms']:
+#         raise ClientError("ROOM_ACCESS_DENIED")
+#     #room = get_room_or_error(message["room"], message.user)
+#     answer = message["answer"]
+#     room.send_message(answer, message.user, "Random String")
