@@ -38,7 +38,7 @@ class RegisterForm(forms.Form):
 
 class ProfileForm(forms.Form):
     grade = forms.IntegerField(min_value=0, max_value=12)
-    avatar_img = forms.ImageField(required=False)
+    avatar = forms.ImageField(required=False)
     bio = forms.CharField(max_length=300, widget=forms.Textarea, required=False)
 
     def clean_grade(self):

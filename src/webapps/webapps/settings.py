@@ -48,7 +48,7 @@ CHANNEL_LAYERS = {
         #     'hosts': [('localhost', 6379)],
         # },
         "BACKEND": "asgiref.inmemory.ChannelLayer",
-        'ROUTING': 'kidKnowGarden.routing.channel_routing',
+        'ROUTING': 'webapps.routing.channel_routing',
     }
 }
 
@@ -138,6 +138,10 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# AUTH USER MODELS
+
+AUTH_USER_MODEL = 'auth.User'
 
 LOGIN_URL = '/kidKnowGarden/login'
 

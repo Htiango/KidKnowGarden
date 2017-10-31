@@ -39,20 +39,6 @@
 
 {% block main-page %}
 
-    <div class="container">
-      <h5>User LIST</h5>
-      <a href="{% url 'logout' %}">Log out</a>
-      <br>
-      <ul>
-        {% for user in users %}
-          <!-- NOTE: We escape HTML to prevent XSS attacks. -->
-          <li data-username="{{ user.username|escape }}">
-            {{ user.username|escape }}: {{ user.status|default:'Offline' }}
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-
     {% block content %}
 
     {% endblock %}
@@ -60,43 +46,12 @@
 {% endblock %}
 
 {% block script %}
+    {% load staticfiles %}
+    <script src="{% static "channels/js/websocketbridge.js" %}" type="text/javascript"></script>
+
   <script>
   $( document ).ready(function() {
-      var socket = new WebSocket('ws://' + window.location.host + '/users/');
-      username = $("#navbarDropdownMenuLink").html().trim();
-      var user_socket = new WebSocket('ws://' + window.location.host + '/user-' + username + '/');
 
-      socket.onopen = function open() {
-          console.log('WebSockets connection created.');
-      };
-
-      user_socket.onopen = function open() {
-          console.log('User connection created.');
-      };
-
-      socket.onmessage = function message(event) {
-          var data = JSON.parse(event.data);
-          // NOTE: We escape JavaScript to prevent XSS attacks.
-          var username = encodeURI(data['username']);
-          var user = $('li').filter(function () {
-              return $(this).data('username') === username;
-          });
-
-          if (data['is_logged_in']) {
-              user.html(username + ': Online');
-          }
-          else {
-              user.html(username + ': Offline');
-          }
-      };
-
-      if (socket.readyState === WebSocket.OPEN) {
-          socket.onopen();
-      }
-
-      if (user_socket.readyState === WebSocket.OPEN) {
-          user_socket.onopen();
-      }
   });
   </script>
 {% endblock script %}
