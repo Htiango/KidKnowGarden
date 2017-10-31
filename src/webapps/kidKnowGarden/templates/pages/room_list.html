@@ -31,6 +31,10 @@
             console.log("Connecting to " + ws_path);
             var socket = new ReconnectingWebSocket(ws_path);
 
+            var disable_helper_function;
+            var timeout;
+            var currenttime = 0;
+
             // Helpful debugging
             socket.onopen = function () {
                 console.log("Connected to chat socket");
@@ -59,8 +63,9 @@
                         "<button class='answer' answerid='1'>ANSWER1</button>" +
                         "<button class='answer' answerid='2'>ANSWER2</button>" +
                         "<button class='answer' answerid='3'>ANSWER3</button>" +
-                        "<button class='answer' answerid='4'>ANSWER4</button> </div>" +
-                        "<input><button id='chat_send'>Send</button>" +
+                        "<button class='answer' answerid='4'>ANSWER4</button></div>" +
+                        "<br> <button id='start'> START </button>" +
+                        //"<input><button id='chat_send'>Send</button>" +
                         "</div>"
                     );
                     $("#chats").append(roomdiv);
@@ -73,28 +78,55 @@
                         roomdiv.find("input").val("");
                     });
 
+                    $("#start").on("click", function(){
+                        socket.send(JSON.stringify({
+                            "command": "start",
+                            "room": data.join
+                        }));
+
+                        $("button.answer").prop('disabled', false);
+                    });
+
                     $("button.answer").click(function() {
                         // TODO: JUDGE THE CORRECTNESS OF THE QUESTION
                         // If I need to judge the correctness of the question
                         // I need to get question ID from DOM.
                         //roomId = $(this).attr("data-room-id");
                         answerId = $(this).attr("answerid");
-                        console.log("clicked" + roomId + answerId);
+                        console.log("clicked" + data.join + answerId);
                         socket.send(JSON.stringify({
                             "command": "answer",
-                            "room": roomId,
+                            "room": data.join,
                             "answer": answerId
                         }));
-                    })
+                    });
+
+                    disable_helper_function = function disable(){
+                        $("button.answer").prop('disabled', true);
+                    }
+
                     // Handle leaving
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
                     $("#room-" + data.leave).remove();
                 } else if (data.message) {
+                    if(data.message === "Start timing" && data.random_room === "Start timing"){
+                        timeout = setTimeout(disable_helper_function, 10000);
+                        $("button.answer").prop('disabled', false);
+                        currenttime = 10;
+                        var intervalID = setInterval(function(){
+                            currenttime = currenttime - 1;
+                            if (currenttime === 0){
+                                this.clearInterval(intervalID);
+                            }
+                            $("#timer").html("<h2>" + currenttime + "</h2>");
+                        }, 1000);
+                    }
+
                     var msgdiv = $("#room-" + data.room + " .messages");
                     //var ok_msg = "";
                     ok_msg = "<div class='message'>" +
-                        "<span class='username'>" + data.username + "</span>" +
+                        "<span class='username'>" + data.username + " : " + "</span>" +
                         "<span class='body'>" + data.message + "</span>" +
                         "</div>";
                     msgdiv.append(ok_msg);
@@ -102,7 +134,7 @@
                 } else if (data.answer){
                     console.log(data);
                     if(data.correctness === true || data.correctness === "True"){
-                        $("button.answer").attr("disabled", "disabled");
+                        $("button.answer").prop('disabled', true);
                     }
                 }
                 else {

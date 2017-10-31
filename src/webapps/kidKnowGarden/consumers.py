@@ -106,7 +106,9 @@ def answer(message):
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
     answer = message["answer"]
+    # Send message to all members in the room
     room.send_message(answer, message.user, "A new room status of scores")
+    # Return a message only to the user who make a message request
     message.reply_channel.send({
         "text": json.dumps({
             "answer": answer,
@@ -114,12 +116,11 @@ def answer(message):
         }),
     })
 
-#
-# @channel_session_user
-# #@catch_client_error
-# def testing(message):
-#     if int(message['room']) not in message.channel_session['rooms']:
-#         raise ClientError("ROOM_ACCESS_DENIED")
-#     #room = get_room_or_error(message["room"], message.user)
-#     answer = message["answer"]
-#     room.send_message(answer, message.user, "Random String")
+
+@channel_session_user
+#@catch_client_error
+def start_timing(message):
+    if int(message['room']) not in message.channel_session['rooms']:
+        raise ClientError("ROOM_ACCESS_DENIED")
+    room = get_room_or_error(message["room"], message.user)
+    room.send_message("Start timing", message.user, "Start timing")

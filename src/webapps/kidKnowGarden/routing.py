@@ -24,6 +24,7 @@ custom_routing = [
     route("chat.receive", chat_join, command="^join$"),
     route("chat.receive", chat_leave, command="^leave$"),
     route("chat.receive", answer, command="^answer$"),
+    route("chat.receive", start_timing, command="^start$"),
     route("chat.receive", chat_send, command="^send$"),
 
 ]
