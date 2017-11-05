@@ -18,4 +18,8 @@ urlpatterns = [
     #url(r'^room/(?P<id>\d+)$', room, name='room-invite'),
     #url(r'^user_list$', user_list, name='user_list'),
     #url(r'^user_invite/(?P<username>.+)/$', user_invite, name='user-invite'),
+
+    url(r'^question_list$', question_list, name='question_list'),
+    url(r'^question/(?P<question_id>.+)$', question_page, name='question-page'),
+    url(r'^submit-answer$', check_answer, name="check_answer")
 ]
