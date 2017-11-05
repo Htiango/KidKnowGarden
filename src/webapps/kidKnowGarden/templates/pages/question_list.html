@@ -1,0 +1,13 @@
+{% extends "pages/home.html" %}
+
+{% block title %}Question List{% endblock %}
+
+{% block main-page %}
+    <ul>
+        {% for question in questions %}
+            <a href="{% url "question-page" question.id %}">
+            <li>{{ question.content }}</li>
+            </a>
+        {% endfor %}
+    </ul>
+{% endblock %}
