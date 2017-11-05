@@ -8,6 +8,7 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from mimetypes import guess_type
 from django.contrib.auth import authenticate, login, logout
+import random
 
 from channels import Group
 
@@ -176,3 +177,37 @@ def room_list(request):
 #         })
 #     })
 #     return redirect(home)
+
+
+@login_required
+def question_list(request):
+    questions = Question.objects.all()
+    return render(request, 'pages/question_list.html', {"questions":questions})
+
+
+@login_required
+def question_page(request, question_id):
+    question = Question.objects.get(id=question_id)
+    ls = [question.choice1, question.choice2, question.choice3, question.answer]
+    random.shuffle(ls)
+    index = ls.index(question.answer)
+    new_record = CorrectAnswer(answer_index=index)
+    new_record.save()
+    context = {"id": new_record.id, "content": question.content, "choice1": ls[0], "choice2": ls[1],
+               "choice3": ls[2], "choice4": ls[3]}
+    return render(request, "pages/question_page.html", context)
+
+
+@login_required
+def check_answer(request):
+    record_id = int(request.POST['id'])
+    index = int(request.POST['index'])
+    correct_answer = CorrectAnswer.objects.get(id=record_id)
+    status = (correct_answer.answer_index == index)
+    print("---------------------------------------")
+    if status:
+        sentence = "Correct!"
+    else:
+        sentence = "Wrong!"
+    context = {"status":status, "sentence": sentence}
+    return render(request, 'pages/answer_status.json', context, content_type='application/json')
