@@ -35,3 +35,6 @@ nosetests.xml
 
 # Mac OS file
 .DS_Store
+
+# ignore the sqlight and use own database
+db.sqlite3
