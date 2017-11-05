@@ -1,7 +1,7 @@
 from functools import wraps
 
 from .exception import ClientError
-from .models import Rooms, Profile
+from .models import *
 
 
 
@@ -37,6 +37,7 @@ def get_room_or_error(room_id, user):
         raise ClientError("ROOM_ACCESS_DENIED")
     return room
 
+
 # Extend this function to return a set of string
 # To generate questions and answers
 def get_random_room():
@@ -44,3 +45,9 @@ def get_random_room():
     room = Rooms.objects.order_by('?')
     r = room.first()
     return r.title
+
+
+def get_random_question():
+    question = Question.objects.order_by('?')
+    q = question.first()
+    question_string = q.content + "#" + q.choice1 + "#"
