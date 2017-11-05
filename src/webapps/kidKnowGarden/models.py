@@ -21,6 +21,9 @@ class Rooms(models.Model):
     # If only "staff" users are allowed (is_staff on django's User)
     staff_only = models.BooleanField(default=False)
 
+    # Number of people in room
+    num_of_members = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+
     def __str__(self):
         return self.title
 

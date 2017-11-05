@@ -51,23 +51,31 @@ def chat_join(message):
     # object that works just like request.user would. Security!
     room = get_room_or_error(message["room"], message.user)
 
-    # Send a "enter message" to the room if available
-    #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-    room.send_message("USER ENTER", message.user, None)
+    ## Add one for this room
+    members = room.num_of_members
+    if members >= 2:
+        raise ClientError("ROOM_ACCESS_DENIED")
+    else:
+        room.num_of_members = members + 1
+        room.save()
 
-    # OK, add them in. The websocket_group is what we'll send messages
-    # to so that everyone in the chat room gets them.
-    room.websocket_group.add(message.reply_channel)
-    message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
-    # Send a message back that will prompt them to open the room
-    # Done server-side so that we could, for example, make people
-    # join rooms automatically.
-    message.reply_channel.send({
-        "text": json.dumps({
-            "join": str(room.id),
-            "title": room.title,
-        }),
-    })
+        # Send a "enter message" to the room if available
+        #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+        room.send_message("USER ENTER", message.user, None)
+
+        # OK, add them in. The websocket_group is what we'll send messages
+        # to so that everyone in the chat room gets them.
+        room.websocket_group.add(message.reply_channel)
+        message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
+        # Send a message back that will prompt them to open the room
+        # Done server-side so that we could, for example, make people
+        # join rooms automatically.
+        message.reply_channel.send({
+            "text": json.dumps({
+                "join": str(room.id),
+                "title": room.title,
+            }),
+        })
 
 @channel_session_user
 #@catch_client_error
@@ -75,18 +83,25 @@ def chat_leave(message):
     # Reverse of join - remove them from everything.
     room = get_room_or_error(message["room"], message.user)
 
-    # Send a "leave message" to the room if available
-    #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-    room.send_message("USER LEAVE", message.user, None)
+    members = room.num_of_members
+    if members < 0:
+        raise ClientError("ROOM_ACCESS_DENIED")
+    else:
+        room.num_of_members = members - 1
+        room.save()
 
-    room.websocket_group.discard(message.reply_channel)
-    message.channel_session['rooms'] = list(set(message.channel_session['rooms']).difference([room.id]))
-    # Send a message back that will prompt them to close the room
-    message.reply_channel.send({
-        "text": json.dumps({
-            "leave": str(room.id),
-        }),
-    })
+        # Send a "leave message" to the room if available
+        #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+        room.send_message("USER LEAVE", message.user, None)
+
+        room.websocket_group.discard(message.reply_channel)
+        message.channel_session['rooms'] = list(set(message.channel_session['rooms']).difference([room.id]))
+        # Send a message back that will prompt them to close the room
+        message.reply_channel.send({
+            "text": json.dumps({
+                "leave": str(room.id),
+            }),
+        })
 
 
 @channel_session_user
