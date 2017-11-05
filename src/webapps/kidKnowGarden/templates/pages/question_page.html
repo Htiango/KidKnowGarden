@@ -1,0 +1,25 @@
+{% extends "pages/home.html" %}
+
+{% block title %}Question Page{% endblock %}
+
+{% block main-page %}
+    <p>{{ content }}</p>
+    <form method="post" >
+        {% csrf_token %}
+        <input type="hidden" id="record_id" value="{{ id }}" hidden><br>
+        <input type="radio" id="choice1"> {{ choice1 }}<br>
+        <input type="radio" id="choice2"> {{ choice2 }}<br>
+        <input type="radio" id="choice3"> {{ choice3 }}<br>
+        <input type="radio" id="choice4"> {{ choice4 }}<br>
+        <button id="submit-btn"> submit</button>
+{#        <input type="submit" id="submit-btn">#}
+    </form>
+
+    <div id="result"></div>
+
+{% endblock %}
+
+{% block addition_script %}
+    {% load static %}
+    <script src="/static/js/question_page.js"></script>
+{% endblock %}
