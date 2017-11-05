@@ -38,3 +38,6 @@ nosetests.xml
 
 # ignore the sqlight and use own database
 db.sqlite3
+
+# ignore the media since database locally run
+media
