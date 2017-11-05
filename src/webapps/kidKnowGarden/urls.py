@@ -14,4 +14,8 @@ urlpatterns = [
     url(r'^avatar/(?P<username>\w+)$', get_avatar, name='get-avatar'),
     url(r'^user/(?P<username>.+)/$', user_page_view, name='user-link'),
     url(r'^logout', logout_view, name='logout'),
+    url(r'^room_list$', room_list, name='room_list'),
+    #url(r'^room/(?P<id>\d+)$', room, name='room-invite'),
+    #url(r'^user_list$', user_list, name='user_list'),
+    #url(r'^user_invite/(?P<username>.+)/$', user_invite, name='user-invite'),
 ]

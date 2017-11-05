@@ -9,6 +9,10 @@ from django.contrib.auth.decorators import login_required
 from mimetypes import guess_type
 from django.contrib.auth import authenticate, login, logout
 
+from channels import Group
+
+import json
+
 
 # response a welcome page. If already login, then direct to the home page
 def welcome(request):
@@ -108,8 +112,15 @@ def set_profile(request):
 
 @login_required
 def home(request):
-    user = request.user
-    context = {'user': user}
+    context = {'user': request.user}
+    if not LoggedInUser.objects.filter(user=request.user):
+        user_now = LoggedInUser(user=request.user)
+        user_now.save()
+
+    users = User.objects.select_related('logged_in_user')
+    for user in users:
+        user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
+    context['users'] = users
     return render(request, 'pages/home.html', context)
 
 
@@ -139,5 +150,29 @@ def user_page_view(request, username):
 
 @login_required
 def logout_view(request):
+    delete_user = LoggedInUser.objects.filter(user=request.user)
+    if delete_user:
+        delete_user.delete()
     logout(request)
     return redirect(welcome)
+
+@login_required
+def room_list(request):
+    rooms = Rooms.objects.all()
+    return render(request, 'pages/room_list.html', {'rooms': rooms})
+
+# @login_required
+# def user_list(request):
+#     users = User.objects.select_related('logged_in_user')
+#     for user in users:
+#         user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
+#     return render(request, 'pages/user_list.html', {'users': users})
+
+# @login_required
+# def user_invite(request, username):
+#     Group("user-" + username).send({
+#         "text": json.dumps({
+#             "foo": 'username:' + username
+#         })
+#     })
+#     return redirect(home)
