@@ -60,3 +60,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.bio
+
+
+class Question(models.Model):
+    content = models.TextField(default="", max_length=200)
+    choice1 = models.TextField(default="", max_length=100)
+    choice2 = models.TextField(default="", max_length=100)
+    choice3 = models.TextField(default="", max_length=100)
+    answer = models.TextField(default="", max_length=100)
