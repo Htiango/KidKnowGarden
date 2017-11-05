@@ -211,3 +211,7 @@ def check_answer(request):
         sentence = "Wrong!"
     context = {"status":status, "sentence": sentence}
     return render(request, 'pages/answer_status.json', context, content_type='application/json')
+
+
+def memory_game(request):
+    return render(request, "pages/memory_game.html", {})

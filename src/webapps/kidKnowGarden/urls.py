@@ -21,5 +21,6 @@ urlpatterns = [
 
     url(r'^question_list$', question_list, name='question_list'),
     url(r'^question/(?P<question_id>.+)$', question_page, name='question-page'),
-    url(r'^submit-answer$', check_answer, name="check_answer")
+    url(r'^submit-answer$', check_answer, name="check_answer"),
+    url(r'^memory-game$', memory_game, name="memory_game")
 ]
