@@ -4,20 +4,26 @@
 
 {% block content %}
     <div class="container">
-      <h5>Room List</h5>
       <br>
-      <ul>
-        {% for room in rooms %}
-          <!-- NOTE: We escape HTML to prevent XSS attacks. -->
-          <li>
-              <button class="room-link" data-room-id="{{ room.id }}">{{ room.title|escape }}</button>
-{#            <a href="#" id="{{ room.id|escape }}"> {{ room.title|escape }} </a>#}
-          </li>
-        {% endfor %}
-      </ul>
+      <div id="all-room-list">
+          <h5>Room List</h5>
+          <br>
+          <ul>
+            {% for room in rooms %}
+              <!-- NOTE: We escape HTML to prevent XSS attacks. -->
+              <li>
+                  <button class="room-link" data-room-id="{{ room.id }}">{{ room.title|escape }}</button>
+    {#            <a href="#" id="{{ room.id|escape }}"> {{ room.title|escape }} </a>#}
+              </li>
+            {% endfor %}
+          </ul>
+      </div>
 
-        <div id="chats">
-        </div>
+        <br>
+      <button id="back-to-room-list" hidden> Back </button>
+
+      <div id="chats">
+      </div>
 
     </div>
 {% endblock %}
@@ -54,6 +60,8 @@
                 }
                 // Handle joining
                 if (data.join) {
+                    $("#back-to-room-list").attr("hidden", false);
+                    $("#all-room-list").attr("hidden", true);
                     console.log("Joining room " + data.join);
                     var roomdiv = $(
                         "<div class='room' id='room-" + data.join + "'>" +
@@ -105,7 +113,7 @@
                         $("button.answer").prop('disabled', true);
                     }
 
-                    // Handle leaving
+                // Handle leaving
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
                     $("#room-" + data.leave).remove();
@@ -147,6 +155,12 @@
             function inRoom(roomId) {
                 return $("#room-" + roomId).length > 0;
             }
+
+            $("#back-to-room-list").click(function () {
+                $("#back-to-room-list").attr("hidden", true);
+                $("#all-room-list").attr("hidden", false);
+                $("#chats").empty();
+            });
 
             // Room join/leave
             $("button.room-link").click(function () {

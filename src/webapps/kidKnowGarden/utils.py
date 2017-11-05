@@ -4,6 +4,7 @@ from .exception import ClientError
 from .models import Rooms, Profile
 
 
+
 def catch_client_error(func):
     """
     Decorator to catch the ClientError exception and translate it into a reply.
