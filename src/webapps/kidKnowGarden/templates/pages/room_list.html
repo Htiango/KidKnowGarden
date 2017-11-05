@@ -117,6 +117,7 @@
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
                     $("#room-" + data.leave).remove();
+
                 } else if (data.message) {
                     if(data.message === "Start timing" && data.random_room === "Start timing"){
                         timeout = setTimeout(disable_helper_function, 10000);
@@ -160,6 +161,12 @@
                 $("#back-to-room-list").attr("hidden", true);
                 $("#all-room-list").attr("hidden", false);
                 $("#chats").empty();
+                 // Leave room
+                //$(this).removeClass("joined");
+                socket.send(JSON.stringify({
+                    "command": "leave",  // determines which handler will be used (see chat/routing.py)
+                    "room": roomId
+                }));
             });
 
             // Room join/leave
@@ -167,7 +174,7 @@
                 roomId = $(this).attr("data-room-id");
                 if (inRoom(roomId)) {
                     // Leave room
-                    $(this).removeClass("joined");
+                    //$(this).removeClass("joined");
                     socket.send(JSON.stringify({
                         "command": "leave",  // determines which handler will be used (see chat/routing.py)
                         "room": roomId
@@ -175,7 +182,7 @@
                 } else {
                     // Join room
                     console.log("Clicked!");
-                    $(this).addClass("joined");
+                    //$(this).addClass("joined");
                     socket.send(JSON.stringify({
                         "command": "join",
                         "room": roomId

@@ -36,7 +36,7 @@ class Rooms(models.Model):
         """
         Called to send a message to the room on behalf of a user.
         """
-        final_msg = {'room': str(self.id), 'message': message, 'username': user.username, 'random_room': random_room}
+        final_msg = {'room': str(self.id), 'message': message, 'username': user.username, 'question': random_room}
 
         # Send out the message to everyone in the room
         self.websocket_group.send(
