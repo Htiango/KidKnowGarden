@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from channels import Group
 import json
@@ -68,3 +69,13 @@ class Question(models.Model):
     choice2 = models.TextField(default="", max_length=100)
     choice3 = models.TextField(default="", max_length=100)
     answer = models.TextField(default="", max_length=100)
+
+    def __str__(self):
+        return self.content
+
+
+class CorrectAnswer(models.Model):
+    answer_index = models.IntegerField(validators=[
+            MaxValueValidator(3),
+            MinValueValidator(0)
+        ])
