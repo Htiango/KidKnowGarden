@@ -160,7 +160,8 @@ def logout_view(request):
 @login_required
 def room_list(request):
     rooms = Rooms.objects.all()
-    return render(request, 'pages/room_list.html', {'rooms': rooms})
+    user = request.user
+    return render(request, 'pages/room_list.html', {'rooms': rooms, "user": user})
 
 # @login_required
 # def user_list(request):
@@ -181,12 +182,14 @@ def room_list(request):
 
 @login_required
 def question_list(request):
+    user = request.user
     questions = Question.objects.all()
-    return render(request, 'pages/question_list.html', {"questions":questions})
+    return render(request, 'pages/question_list.html', {"questions":questions, "user": user})
 
 
 @login_required
 def question_page(request, question_id):
+    user = request.user
     question = Question.objects.get(id=question_id)
     ls = [question.choice1, question.choice2, question.choice3, question.answer]
     random.shuffle(ls)
@@ -194,7 +197,7 @@ def question_page(request, question_id):
     new_record = CorrectAnswer(answer_index=index)
     new_record.save()
     context = {"id": new_record.id, "content": question.content, "choice1": ls[0], "choice2": ls[1],
-               "choice3": ls[2], "choice4": ls[3]}
+               "choice3": ls[2], "choice4": ls[3], "user": user}
     return render(request, "pages/question_page.html", context)
 
 
@@ -204,7 +207,6 @@ def check_answer(request):
     index = int(request.POST['index'])
     correct_answer = CorrectAnswer.objects.get(id=record_id)
     status = (correct_answer.answer_index == index)
-    print("---------------------------------------")
     if status:
         sentence = "Correct!"
     else:
@@ -212,6 +214,8 @@ def check_answer(request):
     context = {"status":status, "sentence": sentence}
     return render(request, 'pages/answer_status.json', context, content_type='application/json')
 
-
+@login_required
 def memory_game(request):
-    return render(request, "pages/memory_game.html", {})
+    user = request.user
+    context = {'user': user}
+    return render(request, "pages/memory_game.html", context)

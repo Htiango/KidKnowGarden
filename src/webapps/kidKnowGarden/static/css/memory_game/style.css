@@ -1,21 +1,21 @@
 div#memory_board{
   background:#DADADA;
   border:#999 1px solid;
-  width: 800px;
-  height: 540px;
+  width: 610px;
+  height: 480px;
   padding: 24px;
-  margin: 0px auto;
+  margin: 20px auto;
 }
 
 div#memory_board > div {
-  background: #FF3399;
+  background: #9fcdff;
   border: #000 1px solid;
-  width: 71px;
-  height: 71px;
+  width: 120px;
+  height: 120px;
   float: left;
   margin: 10px;
   padding: 20px;
-  font-size: 64px;
+  font-size: 56px;
   cursor: pointer;
   text-align: center;
 }
