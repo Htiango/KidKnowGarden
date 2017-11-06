@@ -55,3 +55,33 @@
     -o-transform: rotate(20deg) skew(10deg, 0);
     transform: rotate(20deg) skew(10deg, 0);
 }
+
+.question-list-container {
+    margin-left: 30%;
+    margin-right: 20%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.question-text {
+    font-size: 20px;
+}
+
+.question-display-container {
+    margin-left: 30%;
+    margin-right: 20%;
+    margin-top: 30px;
+}
+
+.question-display-container .question-content-text {
+    font-size: 20px;
+}
+
+.question-display-container .choice-row {
+    padding-bottom: 15px;
+}
+
+.question-display-container .btn-submit-row {
+    padding-top: 20px;
+    padding-bottom: 15px;
+}

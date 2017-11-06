@@ -3,11 +3,22 @@
 {% block title %}Question List{% endblock %}
 
 {% block main-page %}
-    <ul>
+
+    <div class="container title-container">
+        <h1 class="welcome-title">KidKnowGarden Question List</h1>
+        <p class="welcome-subtitle">Test Yourself!</p>
+    </div>
+
+    <div class="container question-list-container">
         {% for question in questions %}
+            <div class="row justify-content-md-start">
             <a href="{% url "question-page" question.id %}">
-            <li>{{ question.content }}</li>
+                <div class="question-text">{{ question.content }}</div>
             </a>
+            </div>
+
         {% endfor %}
-    </ul>
+
+    </div>
+
 {% endblock %}
