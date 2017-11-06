@@ -11,6 +11,7 @@ $(document).ready(function () {
 
 
 function newBoard() {
+    $("#result").empty();
     tiles_flipped = 0;
     memory_array = _.shuffle(memory_array);
 
