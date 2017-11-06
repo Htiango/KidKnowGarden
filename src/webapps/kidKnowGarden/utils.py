@@ -64,7 +64,7 @@ def judge_question_correctness(record_id, answer_index):
     return status
 
 def save_contest_score(score, user):
-    contest_score = ContestScore.objects.get(user=user)
+    contest_score = ContestScore.objects.get_or_create(user=user)
     # A good performance for judging existance of a user
     if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
         new_score = contest_score.score + score
@@ -76,7 +76,7 @@ def save_contest_score(score, user):
 
 
 def clear_contest_score(user):
-    contest_score = ContestScore.objects.get(user=user)
+    contest_score = ContestScore.objects.get_or_create(user=user)
     # A good performance for judging existance of a user
     if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
         contest_score.score = 0
