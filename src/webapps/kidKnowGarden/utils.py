@@ -64,10 +64,11 @@ def judge_question_correctness(record_id, answer_index):
     return status
 
 def save_contest_score(score, user):
-    contest_score = ContestScore.objects.filter(user=user)
-    if contest_score.count() > 0:
-        prev_score = contest_score.score
-        contest_score.score = prev_score + score
+    contest_score = ContestScore.objects.get(user=user)
+    # A good performance for judging existance of a user
+    if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
+        new_score = contest_score.score + score
+        contest_score.score = new_score
         contest_score.save()
     else:
         new_score = ContestScore(user=user, score=score)
@@ -75,7 +76,45 @@ def save_contest_score(score, user):
 
 
 def clear_contest_score(user):
-    contest_score = ContestScore.objects.filter(user=user)
-    if contest_score.count() > 0:
+    contest_score = ContestScore.objects.get(user=user)
+    # A good performance for judging existance of a user
+    if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
         contest_score.score = 0
         contest_score.save()
+
+def judge_contest_status(user, room):
+    members = room.members.all()
+    first = members.first()
+    last = members.last()
+    # Room has only one person
+    if first == last:
+        if user == first:
+            return "Win"
+        else:
+            return "Lose"
+    # Room has two persons
+    else:
+        first_score = ContestScore.objects.get(user=first).score
+        last_score = ContestScore.objects.get(user=last).score
+        if (first == user):
+            if first_score > last_score:
+                return "Win"
+            elif first_score == last_score:
+                return "Tie"
+            else:
+                return "Lose"
+
+        elif (last == user):
+            if first_score > last_score:
+                return "Lose"
+            elif first_score == last_score:
+                return "Tie"
+            else:
+                return "Win"
+
+        else:
+            return "Unknown user"
+
+def get_score(user):
+    contest_score = ContestScore.objects.get(user=user)
+    return contest_score.score

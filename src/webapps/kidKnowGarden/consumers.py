@@ -21,6 +21,7 @@ def ws_disconnect(message):
             room = Rooms.objects.get(pk=room_id)
             members = room.members.count()
             if members > 0:
+                # A bad performance for judging user existence
                 if message.user in room.members.all():
                     room.members.remove(message.user)
                     room.save()
@@ -58,6 +59,7 @@ def chat_join(message):
     room = get_room_or_error(message["room"], message.user)
 
     ## Add one for this room
+    clear_contest_score(message.user)
     members = room.members.count()
     if members >= 2:
         raise ClientError("ROOM_ACCESS_DENIED")
@@ -82,8 +84,7 @@ def chat_join(message):
                 "text": json.dumps({
                     "join": str(room.id),
                     "title": room.title,
-                    "members": str(members+1),
-                    "members2":"askdfjafkj",
+                    "members": str(members+1)
                 }),
 
             })
@@ -161,8 +162,27 @@ def start_timing(message):
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
 
-    clear_contest_score(message.user)
     question_string = get_random_question()
-    print(question_string)
+    #print(question_string)
     room.send_message(question_string, message.user, "Question")
     room.send_message("Start timing", message.user, "Start timing")
+
+
+@channel_session_user
+#@catch_client_error
+def request_score(message):
+    if int(message['room']) not in message.channel_session['rooms']:
+        raise ClientError("ROOM_ACCESS_DENIED")
+
+    room = get_room_or_error(message["room"], message.user)
+
+    print("This is score operation" + message['room'])
+    # Return a message only to the user who make a message request
+    # Three status of win/loss: Win, Lose or Tie
+    message.reply_channel.send({
+        "text": json.dumps({
+            "score": str(get_score(message.user)),
+            "isWin": judge_contest_status(message.user, room),
+            "username": message.user.username
+        }),
+    })

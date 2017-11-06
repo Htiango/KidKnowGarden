@@ -44,6 +44,7 @@
 
             var disable_helper_function;
             var timeout;
+            var intervalID;
             var currenttime = 0;
 
             // Helpful debugging
@@ -75,7 +76,7 @@
                         "<div class='room-center'>" +
                         "<h2 id='title'>" + data.title + "</h2>" +
                         "<h5 id='status'></h5></div>" +
-                        "<div class='messages'></div>" +
+                        "<div class='messages' id='messages'></div>" +
                         "<div id='answer_group' class='display-contest-form' hidden></div><br>" +
                         "<div class='room-center'>" +
                         "<button id='start' class='btn btn-primary' hidden> START </button>" +
@@ -103,11 +104,6 @@
                         start_button.attr("hidden", true);
                     }
 
-                    disable_helper_function = function disable() {
-                        var radios = $('input:radio[name=choice]');
-                        radios.prop('disabled', true);
-                    }
-
                 // Handle leaving
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
@@ -115,12 +111,23 @@
                 }
                 // TODO: EXTREMELY DANGEROUS BEHAVIOUR TO CORRECT!!!! SET TIME IN EXPLICITLY SET DIGIT!
                 else if (data.message) {
+
+                    disable_helper_function = function disable() {
+                        var radios = $('input:radio[name=choice]');
+                        radios.prop('disabled', true);
+                        $("#submit-btn").prop('disabled', true);
+                        socket.send(JSON.stringify({
+                            "command": "score",
+                            "room": data.room
+                        }));
+                    };
+
                     if (data.message === "Start timing" && data.xmessage === "Start timing") {
                         timeout = setTimeout(disable_helper_function, 15000);
                         $("button.answer").prop('disabled', false);
                         currenttime = 15;
                         $("#timer").html("<h2>" + currenttime + "</h2>");
-                        var intervalID = setInterval(function () {
+                        intervalID = setInterval(function () {
                             currenttime = currenttime - 1;
                             if (currenttime === 0) {
                                 this.clearInterval(intervalID);
@@ -129,7 +136,7 @@
                         }, 1000);
                     }
 
-                    else if (data.message === "USER ENTER"){
+                    else if (data.message === "USER ENTER" || "USER LEAVE"){
                         var member_num = data.xmessage;
                         if (member_num === '2'){
                             $("#status").text("Ready to go! Hit start button to start contest.");
@@ -142,6 +149,10 @@
                     }
 
                     else if (data.xmessage === "Question") {
+
+                        $("#start").attr("hidden", true);
+                        $("#messages").empty();
+                        $("#status").empty();
                         var answer_group = $("#answer_group");
                         answer_group.empty();
                         answer_group.attr('hidden', false);
@@ -169,7 +180,9 @@
                             "</div>"
                         );
                         answer_group.append(choicediv);
-                        $("#submit-btn").on("click", function () {
+                        var submit_button = $("#submit-btn");
+                        submit_button.prop("disabled", false);
+                        submit_button.on("click", function () {
                             var index = -1;
                             if ($("#choice1").is(":checked")) {
                                 index = 0;
@@ -213,7 +226,12 @@
                     console.log(data);
                     var radios = $('input:radio[name=choice]');
                     radios.prop('disabled', true);
-
+                    $("#submit-btn").prop("disabled", false);
+                } else if (data.score) {
+                    var next_button = $("#start");
+                    next_button.attr("hidden", false);
+                    next_button.text("Next");
+                    $("#status").text(data.username + " : " + data.isWin + " ( Total Score: " + data.score + " )")
                 }
                 else {
                     console.log(data);
@@ -231,6 +249,7 @@
                 $("#back-to-room-list").attr("hidden", true);
                 $("#all-room-list").attr("hidden", false);
                 $("#chats").empty();
+                clearInterval(intervalID);
                 // Leave room
                 $(this).attr("room-id", "");
                 socket.send(JSON.stringify({
