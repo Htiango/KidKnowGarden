@@ -74,26 +74,15 @@
                         "<div class='room' id='room-" + data.join + "'>" +
                         "<div class='room-center'>" +
                         "<h2 id='title'>" + data.title + "</h2>" +
-                        "</div>" +
+                        "<h5 id='status'></h5></div>" +
                         "<div class='messages'></div>" +
-                        "<div id='answer_group' class='display-contest-form' hidden>" +
-                        " </div>" +
-                        "<br>" +
+                        "<div id='answer_group' class='display-contest-form' hidden></div><br>" +
                         "<div class='room-center'>" +
-                        "<button id='start' class='btn btn-primary'> START </button>" +
+                        "<button id='start' class='btn btn-primary' hidden> START </button>" +
                         "</div>" +
-                        //"<input><button id='chat_send'>Send</button>" +
                         "</div>"
                     );
                     $("#chats").append(roomdiv);
-                    {#                    $("#chat_send").on("click", function () {  #}
-                    {#                        socket.send(JSON.stringify({#}
-                    {#                            "command": "send",#}
-                    {#                            "room": data.join,#}
-                    {#                            "message": roomdiv.find("input").val()  #}
-                    {#                        }));#}
-                    {#                        roomdiv.find("input").val("");#}
-                    {#                    });#}
 
                     $("#start").on("click", function () {
                         socket.send(JSON.stringify({
@@ -102,21 +91,6 @@
                         }));
 
                     });
-
-
-                    {#                    $("button.answer").click(function() {#}
-                    {#                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION#}
-                    {#                        // If I need to judge the correctness of the question#}
-                    {#                        // I need to get question ID from DOM.#}
-                    {#                        //roomId = $(this).attr("data-room-id");#}
-                    {#                        answerId = $(this).attr("answerid");#}
-                    {#                        console.log("clicked" + data.join + answerId);#}
-                    {#                        socket.send(JSON.stringify({#}
-                    {#                            "command": "answer",#}
-                    {#                            "room": data.join,#}
-                    {#                            "answer": answerId#}
-                    {#                        }));#}
-                    {#                    });#}
 
                     disable_helper_function = function disable() {
                         var radios = $('input:radio[name=choice]');
@@ -130,7 +104,6 @@
                 }
                 // TODO: EXTREMELY DANGEROUS BEHAVIOUR TO CORRECT!!!! SET TIME IN EXPLICITLY SET DIGIT!
                 else if (data.message) {
-                    console.log("This is: " + data.message);
                     if (data.message === "Start timing" && data.xmessage === "Start timing") {
                         timeout = setTimeout(disable_helper_function, 10000);
                         $("button.answer").prop('disabled', false);
@@ -144,11 +117,24 @@
                         }, 1000);
                     }
 
+                    else if (data.message === "USER ENTER"){
+                        var num = data.xmessage;
+                        if (num === '1'){
+                            console.log("")
+                            $("#status").text("Wait for another people to join to start the contest.");
+                            $("#start").hide();
+                        }
+                        else if (num === '2'){
+                            $("#status").text("Ready to go! Hit start button to start contest.");
+                            $("#start").show();
+                        }
+                    }
+
                     else if (data.xmessage === "Question") {
-                        var answer_group = $("#answer_group")
+                        var answer_group = $("#answer_group");
                         answer_group.empty();
                         answer_group.attr('hidden', false);
-                        {#                        $("#submit-btn").attr('hidden', false);#}
+                        {#$("#submit-btn").attr('hidden', false);#}
                         var question_string = data.message;
                         var arr = question_string.split("#");
                         var title = $("#title");
@@ -170,13 +156,11 @@
                             "<div class='btn-submit-row'>" +
                             "<button id='submit-btn' class='btn btn-primary'> submit</button>" +
                             "</div>"
-
-
-                            {#                            "<input type='hidden' id='record_id' value=\"" + arr[5] + "\" hidden>" +#}
-                            {#                            "<input type='radio' name='choice' id='choice1' value=\"" + arr[0] + "\">" + arr[0] + "<br>" +#}
-                            {#                            "<input type='radio' name='choice' id='choice2' value=\"" + arr[1] + "\">" + arr[1] + "<br>" +#}
-                            {#                            "<input type='radio' name='choice' id='choice3' value=\"" + arr[2] + "\">" + arr[2] + "<br>" +#}
-                            {#                            "<input type='radio' name='choice' id='choice4' value=\"" + arr[3] + "\">" + arr[3] + "<br>"#}
+{#                    "<input type='hidden' id='record_id' value=\"" + arr[5] + "\" hidden>" +#}
+{#                    "<input type='radio' name='choice' id='choice1' value=\"" + arr[0] + "\">" + arr[0] + "<br>" +#}
+{#                    "<input type='radio' name='choice' id='choice2' value=\"" + arr[1] + "\">" + arr[1] + "<br>" +#}
+{#                    "<input type='radio' name='choice' id='choice3' value=\"" + arr[2] + "\">" + arr[2] + "<br>" +#}
+{#                    "<input type='radio' name='choice' id='choice4' value=\"" + arr[3] + "\">" + arr[3] + "<br>"#}
                         );
                         answer_group.append(choicediv);
                         $("#submit-btn").on("click", function () {
@@ -193,13 +177,13 @@
                             else if ($("#choice4").is(":checked")) {
                                 index = 3;
                             }
-                            console.log("clicked" + data.join + index);
+                            console.log("clicked" + data.room + index);
                             if (index >= 0) {
                                 var id = $("#record_id").attr("value");
                                 console.log(id);
                                 socket.send(JSON.stringify({
                                     "command": "answer",
-                                    "room": data.join,
+                                    "room": data.room,
                                     "record_id": id,
                                     "answer": index
                                 }));

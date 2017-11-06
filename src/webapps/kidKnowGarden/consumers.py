@@ -65,7 +65,7 @@ def chat_join(message):
 
         # Send a "enter message" to the room if available
         #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-        room.send_message("USER ENTER", message.user, str(members+1))
+        room.send_message("USER ENTER", message.user, None)
 
         # OK, add them in. The websocket_group is what we'll send messages
         # to so that everyone in the chat room gets them.
@@ -78,6 +78,7 @@ def chat_join(message):
             "text": json.dumps({
                 "join": str(room.id),
                 "title": room.title,
+                "number": str(members+1),
             }),
         })
 
