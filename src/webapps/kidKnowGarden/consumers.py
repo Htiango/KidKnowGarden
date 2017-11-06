@@ -18,6 +18,10 @@ def ws_disconnect(message):
     for room_id in message.channel_session.get("rooms", set()):
         try:
             room = Rooms.objects.get(pk=room_id)
+            members = room.num_of_members
+            if members > 0:
+                room.num_of_members = members - 1
+                room.save()
             # Removes us from the room's send group. If this doesn't get run,
             # we'll get removed once our first reply message expires.
             room.websocket_group.discard(message.reply_channel)
@@ -61,7 +65,7 @@ def chat_join(message):
 
         # Send a "enter message" to the room if available
         #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-        room.send_message("USER ENTER", message.user, None)
+        room.send_message("USER ENTER", message.user, str(members+1))
 
         # OK, add them in. The websocket_group is what we'll send messages
         # to so that everyone in the chat room gets them.
@@ -110,8 +114,7 @@ def chat_send(message):
     if int(message['room']) not in message.channel_session['rooms']:
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
-    room_string = get_random_room()
-    room.send_message(message["message"], message.user, room_string)
+    room.send_message(message["message"], message.user, None)
 
 
 @channel_session_user
@@ -138,4 +141,8 @@ def start_timing(message):
     if int(message['room']) not in message.channel_session['rooms']:
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
+
+    question_string = get_random_question()
+    print(question_string)
+    room.send_message(question_string, message.user, "Question")
     room.send_message("Start timing", message.user, "Start timing")

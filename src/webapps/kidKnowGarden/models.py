@@ -35,11 +35,11 @@ class Rooms(models.Model):
         """
         return Group("room-%s" % self.id)
 
-    def send_message(self, message, user, random_room):
+    def send_message(self, message, user, additional_message):
         """
         Called to send a message to the room on behalf of a user.
         """
-        final_msg = {'room': str(self.id), 'message': message, 'username': user.username, 'question': random_room}
+        final_msg = {'room': str(self.id), 'message': message, 'username': user.username, 'xmessage': additional_message}
 
         # Send out the message to everyone in the room
         self.websocket_group.send(
