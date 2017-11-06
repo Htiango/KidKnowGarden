@@ -92,7 +92,7 @@
     padding: 20px;
 }
 
-.room-list-container{
+.room-list-container {
     padding: 20px;
     text-align: center;
 }
@@ -113,7 +113,7 @@
     text-align: center;
 }
 
-.timer-text{
+.timer-text {
     color: red;
 }
 
@@ -123,6 +123,17 @@
 }
 
 .alert-text {
-  margin-top: 20px;
-  text-align: center;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-group-container {
+    padding-top: 30px;
+    padding-left: 25%;
+    padding-right: 25%;
+    padding-bottom: 50px;
+}
+
+.status-container {
+    padding-bottom: 100px;
 }
