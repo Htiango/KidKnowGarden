@@ -12,13 +12,20 @@
     <div class="container question-list-container">
         {% for question in questions %}
             <div class="row justify-content-md-start">
-            <a href="{% url "question-page" question.id %}">
-                <div class="question-text">{{ question.content }}</div>
-            </a>
+                <a href="{% url "question-page" question.id %}">
+                    <div class="question-text">{{ question.content }}</div>
+                </a>
             </div>
 
         {% endfor %}
 
+    </div>
+
+    <div id="btn-group" class="btn-group-container">
+        <a href="{% url 'home' %}">
+            <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back to Home Page
+            </button>
+        </a>
     </div>
 
 {% endblock %}
