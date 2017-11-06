@@ -217,3 +217,10 @@ def memory_game(request):
     user = request.user
     context = {'user': user}
     return render(request, "pages/memory_game.html", context)
+
+
+@login_required
+def random_question(request):
+    question = Question.objects.order_by('?').first()
+    question_id = question.id
+    return question_page(request, question_id)
