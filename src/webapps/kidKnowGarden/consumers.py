@@ -131,7 +131,7 @@ def answer(message):
         answer = "Got the right answer!"
     else:
         answer = "Made a wrong guess!"
-    
+
     # Send message to all members in the room
     room.send_message(answer, message.user, "A new room status of scores")
     # Return a message only to the user who make a message request
