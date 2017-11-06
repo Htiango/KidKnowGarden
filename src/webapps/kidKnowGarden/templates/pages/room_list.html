@@ -91,25 +91,52 @@
                             "room": data.join
                         }));
 
-
                     });
 
-                    $("button.answer").click(function() {
-                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION
-                        // If I need to judge the correctness of the question
-                        // I need to get question ID from DOM.
-                        //roomId = $(this).attr("data-room-id");
-                        answerId = $(this).attr("answerid");
-                        console.log("clicked" + data.join + answerId);
-                        socket.send(JSON.stringify({
-                            "command": "answer",
-                            "room": data.join,
-                            "answer": answerId
-                        }));
+                    $("#submit-btn").on("click", function(){
+                        var index = -1;
+                        if ($("#choice1").is(":checked")){
+                            index = 0;
+                        }
+                        else if ($("#choice2").is(":checked")){
+                            index = 1;
+                        }
+                        else if ($("#choice3").is(":checked")){
+                            index = 2;
+                        }
+                        else if ($("#choice4").is(":checked")){
+                            index = 3;
+                        }
+                        console.log("clicked" + data.join + index);
+                        if (index >= 0) {
+                            var id = $("#record_id").attr("value");
+                            console.log(id);
+                            socket.send(JSON.stringify({
+                                "command": "answer",
+                                "room": data.join,
+                                "record_id": id,
+                                "answer": index
+                            }));
+                        }
                     });
+
+{#                    $("button.answer").click(function() {#}
+{#                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION#}
+{#                        // If I need to judge the correctness of the question#}
+{#                        // I need to get question ID from DOM.#}
+{#                        //roomId = $(this).attr("data-room-id");#}
+{#                        answerId = $(this).attr("answerid");#}
+{#                        console.log("clicked" + data.join + answerId);#}
+{#                        socket.send(JSON.stringify({#}
+{#                            "command": "answer",#}
+{#                            "room": data.join,#}
+{#                            "answer": answerId#}
+{#                        }));#}
+{#                    });#}
 
                     disable_helper_function = function disable(){
-                        $("button.answer").prop('disabled', true);
+                       var radios = $('input:radio[name=choice]');
+                       radios.prop('disabled', true);
                     }
 
                 // Handle leaving

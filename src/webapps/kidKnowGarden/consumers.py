@@ -124,13 +124,21 @@ def answer(message):
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
     answer = message["answer"]
+    record_id = message["record_id"]
+    status = judge_question_correctness(int(record_id), int(answer))
+
+    if status:
+        answer = "Got the right answer!"
+    else:
+        answer = "Made a wrong guess!"
+    
     # Send message to all members in the room
     room.send_message(answer, message.user, "A new room status of scores")
     # Return a message only to the user who make a message request
     message.reply_channel.send({
         "text": json.dumps({
             "answer": answer,
-            "correctness": True
+            "correctness": status
         }),
     })
 
