@@ -9,6 +9,19 @@ $(function () {
     var timeout;
     var intervalID;
     var currenttime = 0;
+    var roomdiv = $(
+    "<div id='timer' class='room-center timer-text'></div> " +
+    "<div class='room' id='room-" + data.join + "'>" +
+    "<div class='room-center'>" +
+    "<h2 id='title'>" + data.title + "</h2>" +
+    "<h5 id='status'></h5></div>" +
+    "<div class='messages' id='messages'></div>" +
+    "<div id='answer_group' class='display-contest-form' hidden></div><br>" +
+    "<div class='room-center'>" +
+    "<button id='start' class='btn btn-primary' hidden> START </button>" +
+    "</div>" +
+    "</div>"
+    );
 
     // Helpful debugging
     socket.onopen = function () {
@@ -33,19 +46,7 @@ $(function () {
             $("#all-room-list").attr("hidden", true);
             console.log("Joining room " + data.join);
             // language=DjangoTemplate
-            var roomdiv = $(
-                "<div id='timer' class='room-center timer-text'></div> " +
-                "<div class='room' id='room-" + data.join + "'>" +
-                "<div class='room-center'>" +
-                "<h2 id='title'>" + data.title + "</h2>" +
-                "<h5 id='status'></h5></div>" +
-                "<div class='messages' id='messages'></div>" +
-                "<div id='answer_group' class='display-contest-form' hidden></div><br>" +
-                "<div class='room-center'>" +
-                "<button id='start' class='btn btn-primary' hidden> START </button>" +
-                "</div>" +
-                "</div>"
-            );
+
             $("#chats").append(roomdiv);
 
             var start_button = $("#start");
@@ -70,7 +71,7 @@ $(function () {
         // Handle leaving
         } else if (data.leave) {
             console.log("Leaving room " + data.leave);
-            $("#room-" + data.leave).remove();
+            //$("#room-" + data.leave).remove();
         }
         // TODO: EXTREMELY DANGEROUS BEHAVIOUR TO CORRECT!!!! SET TIME IN EXPLICITLY SET DIGIT!
         else if (data.message) {
@@ -106,8 +107,14 @@ $(function () {
                     $("#start").attr("hidden", false);
                 }
                 else{
+                    $("#chats").empty();
+                    $("#chats").append(roomdiv);
                     $("#status").text("Wait for another people to join to start the contest.");
                     $("#start").attr("hidden", true);
+                    $("#back-to-room-list").attr("hidden", false);
+                    $("#all-room-list").attr("hidden", true);
+                    currenttime = 0;
+                    clearInterval(intervalID);
                 }
             }
 
@@ -175,7 +182,7 @@ $(function () {
             }
 
             else {
-                var msgdiv = $("#room-" + data.room + " .messages");
+                //var msgdiv = $("#room-" + data.room + " .messages");
                 //var ok_msg = "";
                 ok_msg = "<div class='message'>" +
                     "<span class='username'>" + data.username + " : " + "</span>" +
@@ -212,7 +219,7 @@ $(function () {
         $("#back-to-room-list").attr("hidden", true);
         $("#all-room-list").attr("hidden", false);
         $("#chats").empty();
-
+        currenttime = 0;
         clearInterval(intervalID);
         // Leave room
         $(this).attr("room-id", "");
