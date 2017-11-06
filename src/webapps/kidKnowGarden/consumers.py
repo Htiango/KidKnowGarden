@@ -105,7 +105,7 @@ def chat_leave(message):
 
         # Send a "leave message" to the room if available
         #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-        room.send_message("USER LEAVE", message.user, None)
+        room.send_message("USER LEAVE", message.user, members-1)
 
         room.websocket_group.discard(message.reply_channel)
         message.channel_session['rooms'] = list(set(message.channel_session['rooms']).difference([room.id]))
