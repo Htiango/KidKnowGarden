@@ -178,7 +178,7 @@
                         var msgdiv = $("#room-" + data.room + " .messages");
                         //var ok_msg = "";
                         ok_msg = "<div class='message alert alert-primary single-message-container'>" +
-                            data.username + " : "  + data.message + 
+                            data.username + " : "  + data.message +
                             "</div>";
                         msgdiv.append(ok_msg);
                         msgdiv.scrollTop(msgdiv.prop("scrollHeight"));
