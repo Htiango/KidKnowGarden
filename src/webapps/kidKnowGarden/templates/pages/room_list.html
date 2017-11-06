@@ -2,28 +2,30 @@
 
 {% block title %}Room List{% endblock %}
 
-{% block content %}
-    <div class="container">
-      <br>
-      <div id="all-room-list">
-          <h5>Room List</h5>
-          <br>
-          <ul>
-            {% for room in rooms %}
-              <!-- NOTE: We escape HTML to prevent XSS attacks. -->
-              <li>
-                  <button class="room-link" data-room-id="{{ room.id }}">{{ room.title|escape }}</button>
-    {#            <a href="#" id="{{ room.id|escape }}"> {{ room.title|escape }} </a>#}
-              </li>
-            {% endfor %}
-          </ul>
-      </div>
+{% block main-page %}
+    <div class="container title-container">
+        <h1 class="welcome-title">Contest</h1>
+        <p class="welcome-subtitle">Have fun contest with friend!</p>
+    </div>
+    <div class="container room-list-container">
+        <div id="all-room-list">
+            <h2>Room List</h2>
+            <div class="row room-row justify-content-md-center">
+                {% for room in rooms %}
+                    <!-- NOTE: We escape HTML to prevent XSS attacks. -->
+
+                    <button class="btn btn-primary room-link"
+                            data-room-id="{{ room.id }}">{{ room.title|escape }}</button>
+
+                {% endfor %}
+            </div>
+        </div>
 
         <br>
-      <button id="back-to-room-list" hidden> Back </button>
+        <button id="back-to-room-list" hidden> Back</button>
 
-      <div id="chats">
-      </div>
+        <div id="chats">
+        </div>
 
     </div>
 {% endblock %}
@@ -76,16 +78,16 @@
                         "</div>"
                     );
                     $("#chats").append(roomdiv);
-{#                    $("#chat_send").on("click", function () {  #}
-{#                        socket.send(JSON.stringify({#}
-{#                            "command": "send",#}
-{#                            "room": data.join,#}
-{#                            "message": roomdiv.find("input").val()  #}
-{#                        }));#}
-{#                        roomdiv.find("input").val("");#}
-{#                    });#}
+                    {#                    $("#chat_send").on("click", function () {  #}
+                    {#                        socket.send(JSON.stringify({#}
+                    {#                            "command": "send",#}
+                    {#                            "room": data.join,#}
+                    {#                            "message": roomdiv.find("input").val()  #}
+                    {#                        }));#}
+                    {#                        roomdiv.find("input").val("");#}
+                    {#                    });#}
 
-                    $("#start").on("click", function(){
+                    $("#start").on("click", function () {
                         socket.send(JSON.stringify({
                             "command": "start",
                             "room": data.join
@@ -93,18 +95,18 @@
 
                     });
 
-                    $("#submit-btn").on("click", function(){
+                    $("#submit-btn").on("click", function () {
                         var index = -1;
-                        if ($("#choice1").is(":checked")){
+                        if ($("#choice1").is(":checked")) {
                             index = 0;
                         }
-                        else if ($("#choice2").is(":checked")){
+                        else if ($("#choice2").is(":checked")) {
                             index = 1;
                         }
-                        else if ($("#choice3").is(":checked")){
+                        else if ($("#choice3").is(":checked")) {
                             index = 2;
                         }
-                        else if ($("#choice4").is(":checked")){
+                        else if ($("#choice4").is(":checked")) {
                             index = 3;
                         }
                         console.log("clicked" + data.join + index);
@@ -120,26 +122,26 @@
                         }
                     });
 
-{#                    $("button.answer").click(function() {#}
-{#                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION#}
-{#                        // If I need to judge the correctness of the question#}
-{#                        // I need to get question ID from DOM.#}
-{#                        //roomId = $(this).attr("data-room-id");#}
-{#                        answerId = $(this).attr("answerid");#}
-{#                        console.log("clicked" + data.join + answerId);#}
-{#                        socket.send(JSON.stringify({#}
-{#                            "command": "answer",#}
-{#                            "room": data.join,#}
-{#                            "answer": answerId#}
-{#                        }));#}
-{#                    });#}
+                    {#                    $("button.answer").click(function() {#}
+                    {#                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION#}
+                    {#                        // If I need to judge the correctness of the question#}
+                    {#                        // I need to get question ID from DOM.#}
+                    {#                        //roomId = $(this).attr("data-room-id");#}
+                    {#                        answerId = $(this).attr("answerid");#}
+                    {#                        console.log("clicked" + data.join + answerId);#}
+                    {#                        socket.send(JSON.stringify({#}
+                    {#                            "command": "answer",#}
+                    {#                            "room": data.join,#}
+                    {#                            "answer": answerId#}
+                    {#                        }));#}
+                    {#                    });#}
 
-                    disable_helper_function = function disable(){
-                       var radios = $('input:radio[name=choice]');
-                       radios.prop('disabled', true);
+                    disable_helper_function = function disable() {
+                        var radios = $('input:radio[name=choice]');
+                        radios.prop('disabled', true);
                     }
 
-                // Handle leaving
+                    // Handle leaving
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
                     $("#room-" + data.leave).remove();
@@ -147,20 +149,20 @@
                 // TODO: EXTREMELY DANGEROUS BEHAVIOUR TO CORRECT!!!! SET TIME IN EXPLICITLY SET DIGIT!
                 else if (data.message) {
                     console.log("This is: " + data.message);
-                    if(data.message === "Start timing" && data.xmessage === "Start timing"){
+                    if (data.message === "Start timing" && data.xmessage === "Start timing") {
                         timeout = setTimeout(disable_helper_function, 10000);
                         $("button.answer").prop('disabled', false);
                         currenttime = 10;
-                        var intervalID = setInterval(function(){
+                        var intervalID = setInterval(function () {
                             currenttime = currenttime - 1;
-                            if (currenttime === 0){
+                            if (currenttime === 0) {
                                 this.clearInterval(intervalID);
                             }
                             $("#timer").html("<h2>" + currenttime + "</h2>");
                         }, 1000);
                     }
 
-                    else if(data.xmessage === "Question"){
+                    else if (data.xmessage === "Question") {
                         var answer_group = $("#answer_group")
                         answer_group.empty();
                         answer_group.attr('hidden', false);
@@ -170,16 +172,16 @@
                         var title = $("#title");
                         title.text(arr[4]);
                         var choicediv = $(
-                            "<input type='hidden' id='record_id' value=\""+ arr[5] +"\" hidden>" +
-                            "<input type='radio' name='choice' id='choice1' value=\""+ arr[0] +"\">"+ arr[0] +"<br>" +
-                            "<input type='radio' name='choice' id='choice2' value=\""+ arr[1] +"\">"+ arr[1] +"<br>" +
-                            "<input type='radio' name='choice' id='choice3' value=\""+ arr[2] +"\">"+ arr[2] +"<br>" +
-                            "<input type='radio' name='choice' id='choice4' value=\""+ arr[3] +"\">"+ arr[3] +"<br>"
+                            "<input type='hidden' id='record_id' value=\"" + arr[5] + "\" hidden>" +
+                            "<input type='radio' name='choice' id='choice1' value=\"" + arr[0] + "\">" + arr[0] + "<br>" +
+                            "<input type='radio' name='choice' id='choice2' value=\"" + arr[1] + "\">" + arr[1] + "<br>" +
+                            "<input type='radio' name='choice' id='choice3' value=\"" + arr[2] + "\">" + arr[2] + "<br>" +
+                            "<input type='radio' name='choice' id='choice4' value=\"" + arr[3] + "\">" + arr[3] + "<br>"
                         );
                         answer_group.append(choicediv);
                     }
 
-                    else{
+                    else {
                         var msgdiv = $("#room-" + data.room + " .messages");
                         //var ok_msg = "";
                         ok_msg = "<div class='message'>" +
@@ -190,9 +192,9 @@
                         msgdiv.scrollTop(msgdiv.prop("scrollHeight"));
                     }
 
-                } else if (data.answer){
+                } else if (data.answer) {
                     console.log(data);
-                    if(data.correctness === true || data.correctness === "True"){
+                    if (data.correctness === true || data.correctness === "True") {
                         var radios = $('input:radio[name=choice]');
                         radios.prop('disabled', true);
                     }
@@ -213,7 +215,7 @@
                 $("#back-to-room-list").attr("hidden", true);
                 $("#all-room-list").attr("hidden", false);
                 $("#chats").empty();
-                 // Leave room
+                // Leave room
                 $(this).attr("room-id", "");
                 socket.send(JSON.stringify({
                     "command": "leave",  // determines which handler will be used (see chat/routing.py)
