@@ -8,3 +8,4 @@ admin.site.register(
     list_display_links=["id", "title"],
 )
 admin.site.register(Question)
+admin.site.register(ContestScore)

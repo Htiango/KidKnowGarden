@@ -15,13 +15,15 @@ def ws_connect(message):
 @channel_session_user
 def ws_disconnect(message):
     # Unsubscribe from any connected rooms
-    for room_id in message.channel_session.get("rooms", set()):
+    #for room_id in message.channel_session.get("rooms", set()):
+    for room_id in Rooms.objects.values_list('id', flat=True):
         try:
             room = Rooms.objects.get(pk=room_id)
-            members = room.num_of_members
+            members = room.members.count()
             if members > 0:
-                room.num_of_members = members - 1
-                room.save()
+                if message.user in room.members.all():
+                    room.members.remove(message.user)
+                    room.save()
             # Removes us from the room's send group. If this doesn't get run,
             # we'll get removed once our first reply message expires.
             room.websocket_group.discard(message.reply_channel)
@@ -56,31 +58,35 @@ def chat_join(message):
     room = get_room_or_error(message["room"], message.user)
 
     ## Add one for this room
-    members = room.num_of_members
+    members = room.members.count()
     if members >= 2:
         raise ClientError("ROOM_ACCESS_DENIED")
     else:
-        room.num_of_members = members + 1
-        room.save()
+        if message.user in room.members.all():
+            raise ClientError("ROOM_ACCESS_DENIED")
+        else:
+            room.members.add(message.user)
+            room.save()
+            # Send a "enter message" to the room if available
+            #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+            room.send_message("USER ENTER", message.user, str(members+1))
 
-        # Send a "enter message" to the room if available
-        #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-        room.send_message("USER ENTER", message.user, None)
+            # OK, add them in. The websocket_group is what we'll send messages
+            # to so that everyone in the chat room gets them.
+            room.websocket_group.add(message.reply_channel)
+            message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
+            # Send a message back that will prompt them to open the room
+            # Done server-side so that we could, for example, make people
+            # join rooms automatically.
+            message.reply_channel.send({
+                "text": json.dumps({
+                    "join": str(room.id),
+                    "title": room.title,
+                    "members": str(members+1),
+                    "members2":"askdfjafkj",
+                }),
 
-        # OK, add them in. The websocket_group is what we'll send messages
-        # to so that everyone in the chat room gets them.
-        room.websocket_group.add(message.reply_channel)
-        message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
-        # Send a message back that will prompt them to open the room
-        # Done server-side so that we could, for example, make people
-        # join rooms automatically.
-        message.reply_channel.send({
-            "text": json.dumps({
-                "join": str(room.id),
-                "title": room.title,
-                "number": str(members+1),
-            }),
-        })
+            })
 
 @channel_session_user
 #@catch_client_error
@@ -88,12 +94,13 @@ def chat_leave(message):
     # Reverse of join - remove them from everything.
     room = get_room_or_error(message["room"], message.user)
 
-    members = room.num_of_members
+    members = room.members.count()
     if members < 0:
         raise ClientError("ROOM_ACCESS_DENIED")
     else:
-        room.num_of_members = members - 1
-        room.save()
+        if message.user in room.members.all():
+            room.members.remove(message.user)
+            room.save()
 
         # Send a "leave message" to the room if available
         #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
@@ -130,8 +137,11 @@ def answer(message):
 
     if status:
         answer = "Got the right answer!"
+        score = message["current_time"]
+        save_contest_score(score,message.user)
     else:
         answer = "Made a wrong guess!"
+        save_contest_score(0, message.user)
 
     # Send message to all members in the room
     room.send_message(answer, message.user, "A new room status of scores")
@@ -151,6 +161,7 @@ def start_timing(message):
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
 
+    clear_contest_score(message.user)
     question_string = get_random_question()
     print(question_string)
     room.send_message(question_string, message.user, "Question")

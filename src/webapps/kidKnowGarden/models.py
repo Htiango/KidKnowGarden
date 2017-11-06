@@ -22,7 +22,7 @@ class Rooms(models.Model):
     staff_only = models.BooleanField(default=False)
 
     # Number of people in room
-    num_of_members = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    members = models.ManyToManyField(User, related_name="members", blank=True)
 
     def __str__(self):
         return self.title
@@ -82,3 +82,8 @@ class CorrectAnswer(models.Model):
             MaxValueValidator(3),
             MinValueValidator(0)
         ])
+
+
+class ContestScore(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    score = models.IntegerField(default=0, validators=[MinValueValidator(0)])

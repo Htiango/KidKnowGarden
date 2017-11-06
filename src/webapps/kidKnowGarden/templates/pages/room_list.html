@@ -84,7 +84,8 @@
                     );
                     $("#chats").append(roomdiv);
 
-                    $("#start").on("click", function () {
+                    var start_button = $("#start");
+                    start_button.on("click", function () {
                         socket.send(JSON.stringify({
                             "command": "start",
                             "room": data.join
@@ -92,12 +93,22 @@
 
                     });
 
+                    var num = data.members;
+                    if (num === '2'){
+                        $("#status").text("Ready to go! Hit start button to start contest.");
+                        start_button.attr("hidden", false);
+                    }
+                    else{
+                        $("#status").text("Wait for another people to join to start the contest.");
+                        start_button.attr("hidden", true);
+                    }
+
                     disable_helper_function = function disable() {
                         var radios = $('input:radio[name=choice]');
                         radios.prop('disabled', true);
                     }
 
-                    // Handle leaving
+                // Handle leaving
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
                     $("#room-" + data.leave).remove();
@@ -105,9 +116,10 @@
                 // TODO: EXTREMELY DANGEROUS BEHAVIOUR TO CORRECT!!!! SET TIME IN EXPLICITLY SET DIGIT!
                 else if (data.message) {
                     if (data.message === "Start timing" && data.xmessage === "Start timing") {
-                        timeout = setTimeout(disable_helper_function, 10000);
+                        timeout = setTimeout(disable_helper_function, 15000);
                         $("button.answer").prop('disabled', false);
-                        currenttime = 10;
+                        currenttime = 15;
+                        $("#timer").html("<h2>" + currenttime + "</h2>");
                         var intervalID = setInterval(function () {
                             currenttime = currenttime - 1;
                             if (currenttime === 0) {
@@ -118,15 +130,14 @@
                     }
 
                     else if (data.message === "USER ENTER"){
-                        var num = data.xmessage;
-                        if (num === '1'){
-                            console.log("")
-                            $("#status").text("Wait for another people to join to start the contest.");
-                            $("#start").hide();
-                        }
-                        else if (num === '2'){
+                        var member_num = data.xmessage;
+                        if (member_num === '2'){
                             $("#status").text("Ready to go! Hit start button to start contest.");
-                            $("#start").show();
+                            $("#start").attr("hidden", false);
+                        }
+                        else{
+                            $("#status").text("Wait for another people to join to start the contest.");
+                            $("#start").attr("hidden", true);
                         }
                     }
 
@@ -156,11 +167,6 @@
                             "<div class='btn-submit-row'>" +
                             "<button id='submit-btn' class='btn btn-primary'> submit</button>" +
                             "</div>"
-{#                    "<input type='hidden' id='record_id' value=\"" + arr[5] + "\" hidden>" +#}
-{#                    "<input type='radio' name='choice' id='choice1' value=\"" + arr[0] + "\">" + arr[0] + "<br>" +#}
-{#                    "<input type='radio' name='choice' id='choice2' value=\"" + arr[1] + "\">" + arr[1] + "<br>" +#}
-{#                    "<input type='radio' name='choice' id='choice3' value=\"" + arr[2] + "\">" + arr[2] + "<br>" +#}
-{#                    "<input type='radio' name='choice' id='choice4' value=\"" + arr[3] + "\">" + arr[3] + "<br>"#}
                         );
                         answer_group.append(choicediv);
                         $("#submit-btn").on("click", function () {
@@ -185,7 +191,8 @@
                                     "command": "answer",
                                     "room": data.room,
                                     "record_id": id,
-                                    "answer": index
+                                    "answer": index,
+                                    "current_time": currenttime
                                 }));
                             }
                         });
@@ -204,10 +211,9 @@
 
                 } else if (data.answer) {
                     console.log(data);
-                    if (data.correctness === true || data.correctness === "True") {
-                        var radios = $('input:radio[name=choice]');
-                        radios.prop('disabled', true);
-                    }
+                    var radios = $('input:radio[name=choice]');
+                    radios.prop('disabled', true);
+
                 }
                 else {
                     console.log(data);

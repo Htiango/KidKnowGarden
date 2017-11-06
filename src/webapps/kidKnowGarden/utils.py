@@ -63,3 +63,19 @@ def judge_question_correctness(record_id, answer_index):
     status = (correct_answer.answer_index == answer_index)
     return status
 
+def save_contest_score(score, user):
+    contest_score = ContestScore.objects.filter(user=user)
+    if contest_score.count() > 0:
+        prev_score = contest_score.score
+        contest_score.score = prev_score + score
+        contest_score.save()
+    else:
+        new_score = ContestScore(user=user, score=score)
+        new_score.save()
+
+
+def clear_contest_score(user):
+    contest_score = ContestScore.objects.filter(user=user)
+    if contest_score.count() > 0:
+        contest_score.score = 0
+        contest_score.save()
