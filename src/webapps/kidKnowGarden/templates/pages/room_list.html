@@ -136,7 +136,7 @@
                         }, 1000);
                     }
 
-                    else if (data.message === "USER ENTER" || "USER LEAVE"){
+                    else if (data.message === "USER ENTER" || data.message === "USER LEAVE"){
                         var member_num = data.xmessage;
                         if (member_num === '2'){
                             $("#status").text("Ready to go! Hit start button to start contest.");

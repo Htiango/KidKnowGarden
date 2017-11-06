@@ -1,5 +1,5 @@
 from functools import wraps
-
+from django.core.exceptions import ObjectDoesNotExist
 from .exception import ClientError
 from .models import *
 
@@ -64,23 +64,29 @@ def judge_question_correctness(record_id, answer_index):
     return status
 
 def save_contest_score(score, user):
-    contest_score, created = ContestScore.objects.get_or_create(
-        user=user,
-        score=score
-    )
+    try:
+        contest_score = ContestScore.objects.get(user=user)
+        if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
+            new_score = contest_score.score + score
+            contest_score.score = new_score
+            contest_score.save()
+    except ObjectDoesNotExist:
     # A good performance for judging existance of a user
-    new_score = contest_score.score + score
-    contest_score.score = new_score
-    contest_score.save()
+        new_score = ContestScore(user=user, score=score)
+        new_score.save()
 
 
 def clear_contest_score(user):
-    contest_score, created = ContestScore.objects.get_or_create(
-        user=user,
-        score=0
-    )
-    contest_score.score = 0
-    contest_score.save()
+    try:
+        contest_score = ContestScore.objects.get(user=user)
+        if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
+            contest_score.score = 0
+            contest_score.save()
+    except ObjectDoesNotExist:
+        # A good performance for judging existance of a user
+        new_score = ContestScore(user=user, score=0)
+        new_score.save()
+
 
 def judge_contest_status(user, room):
     members = room.members.all()

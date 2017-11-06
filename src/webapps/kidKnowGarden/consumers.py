@@ -171,8 +171,8 @@ def start_timing(message):
 @channel_session_user
 #@catch_client_error
 def request_score(message):
-    if int(message['room']) not in message.channel_session['rooms']:
-        raise ClientError("ROOM_ACCESS_DENIED")
+    # if int(message['room']) not in message.channel_session['rooms']:
+    #     raise ClientError("ROOM_ACCESS_DENIED")
 
     room = get_room_or_error(message["room"], message.user)
 
