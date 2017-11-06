@@ -6,7 +6,7 @@ div#memory_board{
   padding: 24px;
   margin-right: auto;
   margin-left: auto;
-  margin-top: 50px;
+  margin-top: 10px;
 }
 
 div#memory_board > div {
@@ -23,6 +23,13 @@ div#memory_board > div {
 }
 
 .show-success {
+  padding-top: 20px;
+  padding-left: 25%;
+  padding-right: 25%;
+  padding-bottom: 20px;
+}
+
+.show-btns {
   padding-top: 30px;
   padding-left: 25%;
   padding-right: 25%;
