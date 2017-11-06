@@ -1,5 +1,9 @@
 {% extends "pages/home.html" %}
 
+{% block additional_link_script %}
+    <script type="text/javascript" src="/static/js/question_page.js"></script>
+{% endblock %}
+
 {% block title %}Question Page{% endblock %}
 
 {% block main-page %}
@@ -19,7 +23,3 @@
 
 {% endblock %}
 
-{% block addition_script %}
-    {% load static %}
-    <script src="/static/js/question_page.js"></script>
-{% endblock %}

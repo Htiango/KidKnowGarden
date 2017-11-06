@@ -1,5 +1,6 @@
 {% extends "pages/base_template.html" %}
 {% block additional_link_script %}
+    <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block title %} KidKnowGarden Homepage {% endblock %}
 
@@ -39,10 +40,42 @@
 {% endblock %}
 
 {% block main-page %}
+    <div class="container title-container">
+        <h1 class="welcome-title">KidKnowGarden</h1>
+        <p class="welcome-subtitle">Play to Learn!</p>
+    </div>
 
     {% block content %}
 
-        <a href="{% url 'question_list' %}"> Question list page</a>
+
+        <div class="container img-btn-contain">
+
+            <div class="row justify-content-md-center">
+                <div class="col-md-auto img-left-top image">
+                    <img src="/static/img/blue.png" class="img-btn">
+                    <a href="{% url 'question_list' %}">
+                        <h2 class="text-on-img text-left-top">Go get question</h2>
+                    </a>
+                </div>
+                <div class="col-md-auto img-right-top image">
+                    <img src="/static/img/blue.png" class="img-btn">
+                    <a href="{% url 'memory_game' %}">
+                        <h2 class="text-on-img text-right-top">Memory Game</h2>
+                    </a>
+                </div>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col-md-auto img-left-bottom image">
+                    <img src="/static/img/blue.png" class="img-btn" >
+                    <h2 class="text-on-img text-right-top">Go get question</h2>
+                </div>
+                <div class="col-md-auto img-right-bottom image">
+                    <img src="/static/img/blue.png" class="img-btn">
+                    <h2 class="text-on-img text-left-top">To be continue</h2>
+                </div>
+            </div>
+{#            <button id="close-image" style="border-bottom-color: transparent"><img src="/static/img/blue.png"></button>#}
+        </div>
 
     {% endblock %}
 
@@ -51,7 +84,6 @@
 {% block script %}
     {% load staticfiles %}
     <script src="{% static "channels/js/websocketbridge.js" %}" type="text/javascript"></script>
-    <script src="/static/js/question_page.js"></script>
 {% endblock %}
 
 {% block addition_script %}
