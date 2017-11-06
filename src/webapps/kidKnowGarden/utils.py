@@ -64,23 +64,23 @@ def judge_question_correctness(record_id, answer_index):
     return status
 
 def save_contest_score(score, user):
-    contest_score = ContestScore.objects.get_or_create(user=user)
+    contest_score, created = ContestScore.objects.get_or_create(
+        user=user,
+        score=score
+    )
     # A good performance for judging existance of a user
-    if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
-        new_score = contest_score.score + score
-        contest_score.score = new_score
-        contest_score.save()
-    else:
-        new_score = ContestScore(user=user, score=score)
-        new_score.save()
+    new_score = contest_score.score + score
+    contest_score.score = new_score
+    contest_score.save()
 
 
 def clear_contest_score(user):
-    contest_score = ContestScore.objects.get_or_create(user=user)
-    # A good performance for judging existance of a user
-    if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
-        contest_score.score = 0
-        contest_score.save()
+    contest_score, created = ContestScore.objects.get_or_create(
+        user=user,
+        score=0
+    )
+    contest_score.score = 0
+    contest_score.save()
 
 def judge_contest_status(user, room):
     members = room.members.all()
