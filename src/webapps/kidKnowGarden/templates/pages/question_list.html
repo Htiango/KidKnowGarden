@@ -5,7 +5,7 @@
 {% block main-page %}
 
     <div class="container title-container">
-        <h1 class="welcome-title">KidKnowGarden Question List</h1>
+        <h1 class="welcome-title">Question List</h1>
         <p class="welcome-subtitle">Test Yourself!</p>
     </div>
 
@@ -21,11 +21,13 @@
 
     </div>
 
-    <div id="btn-group" class="btn-group-container">
-        <a href="{% url 'home' %}">
-            <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back to Home Page
-            </button>
-        </a>
+    <div class="btn-group-container">
+        <div id="btn-group" class="btn-group-container">
+            <a href="{% url 'home' %}">
+                <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back to Home Page
+                </button>
+            </a>
+        </div>
     </div>
 
 {% endblock %}
