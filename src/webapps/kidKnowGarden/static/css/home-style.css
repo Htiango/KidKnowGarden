@@ -73,15 +73,15 @@
     margin-top: 30px;
 }
 
-.question-display-container .question-content-text {
+.question-content-text {
     font-size: 20px;
 }
 
-.question-display-container .choice-row {
+.choice-row {
     padding-bottom: 15px;
 }
 
-.question-display-container .btn-submit-row {
+.btn-submit-row {
     padding-top: 20px;
     padding-bottom: 15px;
 }
@@ -99,4 +99,25 @@
 
 .room-link {
     margin-left: 30px;
+}
+
+.btn-back-to-room-list {
+    margin-top: 30px;
+}
+
+.contest-question-container {
+    text-align: left;
+}
+
+.room-center {
+    text-align: center;
+}
+
+.timer-text{
+    color: red;
+}
+
+.display-contest-form {
+    padding-left: 28%;
+    padding-top: 20px;
 }
