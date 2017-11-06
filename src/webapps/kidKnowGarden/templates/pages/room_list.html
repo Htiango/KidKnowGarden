@@ -63,28 +63,27 @@
                     $("#back-to-room-list").attr("hidden", false);
                     $("#all-room-list").attr("hidden", true);
                     console.log("Joining room " + data.join);
+                    // language=DjangoTemplate
                     var roomdiv = $(
                         "<div class='room' id='room-" + data.join + "'>" +
-                        "<h2>" + data.title + "</h2>" +
+                        "<h2 id='title'>" + data.title + "</h2>" +
                         "<div class='messages'></div>" +
-                        "<div id='timer'></div> <div id='answer_group'>" +
-                        "<button class='answer' answerid='1'>ANSWER1</button>" +
-                        "<button class='answer' answerid='2'>ANSWER2</button>" +
-                        "<button class='answer' answerid='3'>ANSWER3</button>" +
-                        "<button class='answer' answerid='4'>ANSWER4</button></div>" +
-                        "<br> <button id='start'> START </button>" +
+                        "<div id='timer'></div> <div id='answer_group' hidden>" +
+                        "</div> <button id='submit-btn' hidden> submit</button> " +
+                        "<br>" +
+                        "<button id='start'> START </button>" +
                         //"<input><button id='chat_send'>Send</button>" +
                         "</div>"
                     );
                     $("#chats").append(roomdiv);
-                    $("#chat_send").on("click", function () {
-                        socket.send(JSON.stringify({
-                            "command": "send",
-                            "room": data.join,
-                            "message": roomdiv.find("input").val()
-                        }));
-                        roomdiv.find("input").val("");
-                    });
+{#                    $("#chat_send").on("click", function () {  #}
+{#                        socket.send(JSON.stringify({#}
+{#                            "command": "send",#}
+{#                            "room": data.join,#}
+{#                            "message": roomdiv.find("input").val()  #}
+{#                        }));#}
+{#                        roomdiv.find("input").val("");#}
+{#                    });#}
 
                     $("#start").on("click", function(){
                         socket.send(JSON.stringify({
@@ -92,34 +91,63 @@
                             "room": data.join
                         }));
 
-                        $("button.answer").prop('disabled', false);
                     });
 
-                    $("button.answer").click(function() {
-                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION
-                        // If I need to judge the correctness of the question
-                        // I need to get question ID from DOM.
-                        //roomId = $(this).attr("data-room-id");
-                        answerId = $(this).attr("answerid");
-                        console.log("clicked" + data.join + answerId);
-                        socket.send(JSON.stringify({
-                            "command": "answer",
-                            "room": data.join,
-                            "answer": answerId
-                        }));
+                    $("#submit-btn").on("click", function(){
+                        var index = -1;
+                        if ($("#choice1").is(":checked")){
+                            index = 0;
+                        }
+                        else if ($("#choice2").is(":checked")){
+                            index = 1;
+                        }
+                        else if ($("#choice3").is(":checked")){
+                            index = 2;
+                        }
+                        else if ($("#choice4").is(":checked")){
+                            index = 3;
+                        }
+                        console.log("clicked" + data.join + index);
+                        if (index >= 0) {
+                            var id = $("#record_id").attr("value");
+                            console.log(id);
+                            socket.send(JSON.stringify({
+                                "command": "answer",
+                                "room": data.join,
+                                "record_id": id,
+                                "answer": index
+                            }));
+                        }
                     });
+
+{#                    $("button.answer").click(function() {#}
+{#                        // TODO: JUDGE THE CORRECTNESS OF THE QUESTION#}
+{#                        // If I need to judge the correctness of the question#}
+{#                        // I need to get question ID from DOM.#}
+{#                        //roomId = $(this).attr("data-room-id");#}
+{#                        answerId = $(this).attr("answerid");#}
+{#                        console.log("clicked" + data.join + answerId);#}
+{#                        socket.send(JSON.stringify({#}
+{#                            "command": "answer",#}
+{#                            "room": data.join,#}
+{#                            "answer": answerId#}
+{#                        }));#}
+{#                    });#}
 
                     disable_helper_function = function disable(){
-                        $("button.answer").prop('disabled', true);
+                       var radios = $('input:radio[name=choice]');
+                       radios.prop('disabled', true);
                     }
 
                 // Handle leaving
                 } else if (data.leave) {
                     console.log("Leaving room " + data.leave);
                     $("#room-" + data.leave).remove();
-
-                } else if (data.message) {
-                    if(data.message === "Start timing" && data.random_room === "Start timing"){
+                }
+                // TODO: EXTREMELY DANGEROUS BEHAVIOUR TO CORRECT!!!! SET TIME IN EXPLICITLY SET DIGIT!
+                else if (data.message) {
+                    console.log("This is: " + data.message);
+                    if(data.message === "Start timing" && data.xmessage === "Start timing"){
                         timeout = setTimeout(disable_helper_function, 10000);
                         $("button.answer").prop('disabled', false);
                         currenttime = 10;
@@ -132,18 +160,41 @@
                         }, 1000);
                     }
 
-                    var msgdiv = $("#room-" + data.room + " .messages");
-                    //var ok_msg = "";
-                    ok_msg = "<div class='message'>" +
-                        "<span class='username'>" + data.username + " : " + "</span>" +
-                        "<span class='body'>" + data.message + "</span>" +
-                        "</div>";
-                    msgdiv.append(ok_msg);
-                    msgdiv.scrollTop(msgdiv.prop("scrollHeight"));
+                    else if(data.xmessage === "Question"){
+                        var answer_group = $("#answer_group")
+                        answer_group.empty();
+                        answer_group.attr('hidden', false);
+                        $("#submit-btn").attr('hidden', false);
+                        var question_string = data.message;
+                        var arr = question_string.split("#");
+                        var title = $("#title");
+                        title.text(arr[4]);
+                        var choicediv = $(
+                            "<input type='hidden' id='record_id' value=\""+ arr[5] +"\" hidden>" +
+                            "<input type='radio' name='choice' id='choice1' value=\""+ arr[0] +"\">"+ arr[0] +"<br>" +
+                            "<input type='radio' name='choice' id='choice2' value=\""+ arr[1] +"\">"+ arr[1] +"<br>" +
+                            "<input type='radio' name='choice' id='choice3' value=\""+ arr[2] +"\">"+ arr[2] +"<br>" +
+                            "<input type='radio' name='choice' id='choice4' value=\""+ arr[3] +"\">"+ arr[3] +"<br>"
+                        );
+                        answer_group.append(choicediv);
+                    }
+
+                    else{
+                        var msgdiv = $("#room-" + data.room + " .messages");
+                        //var ok_msg = "";
+                        ok_msg = "<div class='message'>" +
+                            "<span class='username'>" + data.username + " : " + "</span>" +
+                            "<span class='body'>" + data.message + "</span>" +
+                            "</div>";
+                        msgdiv.append(ok_msg);
+                        msgdiv.scrollTop(msgdiv.prop("scrollHeight"));
+                    }
+
                 } else if (data.answer){
                     console.log(data);
                     if(data.correctness === true || data.correctness === "True"){
-                        $("button.answer").prop('disabled', true);
+                        var radios = $('input:radio[name=choice]');
+                        radios.prop('disabled', true);
                     }
                 }
                 else {
@@ -157,37 +208,29 @@
                 return $("#room-" + roomId).length > 0;
             }
 
+            // Room join/leave
             $("#back-to-room-list").click(function () {
                 $("#back-to-room-list").attr("hidden", true);
                 $("#all-room-list").attr("hidden", false);
                 $("#chats").empty();
                  // Leave room
-                //$(this).removeClass("joined");
+                $(this).attr("room-id", "");
                 socket.send(JSON.stringify({
                     "command": "leave",  // determines which handler will be used (see chat/routing.py)
                     "room": roomId
                 }));
             });
 
-            // Room join/leave
             $("button.room-link").click(function () {
                 roomId = $(this).attr("data-room-id");
-                if (inRoom(roomId)) {
-                    // Leave room
-                    //$(this).removeClass("joined");
-                    socket.send(JSON.stringify({
-                        "command": "leave",  // determines which handler will be used (see chat/routing.py)
-                        "room": roomId
-                    }));
-                } else {
-                    // Join room
-                    console.log("Clicked!");
-                    //$(this).addClass("joined");
-                    socket.send(JSON.stringify({
-                        "command": "join",
-                        "room": roomId
-                    }));
-                }
+                // Join room
+                console.log("Clicked!");
+                $("#back-to-room-list").attr("room-id", roomId);
+                //$(this).addClass("joined");
+                socket.send(JSON.stringify({
+                    "command": "join",
+                    "room": roomId
+                }));
             });
 
 
