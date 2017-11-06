@@ -67,8 +67,16 @@ function add_submit_listener() {
 }
 
 function show_result(data){
-    console.log(data.sentence);
+    console.log(data);
 
     var result = $("#result");
-    result.text(data["sentence"]);
+    var status = data["status"];
+    result.empty();
+    if (status == "True"){
+        result.append($("<div class='alert alert-success alert-text' role='alert'> Correct!</div>"))
+    }
+    else{
+        result.append($("<div class='alert alert-danger alert-text' role='alert'> Wrong!</div>"))
+    }
+
 }
