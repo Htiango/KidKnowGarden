@@ -68,8 +68,8 @@
 }
 
 .question-display-container {
-    margin-left: 30%;
-    margin-right: 20%;
+    padding-left: 30%;
+    padding-right: 20%;
     margin-top: 30px;
 }
 
@@ -120,4 +120,9 @@
 .display-contest-form {
     padding-left: 28%;
     padding-top: 20px;
+}
+
+.alert-text {
+  margin-top: 20px;
+  text-align: center;
 }
