@@ -196,22 +196,20 @@ def question_page(request, question_id):
     index = ls.index(question.answer)
     new_record = CorrectAnswer(answer_index=index)
     new_record.save()
-    context = {"id": new_record.id, "content": question.content, "choice1": ls[0], "choice2": ls[1],
+    context = {"question_id": question.id, "record_id": new_record.id, "content": question.content, "choice1": ls[0], "choice2": ls[1],
                "choice3": ls[2], "choice4": ls[3], "user": user}
     return render(request, "pages/question_page.html", context)
 
 
 @login_required
 def check_answer(request):
-    record_id = int(request.POST['id'])
+    record_id = int(request.POST['record_id'])
+    question_id = int(request.POST['question_id'])
     index = int(request.POST['index'])
     correct_answer = CorrectAnswer.objects.get(id=record_id)
     status = (correct_answer.answer_index == index)
-    if status:
-        sentence = "Correct!"
-    else:
-        sentence = "Wrong!"
-    context = {"status":status, "sentence": sentence}
+    sentence = Question.objects.get(id=question_id).answer
+    context = {"status":status, "answer": sentence}
     return render(request, 'pages/answer_status.json', context, content_type='application/json')
 
 @login_required

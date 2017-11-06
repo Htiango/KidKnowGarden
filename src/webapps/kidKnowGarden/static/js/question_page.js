@@ -59,9 +59,10 @@ function add_submit_listener() {
         }
         console.log(index);
         if (index >= 0){
-            var id = $("#record_id").attr("value");
-            console.log(id);
-            $.post("/kidKnowGarden/submit-answer", {"id": id, "index": index}).done(show_result);
+            var record_id = $("#record_id").attr("value");
+            var question_id = $("#question_id").attr("value");
+            console.log(record_id);
+            $.post("/kidKnowGarden/submit-answer", {"record_id": record_id, "question_id": question_id, "index": index}).done(show_result);
         }
     })
 }
@@ -73,10 +74,11 @@ function show_result(data){
     var status = data["status"];
     result.empty();
     if (status == "True"){
-        result.append($("<div class='alert alert-success alert-text' role='alert'> Correct!</div>"))
+        result.append($("<div class='alert alert-success alert-text' role='alert'> Correct!</div>"));
     }
     else{
-        result.append($("<div class='alert alert-danger alert-text' role='alert'> Wrong!</div>"))
+        result.append($("<div class='alert alert-danger alert-text' role='alert'> Wrong!</div>"));
+        result.append($("<div class='alert alert-primary alert-text' id='correct_answer' role='alert'> </div>"));
+        $("#correct_answer").append("ANSWER: " + data["answer"]);
     }
-
 }

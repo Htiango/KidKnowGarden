@@ -18,7 +18,8 @@
         <div class="question-content-text">{{ content }}</div>
         <form method="post" class="form-check">
             {% csrf_token %}
-            <input type="hidden" id="record_id" value="{{ id }}" hidden><br>
+            <input type="hidden" id="question_id" value="{{ question_id }}" hidden><br>
+            <input type="hidden" id="record_id" value="{{ record_id }}" hidden><br>
             <div class="choice-row form-check-label">
                 <input type="radio" name="choice" id="choice1" class="form-check-input"> {{ choice1 }}
             </div>
