@@ -21,5 +21,5 @@ import kidKnowGarden.views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'kidKnowGarden/', include('kidKnowGarden.urls')),
-    #url(r'$', kidKnowGarden.views.welcome),
+    url(r'^$', kidKnowGarden.views.welcome),
 ]
