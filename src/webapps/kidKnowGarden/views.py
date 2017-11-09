@@ -73,7 +73,7 @@ def login_page(request):
     user = request.user
     if not user.is_anonymous:
         return redirect(home)
-    return render(request, 'pages/logIn.html', {})
+    return render(request, 'pages/login_new.html', {})
 
 
 def activate(request, username, token):
