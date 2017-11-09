@@ -34,13 +34,13 @@ def register(request):
     context['form'] = form
 
     if request.method == 'GET':
-        return render(request, 'pages/register.html', context)
+        return render(request, 'pages/register_new.html', context)
 
     form = RegisterForm(request.POST)
     context['form'] = form
 
     if not form.is_valid():
-        return render(request, 'pages/register.html', context)
+        return render(request, 'pages/register_new.html', context)
 
     new_user = User.objects.create_user(username=form.cleaned_data['username'],
                                         email=form.cleaned_data['email'],
