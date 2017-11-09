@@ -43,3 +43,7 @@
 .warning-font {
     color: red;
 }
+
+.inherit-style{
+    display: inherit;
+}
