@@ -1,38 +1,40 @@
 {% extends "pages/welcome.html" %}
-{% block title %}
-    KidKnowGarden Register Page
+
+{% block page_title %}
+    Register
 {% endblock %}
 
-{% block main-page %}
-    <div class="container title-container">
-        <h1 class="welcome-title">KidKnowGarden</h1>
-        <p class="welcome-subtitle">Play to Learn!</p>
-    </div>
-
-    {% block form-parts %}
-
-        <div class="container container-center">
-            <form action="{% url 'register' %}" method="post">
-                {% load myfilters %}
-                {% for field in form.visible_fields %}
-                    <div class="container form-container">
-                        <td>{{ field|add_class_placeholder:'form-control' }}</td>
+{% block content-part %}
+    <form class="mbr-form" action="{% url 'register' %}" method="post" data-form-title="Mobirise Form">
+        {% csrf_token %}
+        {% load myfilters %}
+        {% for field in form.visible_fields %}
+            <div class="row row-sm-offset">
+                <div class="col-md-4"></div>
+                <div class="col-md-4" data-for="username">
+                    <div class="form-group">
+                        {{ field|add_class_placeholder:'form-control' }}
                     </div>
+                </div>
+                <div class="col-md-4">
                     <div class="warning-font">
                         {{ field.errors }}
                     </div>
-
-                {% endfor %}
-
-                {% csrf_token %}
-                <div class="container form-container">
-                    <input type="submit" id="sign-up-btn" class="btn  btn-outline-dark btn-block" value="Sign Up">
                 </div>
-            </form>
+            </div>
+        {% endfor %}
 
+        <div class="row row-sm-offset">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <div class="input-group-btn align-items-center inherit-style">
+                    <button href="" type="submit" class="btn btn-white-outline btn-form display-4">Register</button>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
         </div>
 
-    {% endblock %}
 
-    <div class="blank"></div>
+    </form>
+
 {% endblock %}

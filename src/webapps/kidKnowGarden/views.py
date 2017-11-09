@@ -20,7 +20,7 @@ def welcome(request):
     user = request.user
     if not user.is_anonymous:
         return redirect(home)
-    return render(request, 'pages/index.html', {})
+    return render(request, 'pages/welcome.html', {})
 
 
 # If request method is get, then present the register page. Otherwise save the user, send activate email and direct to
@@ -34,13 +34,13 @@ def register(request):
     context['form'] = form
 
     if request.method == 'GET':
-        return render(request, 'pages/register_new.html', context)
+        return render(request, 'pages/register.html', context)
 
     form = RegisterForm(request.POST)
     context['form'] = form
 
     if not form.is_valid():
-        return render(request, 'pages/register_new.html', context)
+        return render(request, 'pages/register.html', context)
 
     new_user = User.objects.create_user(username=form.cleaned_data['username'],
                                         email=form.cleaned_data['email'],
@@ -73,7 +73,7 @@ def login_page(request):
     user = request.user
     if not user.is_anonymous:
         return redirect(home)
-    return render(request, 'pages/login_new.html', {})
+    return render(request, 'pages/login.html', {})
 
 
 def activate(request, username, token):
