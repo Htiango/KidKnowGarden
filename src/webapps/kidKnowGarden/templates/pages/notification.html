@@ -1,12 +1,15 @@
-{% extends 'pages/base_template.html' %}
+{% extends "pages/welcome.html" %}
 
-{% block title %} Activate {% endblock %}
+{% block page_title %}
+    Activate
+{% endblock %}
 
-{% block main-page %}
-     <div class="container welcome-template">
-        <h1 class="welcome-title">Email Send Successfully!</h1>
-        <p class="welcome-subtitle">
-            A confirmation email has been sent to {{ email }}.<br>
-            Please click the link in that email to confirm your email address and complete your registration for grumblr.</p>
+{% block media-container %}
+    <div class="col-md-12 align-center">
+        <h1 class="mbr-section-title pb-3 mbr-white mbr-bold mbr-fonts-style display-1">
+            Email Send Successfully!</h1>
+        <p class="mbr-text pb-3 mbr-white mbr-fonts-style display-5"><em>A confirmation email has been sent to {{ email }}.<br>
+            Please click the link in that email to confirm your email address and complete your registration for
+            grumblr.</em></p>
     </div>
 {% endblock %}

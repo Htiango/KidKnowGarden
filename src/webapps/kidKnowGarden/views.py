@@ -65,7 +65,7 @@ def register(request):
 
     context['email'] = form.cleaned_data['email']
 
-    return render(request, 'pages/notification_new.html', context)
+    return render(request, 'pages/notification.html', context)
 
 
 # login page

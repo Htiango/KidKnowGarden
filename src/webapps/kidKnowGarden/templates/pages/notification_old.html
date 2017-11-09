@@ -1,0 +1,12 @@
+{% extends 'pages/base_template.html' %}
+
+{% block title %} Activate {% endblock %}
+
+{% block main-page %}
+     <div class="container welcome-template">
+        <h1 class="welcome-title">Email Send Successfully!</h1>
+        <p class="welcome-subtitle">
+            A confirmation email has been sent to {{ email }}.<br>
+            Please click the link in that email to confirm your email address and complete your registration for grumblr.</p>
+    </div>
+{% endblock %}
