@@ -20,7 +20,7 @@ def welcome(request):
     user = request.user
     if not user.is_anonymous:
         return redirect(home)
-    return render(request, 'pages/welcome.html', {})
+    return render(request, 'pages/index.html', {})
 
 
 # If request method is get, then present the register page. Otherwise save the user, send activate email and direct to
