@@ -92,13 +92,13 @@ def set_profile(request):
     context = {}
     context['profile_form'] = ProfileForm()
     if request.method == 'GET':
-        return render(request, 'pages/set_profile.html', context)
+        return render(request, 'pages/set_profile_new.html', context)
 
     profile_form = ProfileForm(request.POST, request.FILES)
     context['profile_form'] = profile_form
 
     if not profile_form.is_valid():
-        return render(request, 'pages/set_profile.html', context)
+        return render(request, 'pages/set_profile_new.html', context)
 
     new_profile = Profile(user=request.user,
                           grade=profile_form.cleaned_data['grade']

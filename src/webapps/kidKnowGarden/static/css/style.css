@@ -47,3 +47,8 @@
 .inherit-style{
     display: inherit;
 }
+
+.label-style {
+    font-size: 20px;
+    color: white;
+}
