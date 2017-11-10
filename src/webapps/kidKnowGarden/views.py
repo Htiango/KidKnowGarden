@@ -122,7 +122,7 @@ def home(request):
     for user in users:
         user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
     context['users'] = users
-    return render(request, 'pages/home.html', context)
+    return render(request, 'pages/home_new.html', context)
 
 
 @login_required
