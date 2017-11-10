@@ -224,3 +224,10 @@ def random_question(request):
     question = Question.objects.order_by('?').first()
     question_id = question.id
     return question_page(request, question_id)
+
+
+@login_required
+def learn_page(request):
+    user = request.user
+    context = {'user':user}
+    return render(request, "pages/learn_page.html", context)

@@ -19,8 +19,9 @@ urlpatterns = [
     #url(r'^user_list$', user_list, name='user_list'),
     #url(r'^user_invite/(?P<username>.+)/$', user_invite, name='user-invite'),
 
-    url(r'^question_list$', question_list, name='question_list'),
-    url(r'^random_question$', random_question, name='random_question'),
+    url(r'^learn-page$', learn_page, name='learn_page'),
+    url(r'^question-list$', question_list, name='question_list'),
+    url(r'^random-question$', random_question, name='random_question'),
     url(r'^question/(?P<question_id>.+)$', question_page, name='question-page'),
     url(r'^submit-answer$', check_answer, name="check_answer"),
     url(r'^memory-game$', memory_game, name="memory_game")
