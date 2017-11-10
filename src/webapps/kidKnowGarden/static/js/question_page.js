@@ -70,15 +70,23 @@ function add_submit_listener() {
 function show_result(data){
     console.log(data);
 
-    var result = $("#result");
+    var result_left = $("#result-left");
+    var result_right = $('#result-right');
     var status = data["status"];
-    result.empty();
+    result_left.empty();
+    result_right.empty();
     if (status == "True"){
-        result.append($("<div class='alert alert-success alert-text' role='alert'> Correct!</div>"));
+        result_left.append($("<span class='mbr-iconfont mbri-smile-face question-feedback-icons' style='color: green;' media-simple='true'></span>"));
+        result_left.append($("<br><br><span class='align-center question-success-text'>Correct!</span>"));
+        result_right.append($("<span class='mbr-iconfont mbri-smile-face question-feedback-icons' style='color: green;' media-simple='true'></span>"));
+        result_right.append($("<br><br><span class='align-center question-success-text'>Correct!</span>"));
     }
     else{
-        result.append($("<div class='alert alert-danger alert-text' role='alert'> Wrong!</div>"));
-        result.append($("<div class='alert alert-primary alert-text' id='correct_answer' role='alert'> </div>"));
-        $("#correct_answer").append("ANSWER: " + data["answer"]);
+        result_left.append($("<span class='mbr-iconfont mbri-sad-face question-feedback-icons' style='color: red;' media-simple='true'></span>"));
+        result_right.append($("<span class='mbr-iconfont mbri-sad-face question-feedback-icons' style='color: red;' media-simple='true'></span>"));
+        result_left.append($("<br><br><span class='align-center question-wrong-text'>Sorry, wrong answer.<br>" +
+            "Correct answer is: " + data["answer"] + "</span>"));
+        result_right.append($("<br><br><span class='align-center question-wrong-text'>Sorry, wrong answer.<br>" +
+            "Correct answer is: " + data["answer"] + "</span>"));
     }
 }
