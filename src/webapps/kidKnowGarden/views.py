@@ -184,7 +184,7 @@ def room_list(request):
 def question_list(request):
     user = request.user
     questions = Question.objects.all()
-    return render(request, 'pages/question_list.html', {"questions":questions, "user": user})
+    return render(request, 'pages/question_list_new.html', {"questions":questions, "user": user})
 
 
 @login_required
