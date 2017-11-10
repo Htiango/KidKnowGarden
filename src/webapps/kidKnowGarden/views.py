@@ -198,7 +198,7 @@ def question_page(request, question_id):
     new_record.save()
     context = {"question_id": question.id, "record_id": new_record.id, "content": question.content, "choice1": ls[0], "choice2": ls[1],
                "choice3": ls[2], "choice4": ls[3], "user": user}
-    return render(request, "pages/question_page.html", context)
+    return render(request, "pages/question_page_new.html", context)
 
 
 @login_required
