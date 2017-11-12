@@ -174,6 +174,11 @@ $(function () {
                 }, 1000);
             }
 
+            else if (data.message === "Contest End" && data.xmessage === "Contest End") {
+                contest_end();
+                request_score();
+            }
+
             else if (data.message === "USER ENTER" || data.message === "USER LEAVE"){
                 var member_num = data.xmessage;
                 judge_user_num(member_num);

@@ -58,7 +58,6 @@ class Room_Profile(models.Model):
     # Create and update time
     time = models.DateTimeField(auto_now=True)
 
-
 # User's profile
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -77,9 +76,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-
 
 
 class CorrectAnswer(models.Model):

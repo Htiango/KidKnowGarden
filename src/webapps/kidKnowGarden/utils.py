@@ -46,6 +46,7 @@ def get_random_room():
     r = room.first()
     return r.title
 
+
 def get_random_question(room):
     question = Question.objects.order_by('?')
     answered_questions_id = room.answered_questions.all().values('id')
@@ -64,10 +65,12 @@ def get_random_question(room):
     else:
         return "Contest End"
 
+
 def judge_question_correctness(record_id, answer_index):
     correct_answer = CorrectAnswer.objects.get(id=record_id)
     status = (correct_answer.answer_index == answer_index)
     return status
+
 
 def save_contest_score(score, user):
     try:
@@ -80,6 +83,7 @@ def save_contest_score(score, user):
     # A good performance for judging existance of a user
         new_score = ContestScore(user=user, score=score)
         new_score.save()
+
 
 
 def clear_contest_score(user):
