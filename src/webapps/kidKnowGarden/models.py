@@ -6,6 +6,16 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from channels import Group
 import json
 
+class Question(models.Model):
+    content = models.TextField(default="", max_length=200)
+    choice1 = models.TextField(default="", max_length=100)
+    choice2 = models.TextField(default="", max_length=100)
+    choice3 = models.TextField(default="", max_length=100)
+    answer = models.TextField(default="", max_length=100)
+
+    def __str__(self):
+        return self.content
+
 class Rooms(models.Model):
     """
     A room for people to exchange information.
@@ -16,7 +26,8 @@ class Rooms(models.Model):
     # If only "staff" users are allowed (is_staff on django's User)
     staff_only = models.BooleanField(default=False)
 
-    # Number of people in room
+    # Questions that has answered in during contest
+    answered_questions = models.ManyToManyField(Question, blank=True)
 
     def __str__(self):
         return self.title
@@ -68,15 +79,7 @@ class Profile(models.Model):
         return self.user.username
 
 
-class Question(models.Model):
-    content = models.TextField(default="", max_length=200)
-    choice1 = models.TextField(default="", max_length=100)
-    choice2 = models.TextField(default="", max_length=100)
-    choice3 = models.TextField(default="", max_length=100)
-    answer = models.TextField(default="", max_length=100)
 
-    def __str__(self):
-        return self.content
 
 
 class CorrectAnswer(models.Model):

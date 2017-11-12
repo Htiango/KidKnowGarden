@@ -176,6 +176,7 @@ def answer(message):
     record_id = message["record_id"]
     status = judge_question_correctness(int(record_id), int(answer))
 
+
     if status:
         answer = "Got the right answer!"
         score = message["current_time"]
@@ -190,7 +191,8 @@ def answer(message):
     message.reply_channel.send({
         "text": json.dumps({
             "answer": answer,
-            "correctness": status
+            "correctness": status,
+            "is_contest_end": True
         }),
     })
 
@@ -202,10 +204,13 @@ def start_timing(message):
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
 
-    question_string = get_random_question()
+    question_string = get_random_question(room)
     #print(question_string)
-    room.send_message(question_string, message.user, "Question")
-    room.send_message("Start timing", message.user, "Start timing")
+    if question_string != "Contest End":
+        room.send_message(question_string, message.user, "Question")
+        room.send_message("Start timing", message.user, "Start timing")
+    else:
+        room.send_message("Contest End", message.user, "Contest End")
 
 
 @channel_session_user

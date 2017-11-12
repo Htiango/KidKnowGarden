@@ -46,17 +46,23 @@ def get_random_room():
     r = room.first()
     return r.title
 
-def get_random_question():
+def get_random_question(room):
     question = Question.objects.order_by('?')
-    q = question.first()
-    # Shuffle choice and answers
-    ls = [q.choice1, q.choice2, q.choice3, q.answer]
-    random.shuffle(ls)
-    index = ls.index(q.answer)
-    new_record = CorrectAnswer(answer_index=index)
-    new_record.save()
-    question_string = ls[0] + "#" + ls[1] + "#" + ls[2] + "#" + ls[3] + "#" +  q.content + "#" + str(new_record.id)
-    return question_string
+    answered_questions_id = room.answered_questions.all().values('id')
+    question_to_pick = question.exclude(id__in=answered_questions_id)
+    if question_to_pick is not None:
+        # Shuffle choice and answers
+        q = question_to_pick.first()
+        room.answered_questions.add(q)
+        ls = [q.choice1, q.choice2, q.choice3, q.answer]
+        random.shuffle(ls)
+        index = ls.index(q.answer)
+        new_record = CorrectAnswer(answer_index=index)
+        new_record.save()
+        question_string = ls[0] + "#" + ls[1] + "#" + ls[2] + "#" + ls[3] + "#" + q.content + "#" + str(new_record.id)
+        return question_string
+    else:
+        return "Contest End"
 
 def judge_question_correctness(record_id, answer_index):
     correct_answer = CorrectAnswer.objects.get(id=record_id)
