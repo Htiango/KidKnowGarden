@@ -103,25 +103,27 @@ def set_profile(request):
     new_profile = Profile(user=request.user,
                           grade=profile_form.cleaned_data['grade']
                           )
+    new_room_profile = Room_Profile(user=request.user)
     if profile_form.cleaned_data['avatar']:
         new_profile.avatar = profile_form.cleaned_data['avatar']
     if profile_form.cleaned_data['bio']:
         new_profile.bio = profile_form.cleaned_data['bio']
     new_profile.save()
+    new_room_profile.save()
     return redirect(home)
 
 
 @login_required
 def home(request):
     context = {'user': request.user}
-    if not LoggedInUser.objects.filter(user=request.user):
-        user_now = LoggedInUser(user=request.user)
-        user_now.save()
+    #if not LoggedInUser.objects.filter(user=request.user):
+    #    user_now = LoggedInUser(user=request.user)
+    #    user_now.save()
 
-    users = User.objects.select_related('logged_in_user')
-    for user in users:
-        user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
-    context['users'] = users
+    #users = User.objects.select_related('logged_in_user')
+    #for user in users:
+    #    user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
+    #context['users'] = users
     return render(request, 'pages/home_new.html', context)
 
 
@@ -151,17 +153,16 @@ def user_page_view(request, username):
 
 @login_required
 def logout_view(request):
-    delete_user = LoggedInUser.objects.filter(user=request.user)
-    if delete_user:
-        delete_user.delete()
+    #delete_user = LoggedInUser.objects.filter(user=request.user)
+    #if delete_user:
+    #    delete_user.delete()
     logout(request)
     return redirect(welcome)
 
 @login_required
 def matching(request):
-    rooms = Rooms.objects.all()
     user = request.user
-    return render(request, 'pages/room_list.html', {'rooms': rooms, "user": user})
+    return render(request, 'pages/room_matching.html', {"user": user})
 
 @login_required
 def room(request, id):

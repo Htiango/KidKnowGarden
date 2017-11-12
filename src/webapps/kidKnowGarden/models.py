@@ -6,11 +6,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from channels import Group
 import json
 
-
-class LoggedInUser(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='logged_in_user')
-
-
 class Rooms(models.Model):
     """
     A room for people to exchange information.
@@ -22,7 +17,6 @@ class Rooms(models.Model):
     staff_only = models.BooleanField(default=False)
 
     # Number of people in room
-    members = models.ManyToManyField(User, related_name="members", blank=True)
 
     def __str__(self):
         return self.title
@@ -46,6 +40,14 @@ class Rooms(models.Model):
             {"text": json.dumps(final_msg)}
         )
 
+class Room_Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # Foreign Key for Room
+    inroom = models.ForeignKey(Rooms, on_delete=models.SET_NULL, blank=True, null=True)
+    # Create and update time
+    time = models.DateTimeField(auto_now=True)
+
+
 # User's profile
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -63,7 +65,7 @@ class Profile(models.Model):
     # stats = models.ManyToManyField(UserStats, related_name="user_stats", blank=True)
 
     def __str__(self):
-        return self.bio
+        return self.user.username
 
 
 class Question(models.Model):

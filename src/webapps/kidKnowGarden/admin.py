@@ -9,3 +9,4 @@ admin.site.register(
 )
 admin.site.register(Question)
 admin.site.register(ContestScore)
+admin.site.register(Room_Profile)

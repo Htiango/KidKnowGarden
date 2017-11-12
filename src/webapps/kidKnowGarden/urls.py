@@ -2,6 +2,7 @@ from django.conf.urls import url
 from kidKnowGarden.views import *
 from django.contrib.auth.views import LoginView
 
+
 urlpatterns = [
     url(r'^$', welcome, name='welcome-page'),
     url(r'^register', register, name='register'),
@@ -16,6 +17,7 @@ urlpatterns = [
     url(r'^logout', logout_view, name='logout'),
     url(r'^room_list$', matching, name='room_list'),
     url(r'^room/(?P<id>\d+)$', room, name='room'),
+
     #url(r'^user_list$', user_list, name='user_list'),
     #url(r'^user_invite/(?P<username>.+)/$', user_invite, name='user-invite'),
 

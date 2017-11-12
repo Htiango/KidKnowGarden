@@ -89,9 +89,9 @@ def clear_contest_score(user):
 
 
 def judge_contest_status(user, room):
-    members = room.members.all()
-    first = members.first()
-    last = members.last()
+    members = room.room_profile_set.all()
+    first = members.first().user
+    last = members.last().user
     # Room has only one person
     if first == last:
         if user == first:
@@ -124,3 +124,18 @@ def judge_contest_status(user, room):
 def get_score(user):
     contest_score = ContestScore.objects.get(user=user)
     return contest_score.score
+
+
+def match_user(user):
+    room = Rooms.objects.get(pk=1)
+    room_profiles = room.room_profile_set.all().order_by('time').reverse()
+    for p in room_profiles:
+        if p.user.profile.grade == user.profile.grade:
+            return p
+    return None
+
+def create_new_room(user1, user2):
+    title = user1.username + "  vs  " + user2.username
+    new_room = Rooms(title=title)
+    new_room.save()
+    return new_room

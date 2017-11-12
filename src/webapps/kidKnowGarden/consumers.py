@@ -6,6 +6,8 @@ from channels import Channel
 from .utils import *
 from .models import Rooms
 
+from django.core.urlresolvers import reverse
+
 @channel_session_user_from_http
 def ws_connect(message):
     message.reply_channel.send({"accept": True})
@@ -19,12 +21,12 @@ def ws_disconnect(message):
     for room_id in Rooms.objects.values_list('id', flat=True):
         try:
             room = Rooms.objects.get(pk=room_id)
-            members = room.members.count()
+            members = room.room_profile_set.count()
             if members > 0:
-                # A bad performance for judging user existence
-                if message.user in room.members.all():
-                    room.members.remove(message.user)
-                    room.save()
+                if room.room_profile_set.all().filter(user=message.user).exists():
+                    room_profile = Room_Profile.objects.get(user=message.user)
+                    room_profile.inroom = None
+                    room_profile.save()
             # Removes us from the room's send group. If this doesn't get run,
             # we'll get removed once our first reply message expires.
             room.websocket_group.discard(message.reply_channel)
@@ -58,43 +60,71 @@ def chat_join(message):
     # object that works just like request.user would. Security!
     room = get_room_or_error(message["room"], message.user)
 
-    ## Add one for this room
-    clear_contest_score(message.user)
-    members = room.members.count()
-    if members >= 2:
-        message.reply_channel.send({
-            "text": json.dumps({
-                "error": "The contest has reach a member limit!",
-            }),
-        })
-    else:
-        if message.user in room.members.all():
-            message.reply_channel.send({
-                "text": json.dumps({
-                    "error": "You are already in this contest!",
-                }),
-            })
-        else:
-            room.members.add(message.user)
+    if room.id == 1:
+        result = match_user(message.user)
+        if result is None:
+            room_profile = Room_Profile.objects.get(user=message.user)
+            room.room_profile_set.add(room_profile)
             room.save()
             # Send a "enter message" to the room if available
-            #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-            room.send_message("USER ENTER", message.user, str(members+1))
-
-            # OK, add them in. The websocket_group is what we'll send messages
-            # to so that everyone in the chat room gets them.
+            room.send_message("USER ENTER", message.user, None)
             room.websocket_group.add(message.reply_channel)
             message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
-            # Send a message back that will prompt them to open the room
-            # Done server-side so that we could, for example, make people
-            # join rooms automatically.
             message.reply_channel.send({
                 "text": json.dumps({
                     "join": str(room.id),
                     "title": room.title,
-                    "members": str(members+1)
                 }),
             })
+        else:
+            new_room = create_new_room(message.user, result.user)
+            new_url = reverse('room', kwargs={'id': new_room.id})
+            room.send_message("MATCHED", result.user, new_url)
+            message.reply_channel.send({
+                "text": json.dumps({
+                    "matched": new_url,
+                    "title": new_room.title,
+                }),
+            })
+    else:
+        ## Add one for this room
+        clear_contest_score(message.user)
+        members = room.room_profile_set.count()
+        if members >= 2:
+            message.reply_channel.send({
+                "text": json.dumps({
+                    "error": "The contest has reach a member limit!",
+                }),
+            })
+        else:
+            if room.room_profile_set.all().filter(user=message.user).exists():
+                message.reply_channel.send({
+                    "text": json.dumps({
+                        "error": "You are already in this contest!",
+                    }),
+                })
+            else:
+                room_profile = Room_Profile.objects.get(user=message.user)
+                room.room_profile_set.add(room_profile)
+                room.save()
+                # Send a "enter message" to the room if available
+                #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+                room.send_message("USER ENTER", message.user, str(members+1))
+
+                # OK, add them in. The websocket_group is what we'll send messages
+                # to so that everyone in the chat room gets them.
+                room.websocket_group.add(message.reply_channel)
+                message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
+                # Send a message back that will prompt them to open the room
+                # Done server-side so that we could, for example, make people
+                # join rooms automatically.
+                message.reply_channel.send({
+                    "text": json.dumps({
+                        "join": str(room.id),
+                        "title": room.title,
+                        "members": str(members+1)
+                    }),
+                })
 
 @channel_session_user
 #@catch_client_error
@@ -102,13 +132,14 @@ def chat_leave(message):
     # Reverse of join - remove them from everything.
     room = get_room_or_error(message["room"], message.user)
 
-    members = room.members.count()
+    members = room.room_profile_set.count()
     if members < 0:
         raise ClientError("ROOM_ACCESS_DENIED")
     else:
-        if message.user in room.members.all():
-            room.members.remove(message.user)
-            room.save()
+        if room.room_profile_set.all().filter(user=message.user).exists():
+            room_profile = Room_Profile.objects.get(user=message.user)
+            room_profile.inroom = None
+            room_profile.save()
 
         # Send a "leave message" to the room if available
         #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
@@ -122,6 +153,8 @@ def chat_leave(message):
                 "leave": str(room.id),
             }),
         })
+        if room.room_profile_set.count() == 0 and room.id != 1:
+            room.delete()
 
 
 @channel_session_user
