@@ -62,10 +62,18 @@ def chat_join(message):
     clear_contest_score(message.user)
     members = room.members.count()
     if members >= 2:
-        raise ClientError("ROOM_ACCESS_DENIED")
+        message.reply_channel.send({
+            "text": json.dumps({
+                "error": "The contest has reach a member limit!",
+            }),
+        })
     else:
         if message.user in room.members.all():
-            raise ClientError("ROOM_ACCESS_DENIED")
+            message.reply_channel.send({
+                "text": json.dumps({
+                    "error": "You are already in this contest!",
+                }),
+            })
         else:
             room.members.add(message.user)
             room.save()
@@ -86,7 +94,6 @@ def chat_join(message):
                     "title": room.title,
                     "members": str(members+1)
                 }),
-
             })
 
 @channel_session_user

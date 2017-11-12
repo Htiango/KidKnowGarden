@@ -158,10 +158,19 @@ def logout_view(request):
     return redirect(welcome)
 
 @login_required
-def room_list(request):
+def matching(request):
     rooms = Rooms.objects.all()
     user = request.user
     return render(request, 'pages/room_list.html', {'rooms': rooms, "user": user})
+
+@login_required
+def room(request, id):
+    if id == 1 or id == '1':
+        raise Http404("Not found")
+    else:
+        room_object = get_object_or_404(Rooms, pk=id)
+        return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
+
 
 # @login_required
 # def user_list(request):
