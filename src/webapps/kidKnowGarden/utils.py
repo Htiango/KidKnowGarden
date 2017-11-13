@@ -3,6 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .exception import ClientError
 from .models import *
 
+from django.core.cache import cache
+
 import random
 
 def catch_client_error(func):
@@ -85,7 +87,6 @@ def save_contest_score(score, user):
         new_score.save()
 
 
-
 def clear_contest_score(user):
     try:
         contest_score = ContestScore.objects.get(user=user)
@@ -96,6 +97,23 @@ def clear_contest_score(user):
         # A good performance for judging existance of a user
         new_score = ContestScore(user=user, score=0)
         new_score.save()
+
+
+def judge_time_up(user, room):
+    roomid = room.id
+    userid = user.id
+    cachekey = 'room' + str(roomid)
+    currentid = cache.get(cachekey)
+    if currentid is None:
+        cache.set(cachekey, str(user.id) )
+    else:
+        currentval = cache.get(cachekey)
+        if (currentval != str(userid)):
+            cache.delete(cachekey)
+            return True
+        else:
+            return False
+    return False
 
 
 def judge_contest_status(user, room):

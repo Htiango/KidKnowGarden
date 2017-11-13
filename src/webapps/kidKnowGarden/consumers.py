@@ -176,7 +176,6 @@ def answer(message):
     record_id = message["record_id"]
     status = judge_question_correctness(int(record_id), int(answer))
 
-
     if status:
         answer = "Got the right answer!"
         score = message["current_time"]
@@ -185,14 +184,14 @@ def answer(message):
         answer = "Made a wrong guess!"
         save_contest_score(0, message.user)
 
+    time_up = judge_time_up(message.user, room)
     # Send message to all members in the room
-    room.send_message(answer, message.user, "A new room status of scores")
+    room.send_message(answer, message.user, str(time_up))
     # Return a message only to the user who make a message request
     message.reply_channel.send({
         "text": json.dumps({
             "answer": answer,
             "correctness": status,
-            "is_contest_end": True
         }),
     })
 
