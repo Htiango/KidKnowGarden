@@ -53,9 +53,10 @@ def get_random_question(room):
     question = Question.objects.order_by('?')
     answered_questions_id = room.answered_questions.all().values('id')
     question_to_pick = question.exclude(id__in=answered_questions_id)
-    if question_to_pick is not None:
+    q = question_to_pick.first()
+    if q is not None:
         # Shuffle choice and answers
-        q = question_to_pick.first()
+        
         room.answered_questions.add(q)
         ls = [q.choice1, q.choice2, q.choice3, q.answer]
         random.shuffle(ls)

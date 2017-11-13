@@ -69,6 +69,15 @@ $(function () {
         $("#timer").empty();
     }
 
+    function contest_stop(){
+        clearInterval(intervalID);
+        clearTimeout(timeout);
+        $("#timer").html("<h2> Finished! </h2>");
+        disable_answers();
+        request_score();
+        start_again();
+    }
+
     function judge_user_num(member_num){
         if (member_num === '2'){
             if (!has_contest_started){
@@ -219,12 +228,16 @@ $(function () {
                 });
             }
             else {
-                //var ok_msg = "";
+                // This branch only deals with user's correctness message.
+                // If expansion of function is needed, changes shall apply to this branch
                 ok_msg = "<div class='message alert alert-primary single-message-container'>" +
                     data.username + " : "  + data.message +
                     "</div>";
                 messages.append(ok_msg);
                 messages.scrollTop(messages.prop("scrollHeight"));
+                if (data.xmessage === 'True' || data.xmessage === 'true'){
+                    contest_stop();
+                }
             }
         } else if (data.answer) {
             disable_answers();
