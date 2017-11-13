@@ -56,7 +56,6 @@ def get_random_question(room):
     q = question_to_pick.first()
     if q is not None:
         # Shuffle choice and answers
-        
         room.answered_questions.add(q)
         ls = [q.choice1, q.choice2, q.choice3, q.answer]
         random.shuffle(ls)

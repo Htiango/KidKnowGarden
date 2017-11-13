@@ -78,7 +78,7 @@ $(function () {
         start_again();
     }
 
-    function judge_user_num(member_num){
+    function judge_user_num(member_num, user_leave){
         if (member_num === '2'){
             if (!has_contest_started){
                 status.text("Ready to go! Hit start button to start contest.");
@@ -90,6 +90,10 @@ $(function () {
                 initial_status();
                 status.text("Wait for another people to join to start the contest.");
                 start_btn.prop("hidden", true);
+                if (user_leave){
+                    contest_end();
+                    status.text("Your opponent has left the contest");
+                }
             }
             else{
                 contest_end();
@@ -190,7 +194,11 @@ $(function () {
 
             else if (data.message === "USER ENTER" || data.message === "USER LEAVE"){
                 var member_num = data.xmessage;
-                judge_user_num(member_num);
+                var user_leave = false;
+                if (data.message === "USER LEAVE") {
+                    user_leave = true;
+                }
+                judge_user_num(member_num, user_leave);
             }
 
             else if (data.xmessage === "Question") {
