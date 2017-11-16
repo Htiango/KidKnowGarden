@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from mimetypes import guess_type
 from django.contrib.auth import authenticate, login, logout
 import random
+from kidKnowGarden.sudoku import *
 
 from channels import Group
 
@@ -255,3 +256,11 @@ def sudoku_game(request):
     user = request.user
     context = {'user': user}
     return render(request, "pages/sudoku_page.html", context)
+
+
+@login_required
+def generate_sudoku(request):
+    sudoku = generate(40)
+    sudoku = sum(sudoku, [])
+    context = {"sudoku": sudoku}
+    return render(request, 'pages/sudoku_new.json', context, content_type='application/json')

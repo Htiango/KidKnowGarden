@@ -135,8 +135,7 @@ def unique_answer(grid):
     return True
 
 
-def generate(args):
-    max_iter = args.size
+def generate(max_iter):
     full_sudoku = sudoku_generate_backtracking()
     # print(full_sudoku)
     full_sudoku = [full_sudoku[x:x + 9] for x in range(0, 81, 9)]
@@ -179,8 +178,8 @@ def generate(args):
                 result += '.'
             else:
                 result += str(sudoku[i][j])
-        print(result)
-
+        # print(result)
+    return sudoku
 
 # def main():
 #     parser = argparse.ArgumentParser()

@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^question/(?P<question_id>.+)$', question_page, name='question-page'),
     url(r'^submit-answer$', check_answer, name="check_answer"),
     url(r'^memory-game$', memory_game, name="memory_game"),
-    url(r'^sudoku-game$', sudoku_game, name="sudoku_game")
+    url(r'^sudoku-game$', sudoku_game, name="sudoku_game"),
+    url(r'^generate-sudoku$', generate_sudoku, name='generate_sudoku')
 ]
