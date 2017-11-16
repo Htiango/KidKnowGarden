@@ -6,6 +6,7 @@
 
 {% block additional_css %}
     <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/sudoku_game/style.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block subpage-head-title %}
@@ -17,20 +18,13 @@
 {% endblock %}
 
 {% block subpage-content-part %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
+    <div class="container sudoku-board-container">
+        <div id="sudoku_board" class="sudoku-board">
 
-            </div>
-            <div class="col-md-4">
-
-            </div>
-            <div class="col-md-4">
-            </div>
-        </div>
+		</div>
     </div>
 {% endblock %}
 
 {% block additional_scripts %}
-{#    <script type="text/javascript" src="/static/js/question_page.js"></script>#}
+    <script type="text/javascript" src="/static/js/sudoku_game/actions.js"></script>
 {% endblock %}
