@@ -251,7 +251,7 @@ def game_page(request):
 
 
 @login_required
-def memory_game(request):
+def sudoku_game(request):
     user = request.user
     context = {'user': user}
     return render(request, "pages/sudoku_page.html", context)
