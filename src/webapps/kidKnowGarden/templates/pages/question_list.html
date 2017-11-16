@@ -1,39 +1,103 @@
 {% extends "pages/home.html" %}
 
-{% block title %}Question List{% endblock %}
+{% block page_title %}
+    Question List
+{% endblock %}
+
+{% block additional_css %}
+    <link rel="stylesheet" href="/static/assets/data-tables/data-tables.bootstrap4.min.css">
+{% endblock %}
+
 
 {% block main-page %}
+    <section class="section-table cid-qAsHxNwU5e mbr-fullscreen mbr-parallax-background" id="table1-1k"
+             data-rv-view="728">
 
-    <div class="container title-container">
-        <h1 class="welcome-title">Question List</h1>
-        <p class="welcome-subtitle">Test Yourself!</p>
-    </div>
-
-    <div class="container question-list-container">
-        {% for question in questions %}
-            <div class="row justify-content-md-start">
-                <a href="{% url "question-page" question.id %}">
-                    <div class="question-text">{{ question.content }}</div>
-                </a>
-            </div>
-
-        {% endfor %}
-
-    </div>
-
-    <div class="btn-group-container">
-        <div id="btn-group" class="btn-group-container">
-            <a href="{% url 'random_question' %}">
-                <button type="button" id="random-btn" class="btn btn-primary btn-lg btn-block">Get Random Question
-                </button>
-            </a>
-            <br>
-            <br>
-            <a href="{% url 'home' %}">
-                <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back to Home Page
-                </button>
-            </a>
+        <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(255, 255, 255);">
         </div>
-    </div>
+        <div class="container container-table">
+            <h2 class="mbr-section-title mbr-fonts-style align-center pb-3 display-2">
+                {% block subpage-head-title %}
+                    Question List
+                {% endblock %}
+            </h2>
+            <h3 class="mbr-section-subtitle mbr-fonts-style align-center pb-5 mbr-light display-7"><em>
+                {% block subpage-head-subtitle %}
+                    Showing all the questions and their categories.
+                {% endblock %}
+            </em></h3>
+            {% block subpage-content-part %}
+                <div class="table-wrapper">
+                    <div class="container">
+                        <div class="row search">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <div class="dataTables_filter">
+                                    <label class="searchInfo mbr-fonts-style display-7">Search:</label>
+                                    <input class="form-control input-sm" disabled="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="container scroll">
+                        <table class="table isSearch" cellspacing="0">
+                            <thead>
+                            <tr class="table-heads ">
+                                <th class="head-item mbr-fonts-style display-7">
+                                    ID
+                                </th>
+                                <th class="head-item mbr-fonts-style display-7">
+                                    CONTENT
+                                </th>
+                                <th class="head-item mbr-fonts-style display-7">
+                                    DATE
+                                </th>
+                                <th class="head-item mbr-fonts-style display-7">
+                                    LEVEL
+                                </th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for question in questions %}
+                                <tr>
+                                    <td class="body-item mbr-fonts-style display-7">{{ question.id }}</td>
+
+                                    <td class="body-item mbr-fonts-style display-7">
+                                        <a href="{% url "question-page" question.id %}">
+                                            {{ question.content }}
+                                        </a>
+                                    </td>
+
+                                    <td class="body-item mbr-fonts-style display-7">2016-10-17</td>
+                                    <td class="body-item mbr-fonts-style display-7">Hard</td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="container table-info-container">
+                        <div class="row info">
+                            <div class="col-md-6">
+                                <div class="dataTables_info mbr-fonts-style display-7">
+                                    <span class="infoBefore">Showing</span>
+                                    <span class="inactive infoRows"></span>
+                                    <span class="infoAfter">questions</span>
+                                    <span class="infoFilteredBefore">(filtered from</span>
+                                    <span class="inactive infoRows"></span>
+                                    <span class="infoFilteredAfter"> total questions)</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block additional_scripts %}
 {% endblock %}

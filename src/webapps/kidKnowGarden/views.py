@@ -124,7 +124,7 @@ def home(request):
     #for user in users:
     #    user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
     #context['users'] = users
-    return render(request, 'pages/home_new.html', context)
+    return render(request, 'pages/home.html', context)
 
 
 @login_required
@@ -194,7 +194,7 @@ def room(request, id):
 def question_list(request):
     user = request.user
     questions = Question.objects.all()
-    return render(request, 'pages/question_list_new.html', {"questions":questions, "user": user})
+    return render(request, 'pages/question_list.html', {"questions":questions, "user": user})
 
 
 @login_required
@@ -208,7 +208,7 @@ def question_page(request, question_id):
     new_record.save()
     context = {"question_id": question.id, "record_id": new_record.id, "content": question.content, "choice1": ls[0], "choice2": ls[1],
                "choice3": ls[2], "choice4": ls[3], "user": user}
-    return render(request, "pages/question_page_new.html", context)
+    return render(request, "pages/question_page.html", context)
 
 
 @login_required

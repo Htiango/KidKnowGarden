@@ -1,54 +1,59 @@
-{% extends "pages/home.html" %}
+{% extends "pages/question_list.html" %}
 
-{% block additional_link_script %}
-    <script type="text/javascript" src="/static/js/question_page.js"></script>
+{% block page_title %}
+    Question Page
+{% endblock %}
+
+{% block additional_css %}
     <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block title %}Question Page{% endblock %}
-
-{% block main-page %}
-
-    <div class="container title-container">
-        <h1 class="welcome-title">Question</h1>
-        <p class="welcome-subtitle">Test Yourself!</p>
-    </div>
-
-    <div class="container question-display-container">
-        <div class="question-content-text">{{ content }}</div>
-        <form method="post" class="form-check">
-            {% csrf_token %}
-            <input type="hidden" id="question_id" value="{{ question_id }}" hidden><br>
-            <input type="hidden" id="record_id" value="{{ record_id }}" hidden><br>
-            <div class="choice-row form-check-label">
-                <input type="radio" name="choice" id="choice1" class="form-check-input"> {{ choice1 }}
-            </div>
-            <div class="choice-row form-check-label">
-                <input type="radio" name="choice" id="choice2" class="form-check-input"> {{ choice2 }}
-            </div>
-            <div class="choice-row form-check-label">
-                <input type="radio" name="choice" id="choice3" class="form-check-input"> {{ choice3 }}
-            </div>
-            <div class="choice-row form-check-label">
-                <input type="radio" name="choice" id="choice4" class="form-check-input"> {{ choice4 }}
-            </div>
-            <div class="btn-submit-row">
-                <button id="submit-btn" class="btn btn-primary"> submit</button>
-            </div>
-
-            {#        <input type="submit" id="submit-btn">#}
-        </form>
-
-
-        <div id="btn-group" class="btn-group-container">
-            <a href="{% url 'question_list' %}">
-                <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back Question List
-                </button>
-            </a>
-        </div>
-        <div id="result" class="status-container">
-        </div>
-    </div>
-
+{% block subpage-head-title %}
+    Question {{ question_id }}
 {% endblock %}
 
+{% block subpage-head-subtitle %}
+    Click the right answer below and learn from it!
+{% endblock %}
+
+{% block subpage-content-part %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div id="result-left" class="align-center"></div>
+            </div>
+            <div class="col-md-4">
+                <form method="post" class="form-check">
+                    <div class="question-content-text align-center">{{ content }}</div>
+                    <input type="hidden" id="record_id" value="{{ record_id }}" hidden>
+                    <input type="hidden" id="question_id" value="{{ question_id }}" hidden><br>
+                    {% csrf_token %}
+                    <div class="choice-row form-check-label">
+                        <input type="radio" name="choice" id="choice1" class="form-check-input"> {{ choice1 }}
+                    </div>
+                    <div class="choice-row form-check-label">
+                        <input type="radio" name="choice" id="choice2" class="form-check-input"> {{ choice2 }}
+                    </div>
+                    <div class="choice-row form-check-label">
+                        <input type="radio" name="choice" id="choice3" class="form-check-input"> {{ choice3 }}
+                    </div>
+                    <div class="choice-row form-check-label">
+                        <input type="radio" name="choice" id="choice4" class="form-check-input"> {{ choice4 }}
+                    </div>
+                    <div class="mbr-section-btn align-center py-2">
+                        <button id="submit-btn" class="btn btn-md btn-primary display-4" style="border-radius: 100px">
+                            submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <div id="result-right" class="align-center"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script type="text/javascript" src="/static/js/question_page.js"></script>
+{% endblock %}
