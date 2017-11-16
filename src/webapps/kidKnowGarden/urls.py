@@ -22,6 +22,7 @@ urlpatterns = [
     #url(r'^user_invite/(?P<username>.+)/$', user_invite, name='user-invite'),
 
     url(r'^learn-page$', learn_page, name='learn_page'),
+    url(r'^game-page$', game_page, name='game_page'),
     url(r'^question-list$', question_list, name='question_list'),
     url(r'^random-question$', random_question, name='random_question'),
     url(r'^question/(?P<question_id>.+)$', question_page, name='question-page'),

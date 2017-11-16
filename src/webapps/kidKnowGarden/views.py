@@ -241,3 +241,10 @@ def learn_page(request):
     user = request.user
     context = {'user':user}
     return render(request, "pages/learn_page.html", context)
+
+
+@login_required
+def game_page(request):
+    user = request.user
+    context = {'user': user}
+    return render(request, "pages/game_page.html", context)
