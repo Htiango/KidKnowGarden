@@ -1,0 +1,47 @@
+{% extends "pages/home.html" %}
+
+{% block page_title %}
+    Games
+{% endblock %}
+
+{% block page-head-title %}
+    Games
+{% endblock %}
+
+{% block page-head-subtitle %}
+    Learn from Games!
+{% endblock %}
+
+{% block content-part %}
+    <div class="icons-media-container mbr-white">
+        <div class="card col-12 col-md-6 col-lg-4">
+            <div class="icon-block">
+                <a href="{% url "memory_game" %}">
+                    <span class="mbr-iconfont mbri-edit" media-simple="true"></span>
+                </a>
+            </div>
+            <h5 class="mbr-fonts-style display-5">Memory Games</h5>
+        </div>
+
+        <div class="card col-12 col-md-6 col-lg-4">
+            <div class="icon-block">
+                <a href="{% url "question_list" %}">
+                    <span class="mbr-iconfont mbri-question" media-simple="true"></span>
+                </a>
+            </div>
+            <h5 class="mbr-fonts-style display-5">Suduku</h5>
+        </div>
+
+        <div class="card col-12 col-md-6 col-lg-4">
+            <div class="icon-block">
+                <a href="{% url "home" %}">
+                    <span class="mbr-iconfont mbri-logout" media-simple="true"></span>
+                </a>
+            </div>
+            <h5 class="mbr-fonts-style display-5">
+                Back</h5>
+        </div>
+
+
+    </div>
+{% endblock %}
