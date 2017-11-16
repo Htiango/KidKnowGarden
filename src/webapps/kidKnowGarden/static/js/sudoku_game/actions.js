@@ -54,6 +54,7 @@ function generateBoard() {
         }
     }
     board.append(htmlString);
+    $.get("/kidKnowGarden/generate-sudoku").done(display_sudoku);
 }
 
 
@@ -65,3 +66,24 @@ function renderBoardCell(id) {
         "<input type='text' novalidate id='input-" + id + "' value='" + val + "'" + maxlength + ">" +
         "</div>";
 };
+
+
+function display_sudoku(data){
+    console.log(data);
+    var sudoku_list = $.parseJSON(data["sudoku"]);
+    console.log(typeof(sudoku_list));
+    console.log(sudoku_list.length);
+
+    for (var i=0; i < sudoku_list.length; i++){
+        // var input_id = "input-" + i;
+        var input = $('#input-' + i);
+        if (sudoku_list[i] != 0){
+            input.val(sudoku_list[i]);
+        }
+        else{
+            input.val("");
+        }
+        // console.log(input)
+    }
+
+}
