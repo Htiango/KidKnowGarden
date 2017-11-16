@@ -1,0 +1,36 @@
+{% extends "pages/question_list.html" %}
+
+{% block page_title %}
+    Sudoku
+{% endblock %}
+
+{% block additional_css %}
+    <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block subpage-head-title %}
+    Sudoku Game {{ question_id }}
+{% endblock %}
+
+{% block subpage-head-subtitle %}
+    Play With Sudoku!
+{% endblock %}
+
+{% block subpage-content-part %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+
+            </div>
+            <div class="col-md-4">
+
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_scripts %}
+{#    <script type="text/javascript" src="/static/js/question_page.js"></script>#}
+{% endblock %}

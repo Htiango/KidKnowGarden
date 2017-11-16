@@ -248,3 +248,10 @@ def game_page(request):
     user = request.user
     context = {'user': user}
     return render(request, "pages/game_page.html", context)
+
+
+@login_required
+def memory_game(request):
+    user = request.user
+    context = {'user': user}
+    return render(request, "pages/sudoku_page.html", context)
