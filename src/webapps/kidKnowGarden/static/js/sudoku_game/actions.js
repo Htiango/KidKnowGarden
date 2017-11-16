@@ -62,6 +62,6 @@ function renderBoardCell(id) {
     var maxlength =" maxlength='1' ";
     return "<div class='sudoku-board-cell'>" +
         //want to use type=number, but then have to prevent chrome scrolling and up down key behaviors..
-        "<input type='text' pattern='\\d*' novalidate id='input-" + id + "' value='" + val + "'" + maxlength + ">" +
+        "<input type='text' novalidate id='input-" + id + "' value='" + val + "'" + maxlength + ">" +
         "</div>";
 };
