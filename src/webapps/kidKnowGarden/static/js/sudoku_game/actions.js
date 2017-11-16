@@ -40,8 +40,17 @@ $(document).ready(function () {
 
     generateBoard();
 
+    replay_listener();
+
 });
 
+
+function replay_listener() {
+    var submit_btn = $("#replay-btn");
+    submit_btn.click(function (event){
+        getNewSudoku();
+    })
+}
 
 function generateBoard() {
     var board = $("#sudoku_board");
@@ -54,9 +63,12 @@ function generateBoard() {
         }
     }
     board.append(htmlString);
-    $.get("/kidKnowGarden/generate-sudoku").done(display_sudoku);
+    getNewSudoku();
 }
 
+function getNewSudoku(){
+    $.get("/kidKnowGarden/generate-sudoku").done(display_sudoku);
+}
 
 function renderBoardCell(id) {
     var val = "";
@@ -69,10 +81,10 @@ function renderBoardCell(id) {
 
 
 function display_sudoku(data){
-    console.log(data);
+    // console.log(data);
     var sudoku_list = $.parseJSON(data["sudoku"]);
-    console.log(typeof(sudoku_list));
-    console.log(sudoku_list.length);
+    // console.log(typeof(sudoku_list));
+    // console.log(sudoku_list.length);
 
     for (var i=0; i < sudoku_list.length; i++){
         // var input_id = "input-" + i;
