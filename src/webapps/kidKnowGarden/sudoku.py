@@ -139,7 +139,7 @@ def check_submit_answer(sudoku):
         sudoku = change_style(sudoku)
         generator = solve_sudoku((3, 3), sudoku)
         solution = next(generator)
-    except (KeyError,ValueError) as e1:
+    except (KeyError,ValueError,StopIteration) as e1:
         return -1
     return 1
 
@@ -170,7 +170,7 @@ def get_one_hint(sudoku):
     generator = solve_sudoku((3, 3), sudoku)
     try:
         solution = next(generator)
-    except KeyError as name:
+    except (KeyError,StopIteration) as name:
         return (-1,-1)
     solution = sum(solution, [])
     value = solution[random_index]
