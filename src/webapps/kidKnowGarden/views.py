@@ -261,6 +261,15 @@ def sudoku_game(request):
 @login_required
 def generate_sudoku(request):
     sudoku = generate(40)
-    sudoku = sum(sudoku, [])
     context = {"sudoku": sudoku}
     return render(request, 'pages/sudoku_new.json', context, content_type='application/json')
+
+
+@login_required
+def hint_sudoku(request):
+    sudoku = request.GET.get('sudoku')
+    print(sudoku)
+    (index, answer) = get_one_hint(sudoku)
+    context = {"index": index, "answer": answer}
+    # context = {}
+    return render(request, 'pages/sudoku_one_hint.json', context, content_type='application/json')

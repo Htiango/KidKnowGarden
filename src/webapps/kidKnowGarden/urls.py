@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^submit-answer$', check_answer, name="check_answer"),
     url(r'^memory-game$', memory_game, name="memory_game"),
     url(r'^sudoku-game$', sudoku_game, name="sudoku_game"),
-    url(r'^generate-sudoku$', generate_sudoku, name='generate_sudoku')
+    url(r'^sudoku-game/generate-sudoku$', generate_sudoku, name='generate_sudoku'),
+    url(r'^sudoku-game/give-one-hint$', hint_sudoku, name='hint_sudoku'),
 ]
