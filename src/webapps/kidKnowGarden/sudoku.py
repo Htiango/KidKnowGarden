@@ -134,13 +134,12 @@ def check_submit_answer(sudoku):
     """
     if sudoku.find("0") >=0:
         return 0
-    sudoku = change_style(sudoku)
 
     try:
+        sudoku = change_style(sudoku)
         generator = solve_sudoku((3, 3), sudoku)
         solution = next(generator)
-    except KeyError as name:
-        print("---------------------here-------------------------")
+    except (KeyError,ValueError) as e1:
         return -1
     return 1
 
@@ -154,15 +153,25 @@ def get_answer(sudoku):
 
 
 def get_one_hint(sudoku):
+    """
+    :param sudoku:
+    :return: (false, false) if nowhere to hint, (-1,-1) if KeyError or valueError happens, otherwise (index, value)
+    """
     sudoku = sudoku.split(',')
-    sudoku = [int(i) for i in sudoku]
+    try:
+        sudoku = [int(i) for i in sudoku]
+    except ValueError as name:
+        return (-2, -2)
     enable_indexes = [i for i, x in enumerate(sudoku) if x == 0]
     if len(enable_indexes) == 0:
         return (False, False)
     random_index = random.choice(enable_indexes)
     sudoku = [sudoku[x:x + 9] for x in range(0, 81, 9)]
     generator = solve_sudoku((3, 3), sudoku)
-    solution = next(generator)
+    try:
+        solution = next(generator)
+    except KeyError as name:
+        return (-1,-1)
     solution = sum(solution, [])
     value = solution[random_index]
     return (random_index, value)

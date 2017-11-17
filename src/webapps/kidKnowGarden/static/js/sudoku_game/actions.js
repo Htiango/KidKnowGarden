@@ -50,7 +50,7 @@ $(document).ready(function () {
 
 function submit_listener() {
     var check_btn = $('#check-btn');
-    check_btn.click(function (event){
+    check_btn.click(function (event) {
         checkAnswer();
     })
 }
@@ -58,21 +58,21 @@ function submit_listener() {
 
 function answer_listener() {
     var answer_btn = $('#answer-btn');
-    answer_btn.click(function (event){
+    answer_btn.click(function (event) {
         getAnswer();
     })
 }
 
 function hint_listener() {
     var hint_btn = $('#hint-btn');
-    hint_btn.click(function (event){
+    hint_btn.click(function (event) {
         getOneHint();
     })
 }
 
 function replay_listener() {
     var replay_btn = $("#replay-btn");
-    replay_btn.click(function (event){
+    replay_btn.click(function (event) {
         getNewSudoku();
     })
 }
@@ -91,13 +91,13 @@ function generateBoard() {
     getNewSudoku();
 }
 
-function getNewSudoku(){
+function getNewSudoku() {
     $.get("/kidKnowGarden/sudoku-game/generate-sudoku").done(display_sudoku);
 }
 
 function renderBoardCell(id) {
     var val = "";
-    var maxlength =" maxlength='1' ";
+    var maxlength = " maxlength='1' ";
     return "<div class='sudoku-board-cell'>" +
         //want to use type=number, but then have to prevent chrome scrolling and up down key behaviors..
         "<input type='text' novalidate id='input-" + id + "' value='" + val + "'" + maxlength + ">" +
@@ -105,17 +105,17 @@ function renderBoardCell(id) {
 };
 
 
-function display_sudoku(data){
+function display_sudoku(data) {
     var sudoku_list = $.parseJSON(data["sudoku"]);
-    for (var i=0; i < sudoku_list.length; i++){
+    for (var i = 0; i < sudoku_list.length; i++) {
         var input = $('#input-' + i);
         input.attr('readonly', false);
         input.removeClass("highlight-val");
-        if (sudoku_list[i] != 0){
+        if (sudoku_list[i] != 0) {
             input.val(sudoku_list[i]);
             input.attr('readonly', true);
         }
-        else{
+        else {
             input.val("");
             input.addClass("highlight-val")
         }
@@ -124,12 +124,12 @@ function display_sudoku(data){
 
 function getCurrentSudoku() {
     var sudoku = [];
-    for (var i=0; i<81; i++){
-        var value = $('#input-'+i).val();
-        if (value != ''){
+    for (var i = 0; i < 81; i++) {
+        var value = $('#input-' + i).val();
+        if (value != '') {
             sudoku.push(value);
         }
-        else{
+        else {
             sudoku.push("0");
         }
     }
@@ -137,7 +137,7 @@ function getCurrentSudoku() {
     return sudoku
 }
 
-function getOneHint(){
+function getOneHint() {
     var sudoku = getCurrentSudoku();
     console.log(sudoku);
     var sudoku_json = sudoku.join();
@@ -147,28 +147,39 @@ function getOneHint(){
 function display_one_hint(data) {
     console.log(data);
     var index = data["index"];
-    if (!index){
+    if (!index) {
         return
+    }
+    if (index == -1){
+        alert("Wrong input exist");
+        return;
+    }
+    if (index == -2){
+        alert("Informal Input Exist!");
+        return;
     }
     var answer = data["answer"];
     var input = $('#input-' + index);
     input.val(answer);
     input.attr('readonly', true);
     input.addClass("board-cell-hint")
-    setTimeout(function() {
-       input.removeClass("board-cell-hint");
-   }, 800);
+    setTimeout(function () {
+        input.removeClass("board-cell-hint");
+    }, 800);
 }
 
-function getAnswer(){
+function getAnswer() {
+    $('.highlight-val').each(function (i, obj) {
+        $(this).val("")
+    });
     var sudoku = getCurrentSudoku();
     var sudoku_json = sudoku.join();
+
     $.get("/kidKnowGarden/sudoku-game/get-solution", {'sudoku': sudoku_json}).done(display_sudoku);
 }
 
 
-
-function checkAnswer(){
+function checkAnswer() {
     var sudoku = getCurrentSudoku();
     var sudoku_json = sudoku.join();
     $.get("/kidKnowGarden/sudoku-game/check-answer", {'sudoku': sudoku_json}).done(display_check);
@@ -177,13 +188,13 @@ function checkAnswer(){
 
 function display_check(data) {
     // console.log(typeof(data))
-    if (data == 1){
+    if (data == 1) {
         alert("Success!");
     }
-    else if (data == 0){
+    else if (data == 0) {
         alert("Please complete board!");
     }
-    else{
+    else {
         alert("Wrong!");
     }
 
