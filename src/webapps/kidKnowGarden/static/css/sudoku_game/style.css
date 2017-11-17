@@ -53,3 +53,14 @@
     border-bottom-width: 2px;
     border-bottom-color: #808080;
 }
+
+/*highlight new input in board cell*/
+.sudoku-board-cell .highlight-val {
+    color: #00d;
+}
+
+/*highligt incorrect input*/
+.sudoku-board-cell .board-cell-hint {
+    background: #0d0;
+    color: #eee;
+}

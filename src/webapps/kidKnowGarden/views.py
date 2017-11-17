@@ -273,3 +273,11 @@ def hint_sudoku(request):
     context = {"index": index, "answer": answer}
     # context = {}
     return render(request, 'pages/sudoku_one_hint.json', context, content_type='application/json')
+
+@login_required
+def get_sudoku_solution(request):
+    sudoku = request.GET.get('sudoku')
+    result = get_answer(sudoku)
+    context = {"sudoku": result}
+    # context = {}
+    return render(request, 'pages/sudoku_new.json', context, content_type='application/json')

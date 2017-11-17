@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^sudoku-game$', sudoku_game, name="sudoku_game"),
     url(r'^sudoku-game/generate-sudoku$', generate_sudoku, name='generate_sudoku'),
     url(r'^sudoku-game/give-one-hint$', hint_sudoku, name='hint_sudoku'),
+    url(r'^sudoku-game/get-solution$', get_sudoku_solution, name='get_solution')
 ]

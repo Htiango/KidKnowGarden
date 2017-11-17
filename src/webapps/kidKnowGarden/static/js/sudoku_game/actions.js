@@ -42,9 +42,17 @@ $(document).ready(function () {
 
     replay_listener();
     hint_listener();
+    answer_listener();
 
 });
 
+
+function answer_listener() {
+    var answer_btn = $('#answer-btn');
+    answer_btn.click(function (event){
+        getAnswer();
+    })
+}
 
 function hint_listener() {
     var hint_btn = $('#hint-btn');
@@ -92,12 +100,14 @@ function display_sudoku(data){
     var sudoku_list = $.parseJSON(data["sudoku"]);
     for (var i=0; i < sudoku_list.length; i++){
         var input = $('#input-' + i);
+        input.removeClass("highlight-val");
         if (sudoku_list[i] != 0){
             input.val(sudoku_list[i]);
             input.attr('readonly', true);
         }
         else{
             input.val("");
+            input.addClass("highlight-val")
         }
     }
 }
@@ -117,11 +127,10 @@ function getCurrentSudoku() {
     return sudoku
 }
 
-
 function getOneHint(){
     var sudoku = getCurrentSudoku();
     console.log(sudoku);
-    var sudoku_json = sudoku.join()
+    var sudoku_json = sudoku.join();
     $.get("/kidKnowGarden/sudoku-game/give-one-hint", {'sudoku': sudoku_json}).done(display_one_hint);
 }
 
@@ -131,5 +140,15 @@ function display_one_hint(data) {
     var answer = data["answer"];
     var input = $('#input-' + index);
     input.val(answer);
-    input.focus();
+    input.attr('readonly', true);
+    input.addClass("board-cell-hint")
+    setTimeout(function() {
+       input.removeClass("board-cell-hint");
+   }, 800);
+}
+
+function getAnswer(){
+    var sudoku = getCurrentSudoku();
+    var sudoku_json = sudoku.join();
+    $.get("/kidKnowGarden/sudoku-game/get-solution", {'sudoku': sudoku_json}).done(display_sudoku);
 }
