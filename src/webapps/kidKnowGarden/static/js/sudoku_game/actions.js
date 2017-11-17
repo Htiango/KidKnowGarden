@@ -41,13 +41,21 @@ $(document).ready(function () {
     generateBoard();
 
     replay_listener();
+    hint_listener();
 
 });
 
 
+function hint_listener() {
+    var hint_btn = $('#hint-btn');
+    hint_btn.click(function (event){
+        getOneHint();
+    })
+}
+
 function replay_listener() {
-    var submit_btn = $("#replay-btn");
-    submit_btn.click(function (event){
+    var replay_btn = $("#replay-btn");
+    replay_btn.click(function (event){
         getNewSudoku();
     })
 }
@@ -67,7 +75,7 @@ function generateBoard() {
 }
 
 function getNewSudoku(){
-    $.get("/kidKnowGarden/generate-sudoku").done(display_sudoku);
+    $.get("/kidKnowGarden/sudoku-game/generate-sudoku").done(display_sudoku);
 }
 
 function renderBoardCell(id) {
@@ -81,21 +89,47 @@ function renderBoardCell(id) {
 
 
 function display_sudoku(data){
-    // console.log(data);
     var sudoku_list = $.parseJSON(data["sudoku"]);
-    // console.log(typeof(sudoku_list));
-    // console.log(sudoku_list.length);
-
     for (var i=0; i < sudoku_list.length; i++){
-        // var input_id = "input-" + i;
         var input = $('#input-' + i);
         if (sudoku_list[i] != 0){
             input.val(sudoku_list[i]);
+            input.attr('readonly', true);
         }
         else{
             input.val("");
         }
-        // console.log(input)
     }
+}
 
+function getCurrentSudoku() {
+    var sudoku = [];
+    for (var i=0; i<81; i++){
+        var value = $('#input-'+i).val();
+        if (value != ''){
+            sudoku.push(value);
+        }
+        else{
+            sudoku.push("0");
+        }
+    }
+    // console.log(sudoku);
+    return sudoku
+}
+
+
+function getOneHint(){
+    var sudoku = getCurrentSudoku();
+    console.log(sudoku);
+    var sudoku_json = sudoku.join()
+    $.get("/kidKnowGarden/sudoku-game/give-one-hint", {'sudoku': sudoku_json}).done(display_one_hint);
+}
+
+function display_one_hint(data) {
+    console.log(data);
+    var index = data["index"];
+    var answer = data["answer"];
+    var input = $('#input-' + index);
+    input.val(answer);
+    input.focus();
 }
