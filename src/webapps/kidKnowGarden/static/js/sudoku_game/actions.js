@@ -150,11 +150,11 @@ function display_one_hint(data) {
     if (!index) {
         return
     }
-    if (index == -1){
+    if (index == "-1"){
         alert("Wrong input exist");
         return;
     }
-    if (index == -2){
+    if (index == "-2"){
         alert("Informal Input Exist!");
         return;
     }
