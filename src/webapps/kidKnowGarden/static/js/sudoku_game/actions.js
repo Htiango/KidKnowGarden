@@ -150,12 +150,12 @@ function display_one_hint(data) {
     if (!index) {
         return
     }
-    if (index == "-1"){
-        alert("Wrong input exist");
+    if (index == "-1") {
+        error_info('You Input Wrong Answers Somewhere!');
         return;
     }
-    if (index == "-2"){
-        alert("Informal Input Exist!");
+    if (index == "-2") {
+        error_info('You Have Informal Input Somewhere!')
         return;
     }
     var answer = data["answer"];
@@ -189,13 +189,49 @@ function checkAnswer() {
 function display_check(data) {
     // console.log(typeof(data))
     if (data == 1) {
-        alert("Success!");
+        success_info('Well Done!');
     }
     else if (data == 0) {
-        alert("Please complete board!");
+        warning_info('Please Complete Game Before Check!');
+        // alert("Please complete board!");
     }
     else {
-        alert("Wrong!");
+        error_info('You Input Wrong Answers Somewhere!');
     }
 
+}
+
+
+function success_info(content) {
+    $.alert({
+        title: 'SUCCESS',
+        titleClass: 'alert-success-text',
+        icon: 'mbri-smile-face alert-success-text',
+        content: content,
+        theme: 'bootstrap',
+        type: 'green'
+    });
+}
+
+
+function error_info(content) {
+    $.alert({
+        title: 'ERROR',
+        titleClass: 'alert-fail-text',
+        icon: 'mbri-sad-face alert-fail-text',
+        content: content,
+        theme: 'bootstrap',
+        type: 'red'
+    });
+}
+
+function warning_info(content) {
+    $.alert({
+        title: 'WARNING',
+        titleClass: 'alert-warning-text',
+        icon: 'mbri-sad-face alert-warning-text',
+        content: content,
+        theme: 'bootstrap',
+        type: 'orange'
+    });
 }

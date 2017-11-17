@@ -61,6 +61,20 @@
 
 /*highligt incorrect input*/
 .sudoku-board-cell .board-cell-hint {
-    background: #0d0;
+    background: #0d6786;
+    opacity: 0.6;
     color: #eee;
+}
+
+
+.alert-warning-text{
+    color: orange;
+}
+
+.alert-success-text{
+    color: green;
+}
+
+.alert-fail-text{
+    color: red;
 }
