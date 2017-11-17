@@ -1,0 +1,44 @@
+{% extends "pages/question_list.html" %}
+
+{% block page_title %}
+    Sudoku
+{% endblock %}
+
+{% block additional_css %}
+    <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/memory_game/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/plugin/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block subpage-head-title %}
+    Memory Game
+{% endblock %}
+
+{% block subpage-head-subtitle %}
+    Found the same characters!
+{% endblock %}
+
+{% block subpage-content-part %}
+    <div class="container">
+        <div id="result" class="show-success">
+        </div>
+        <div id="memory_board"></div>
+
+
+        <div class="show-btns">
+            <button type="button" id="replay-btn" class="btn btn-primary btn-lg btn-block">Replay the Memory Game
+            </button>
+            <br>
+            <a href="{% url 'home' %}">
+                <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back to Home Page
+                </button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script type="text/javascript" src="/static/plugin/jquery-confirm/jquery-confirm.min.js"></script>
+    <script src="/static/js/memory_game/lodash.min.js"></script>
+    <script src="/static/js/memory_game/actions.js"></script>
+{% endblock %}

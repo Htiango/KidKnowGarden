@@ -227,7 +227,7 @@ def check_answer(request):
 def memory_game(request):
     user = request.user
     context = {'user': user}
-    return render(request, "pages/memory_game.html", context)
+    return render(request, "pages/memory_game_new.html", context)
 
 
 @login_required

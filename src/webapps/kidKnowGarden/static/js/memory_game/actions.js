@@ -4,6 +4,7 @@ var memory_tile_ids = [];
 var tiles_flipped = 0;
 
 $(document).ready(function () {
+    newBoard();
     $("#replay-btn").click(function () {
         newBoard();
     });
@@ -57,7 +58,8 @@ function isGameOver() {
 }
 
 function gameIsOver() {
-    $("#result").append($("<div class='alert alert-success alert-text' role='alert'> Success!</div>"));
+    success_info("WELL DONE!");
+    // $("#result").append($("<div class='alert alert-success alert-text' role='alert'> Success!</div>"));
     // alert("Board cleared... generating new board");
     // document.getElementById('memory_board').innerHTML = "";
     // newBoard();
@@ -124,4 +126,16 @@ function memoryFlipTile2(tile, value) {
             }
         }
     }
+}
+
+
+function success_info(content) {
+    $.alert({
+        title: 'SUCCESS',
+        titleClass: 'alert-success-text',
+        icon: 'mbri-smile-face alert-success-text',
+        content: content,
+        theme: 'bootstrap',
+        type: 'green'
+    });
 }
