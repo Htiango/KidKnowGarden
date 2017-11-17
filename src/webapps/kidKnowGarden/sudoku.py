@@ -120,6 +120,33 @@ def sudoku_generate_backtracking():
     return sudoku
 
 
+def change_style(sudoku):
+    sudoku = sudoku.split(',')
+    sudoku = [int(i) for i in sudoku]
+    sudoku = [sudoku[x:x + 9] for x in range(0, 81, 9)]
+    return sudoku
+
+def get_answer(sudoku):
+    sudoku = change_style(sudoku)
+    generator = solve_sudoku((3, 3), sudoku)
+    solution = next(generator)
+    solution = sum(solution, [])
+    return solution
+
+
+def get_one_hint(sudoku):
+    sudoku = sudoku.split(',')
+    sudoku = [int(i) for i in sudoku]
+    enable_indexes = [i for i, x in enumerate(sudoku) if x == 0]
+    random_index = random.choice(enable_indexes)
+    sudoku = [sudoku[x:x + 9] for x in range(0, 81, 9)]
+    generator = solve_sudoku((3, 3), sudoku)
+    solution = next(generator)
+    solution = sum(solution, [])
+    value = solution[random_index]
+    return (random_index, value)
+
+
 def unique_answer(grid):
     generator = solve_sudoku((3, 3), grid)
     count = 0
@@ -137,10 +164,7 @@ def unique_answer(grid):
 
 def generate(max_iter):
     full_sudoku = sudoku_generate_backtracking()
-    # print(full_sudoku)
     full_sudoku = [full_sudoku[x:x + 9] for x in range(0, 81, 9)]
-    # print(full_sudoku)
-
     enable_pairs = [(i, j) for i in range(9) for j in range(9)]
 
     sudoku = full_sudoku
@@ -168,9 +192,6 @@ def generate(max_iter):
                 break
         random_pair = enable_pairs[j]
 
-    # print(sudoku)
-    # print(i)
-
     for i in range(9):
         result = ''
         for j in range(9):
@@ -178,22 +199,5 @@ def generate(max_iter):
                 result += '.'
             else:
                 result += str(sudoku[i][j])
-        # print(result)
+    sudoku = sum(sudoku, [])
     return sudoku
-
-# def main():
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('-n', '--size', type=int,
-#                         required=True, help='number of maximum blank in 9*9 sudoku')
-#
-#     args = parser.parse_args()
-#
-#     start = timeit.default_timer()
-#     generate(args)
-#     stop = timeit.default_timer()
-#
-#     print("runtime = " + str(stop - start))
-
-
-# if __name__ == '__main__':
-#     main()
