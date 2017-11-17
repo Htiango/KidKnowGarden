@@ -138,7 +138,9 @@ def check_submit_answer(sudoku):
 
     try:
         generator = solve_sudoku((3, 3), sudoku)
+        solution = next(generator)
     except KeyError as name:
+        print("---------------------here-------------------------")
         return -1
     return 1
 
