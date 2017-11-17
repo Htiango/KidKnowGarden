@@ -1,24 +1,29 @@
-{% extends "pages/home_old.html" %}
+{% extends "pages/question_list.html" %}
 
-{% block title %} Memory Game {% endblock %}
-
-{% block additional_link_script %}
-    <link href="/static/css/memory_game/style.css" rel="stylesheet" type="text/css">
-    <script src="/static/js/memory_game/lodash.min.js"></script>
-    <script src="/static/js/memory_game/actions.js"></script>
+{% block page_title %}
+    Sudoku
 {% endblock %}
 
-{% block main-page %}
-    <div class="container title-container">
-        <h1 class="welcome-title">Memory Game</h1>
-        <p class="welcome-subtitle">Found the same characters!</p>
-    </div>
+{% block additional_css %}
+    <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/memory_game/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/plugin/jquery-confirm/jquery-confirm.min.css" rel="stylesheet" type="text/css">
+{% endblock %}
 
+{% block subpage-head-title %}
+    Memory Game
+{% endblock %}
+
+{% block subpage-head-subtitle %}
+    Found the same characters!
+{% endblock %}
+
+{% block subpage-content-part %}
     <div class="container">
-    <div id="result" class="show-success">
-    </div>
+        <div id="result" class="show-success">
+        </div>
         <div id="memory_board"></div>
-        <script>newBoard();</script>
+
 
         <div class="show-btns">
             <button type="button" id="replay-btn" class="btn btn-primary btn-lg btn-block">Replay the Memory Game
@@ -30,4 +35,10 @@
             </a>
         </div>
     </div>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script type="text/javascript" src="/static/plugin/jquery-confirm/jquery-confirm.min.js"></script>
+    <script src="/static/js/memory_game/lodash.min.js"></script>
+    <script src="/static/js/memory_game/actions.js"></script>
 {% endblock %}

@@ -1,0 +1,33 @@
+{% extends "pages/home_old.html" %}
+
+{% block title %} Memory Game {% endblock %}
+
+{% block additional_link_script %}
+    <link href="/static/css/memory_game/style.css" rel="stylesheet" type="text/css">
+    <script src="/static/js/memory_game/lodash.min.js"></script>
+    <script src="/static/js/memory_game/actions.js"></script>
+{% endblock %}
+
+{% block main-page %}
+    <div class="container title-container">
+        <h1 class="welcome-title">Memory Game</h1>
+        <p class="welcome-subtitle">Found the same characters!</p>
+    </div>
+
+    <div class="container">
+    <div id="result" class="show-success">
+    </div>
+        <div id="memory_board"></div>
+        <script>newBoard();</script>
+
+        <div class="show-btns">
+            <button type="button" id="replay-btn" class="btn btn-primary btn-lg btn-block">Replay the Memory Game
+            </button>
+            <br>
+            <a href="{% url 'home' %}">
+                <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back to Home Page
+                </button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
