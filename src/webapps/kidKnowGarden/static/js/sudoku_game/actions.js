@@ -175,6 +175,15 @@ function checkAnswer(){
 
 
 function display_check(data) {
-    console.log(typeof(data))
+    // console.log(typeof(data))
+    if (data == 1){
+        alert("Success!");
+    }
+    else if (data == 0){
+        alert("Please complete board!");
+    }
+    else{
+        alert("Wrong!");
+    }
 
 }
