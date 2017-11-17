@@ -43,8 +43,17 @@ $(document).ready(function () {
     replay_listener();
     hint_listener();
     answer_listener();
+    submit_listener();
 
 });
+
+
+function submit_listener() {
+    var check_btn = $('#check-btn');
+    check_btn.click(function (event){
+        checkAnswer();
+    })
+}
 
 
 function answer_listener() {
@@ -137,6 +146,9 @@ function getOneHint(){
 function display_one_hint(data) {
     console.log(data);
     var index = data["index"];
+    if (!index){
+        return
+    }
     var answer = data["answer"];
     var input = $('#input-' + index);
     input.val(answer);
@@ -151,4 +163,18 @@ function getAnswer(){
     var sudoku = getCurrentSudoku();
     var sudoku_json = sudoku.join();
     $.get("/kidKnowGarden/sudoku-game/get-solution", {'sudoku': sudoku_json}).done(display_sudoku);
+}
+
+
+
+function checkAnswer(){
+    var sudoku = getCurrentSudoku();
+    var sudoku_json = sudoku.join();
+    $.get("/kidKnowGarden/sudoku-game/check-answer", {'sudoku': sudoku_json}).done(display_check);
+}
+
+
+function display_check(data) {
+    console.log(typeof(data))
+
 }

@@ -268,10 +268,8 @@ def generate_sudoku(request):
 @login_required
 def hint_sudoku(request):
     sudoku = request.GET.get('sudoku')
-    print(sudoku)
     (index, answer) = get_one_hint(sudoku)
     context = {"index": index, "answer": answer}
-    # context = {}
     return render(request, 'pages/sudoku_one_hint.json', context, content_type='application/json')
 
 @login_required
@@ -281,3 +279,11 @@ def get_sudoku_solution(request):
     context = {"sudoku": result}
     # context = {}
     return render(request, 'pages/sudoku_new.json', context, content_type='application/json')
+
+
+@login_required
+def check_sudoku_answer(request):
+    sudoku = request.GET.get('sudoku')
+    status = check_submit_answer(sudoku)
+    context = {"status": status}
+    return HttpResponse(status)
