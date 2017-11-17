@@ -109,6 +109,7 @@ function display_sudoku(data){
     var sudoku_list = $.parseJSON(data["sudoku"]);
     for (var i=0; i < sudoku_list.length; i++){
         var input = $('#input-' + i);
+        input.attr('readonly', false);
         input.removeClass("highlight-val");
         if (sudoku_list[i] != 0){
             input.val(sudoku_list[i]);
