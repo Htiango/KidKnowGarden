@@ -1,6 +1,6 @@
 div#memory_board{
-  background:#DADADA;
-  border:#999 1px solid;
+  background: None;
+  /*border:#999 1px solid;*/
   width: 610px;
   height: 470px;
   padding: 24px;
