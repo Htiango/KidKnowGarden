@@ -21,15 +21,17 @@
 {% block subpage-content-part %}
     <div class="container">
         <div id="memory_board"></div>
-        <div class="show-btns">
-            <button type="button" id="replay-btn" class="btn btn-primary btn-lg btn-block">Replay the Memory Game
+    </div>
+
+    <div class="mbr-section-btn align-center py-2">
+        <button id="replay-btn" class="btn btn-md btn-primary display-4" style="border-radius: 100px">
+            Replay the  Game
+        </button>
+        <a href="{% url 'game_page' %}">
+            <button id="back-btn" class="btn btn-md btn-primary display-4" style="border-radius: 100px">
+                Back to Game Page
             </button>
-            <br>
-            <a href="{% url 'home' %}">
-                <button type="button" id="back-btn" class="btn btn-secondary btn-lg btn-block">Back to Home Page
-                </button>
-            </a>
-        </div>
+        </a>
     </div>
 {% endblock %}
 

@@ -1,42 +1,42 @@
-div#memory_board{
-  background: None;
-  /*border:#999 1px solid;*/
-  width: 610px;
-  height: 470px;
-  padding: 24px;
-  margin-right: auto;
-  margin-left: auto;
-  margin-top: 10px;
+div#memory_board {
+    background: None;
+    /*border:#999 1px solid;*/
+    width: 610px;
+    height: 470px;
+    padding: 24px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 div#memory_board > div {
-  background: #9fcdff;
-  border: #000 1px solid;
-  width: 120px;
-  height: 120px;
-  float: left;
-  margin: 10px;
-  padding: 20px;
-  font-size: 56px;
-  cursor: pointer;
-  text-align: center;
+    background: #0d6786;
+    opacity: 0.6;
+    border: #000 1px solid;
+    width: 120px;
+    height: 120px;
+    float: left;
+    margin: 10px;
+    padding: 20px;
+    font-size: 56px;
+    cursor: pointer;
+    text-align: center;
 }
 
 .show-success {
-  padding-top: 20px;
-  padding-left: 25%;
-  padding-right: 25%;
-  padding-bottom: 20px;
+    padding-top: 20px;
+    padding-left: 25%;
+    padding-right: 25%;
+    padding-bottom: 20px;
 }
 
 .show-btns {
-  padding-top: 30px;
-  padding-left: 25%;
-  padding-right: 25%;
-  padding-bottom: 100px;
+    padding-top: 30px;
+    padding-left: 25%;
+    padding-right: 25%;
+    padding-bottom: 100px;
 }
 
 .alert-text {
-  margin-top: 20px;
-  text-align: center;
+    margin-top: 20px;
+    text-align: center;
 }
