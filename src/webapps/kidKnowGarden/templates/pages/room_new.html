@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block additional_css %}
-    <script type="text/javascript" src="/static/js/room.js"></script>
     <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
@@ -34,30 +33,31 @@
 
             <div id='answer_group' class='display-contest-form' hidden>
                 <input type='hidden' id='record_id' value="" hidden>
-                    <div class='choice-row form-check-label'>
-                        <input type='radio' name='choice' id='choice1' class='form-check-input' value="">
-                        <label for="choice1"></label><br>
-                    </div>
-                    <div class='choice-row form-check-label'>
-                        <input type='radio' name='choice' id='choice2' class='form-check-input' value="">
-                        <label for="choice2"></label><br>
-                    </div>
-                    <div class='choice-row form-check-label'>
-                        <input type='radio' name='choice' id='choice3' class='form-check-input' value="">
-                        <label for="choice3"></label><br>
-                    </div>
-                    <div class='choice-row form-check-label'>
-                        <input type='radio' name='choice' id='choice4' class='form-check-input' value="">
-                        <label for="choice4"></label><br>
-                    </div>
-                    <div class='btn-submit-row'>
-                        <button id='submit-btn' class='btn btn-primary'> submit</button>
-                    </div>
+                <div class='choice-row form-check-label'>
+                    <input type='radio' name='choice' id='choice1' class='form-check-input' value="">
+                    <label for="choice1"></label><br>
+                </div>
+                <div class='choice-row form-check-label'>
+                    <input type='radio' name='choice' id='choice2' class='form-check-input' value="">
+                    <label for="choice2"></label><br>
+                </div>
+                <div class='choice-row form-check-label'>
+                    <input type='radio' name='choice' id='choice3' class='form-check-input' value="">
+                    <label for="choice3"></label><br>
+                </div>
+                <div class='choice-row form-check-label'>
+                    <input type='radio' name='choice' id='choice4' class='form-check-input' value="">
+                    <label for="choice4"></label><br>
+                </div>
+                <div class='btn-submit-row'>
+                    <button id='submit-btn' class='btn btn-primary'> submit</button>
+                </div>
 
-            </div><br>
+            </div>
+            <br>
 
             <div class='room-center'>
-                <button id='start' class='btn btn-primary' hidden> Start </button>
+                <button id='start' class='btn btn-primary' hidden> Start</button>
             </div>
 
 
@@ -72,6 +72,6 @@
 
 {% block additional_scripts %}
     <script type="text/javascript" src="/static/plugin/jquery-confirm/jquery-confirm.min.js"></script>
-    <script src="/static/js/memory_game/lodash.min.js"></script>
-    <script src="/static/js/memory_game/actions.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+    <script type="text/javascript" src="/static/js/room.js"></script>
 {% endblock %}
