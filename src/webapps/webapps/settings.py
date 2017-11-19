@@ -48,14 +48,16 @@ INSTALLED_APPS = [
 
 CHANNEL_LAYERS = {
     'default': {
-        # 'BACKEND': 'asgi_redis.RedisChannelLayer',
-        # 'CONFIG': {
-        #     'hosts': [('localhost', 6379)],
-        # },
-        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+        #"BACKEND": "asgiref.inmemory.ChannelLayer",
         'ROUTING': 'webapps.routing.channel_routing',
     }
 }
+
+CHANNELS_WS_PROTOCOLS = ["graphql-ws", ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,7 +81,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'fwu.cmu@gmail.com'
 DEFAULT_FROM_EMAIL = 'KidKnowGarden Admin'
 SERVER_EMAIL = 'fwu.cmu@gmail.com'
-EMAIL_HOST_PASSWORD = pass_word
+EMAIL_HOST_PASSWORD = "wufan1994"
 EMAIL_USE_TLS = True
 
 ROOT_URLCONF = 'webapps.urls'
@@ -137,8 +139,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'kidknowGarden-Cache',
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/home/ubuntu/django_cache',
+        #'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        #'LOCATION': 'kidknowGarden-Cache',
     }
 }
 
