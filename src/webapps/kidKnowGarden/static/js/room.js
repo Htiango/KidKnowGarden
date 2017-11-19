@@ -36,6 +36,13 @@ $(function () {
         }));
     }
 
+    function request_result(){
+        socket.send(JSON.stringify({
+            "command": "result",
+            "room": roomId
+        }));
+    }
+
     function initial_status(){
         messages.empty();
         status.empty();
@@ -189,7 +196,7 @@ $(function () {
 
             else if (data.message === "Contest End" && data.xmessage === "Contest End") {
                 contest_end();
-                request_score();
+                request_result();
             }
 
             else if (data.message === "USER ENTER" || data.message === "USER LEAVE"){
@@ -250,7 +257,9 @@ $(function () {
         } else if (data.answer) {
             disable_answers();
         } else if (data.score) {
-            status.text(data.username + " : " + data.isWin + " ( Total Score: " + data.score + " )")
+            status.text(data.username + " : " + " Total Score: " + data.score)
+        } else if (data.result) {
+            status.text(data.username + " : " + data.isWin + " ( Total Score: " + data.result + " )")
         }
         else {
             console.log(data);

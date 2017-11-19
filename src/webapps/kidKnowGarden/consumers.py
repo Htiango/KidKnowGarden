@@ -17,13 +17,14 @@ def ws_connect(message):
 @channel_session_user
 def ws_disconnect(message):
     # Unsubscribe from any connected rooms
-    #for room_id in message.channel_session.get("rooms", set()):
     for room_id in Rooms.objects.values_list('id', flat=True):
         try:
             room = Rooms.objects.get(pk=room_id)
             members = room.room_profile_set.count()
             if members > 0:
                 if room.room_profile_set.all().filter(user=message.user).exists():
+                    print("Triggers disconnect user leave")
+                    room.send_message("USER LEAVE", message.user, members - 1)
                     room_profile = Room_Profile.objects.get(user=message.user)
                     room_profile.inroom = None
                     room_profile.save()
@@ -77,6 +78,7 @@ def chat_join(message):
                 }),
             })
         else:
+            # TODO: If two users are identical, deal with it.
             new_room = create_new_room(message.user, result.user)
             new_url = reverse('room', kwargs={'id': new_room.id})
             room.send_message("MATCHED", result.user, new_url)
@@ -220,12 +222,30 @@ def request_score(message):
 
     room = get_room_or_error(message["room"], message.user)
 
-    print("This is score operation" + message['room'])
+    #print("This is score operation" + message['room'])
     # Return a message only to the user who make a message request
     # Three status of win/loss: Win, Lose or Tie
     message.reply_channel.send({
         "text": json.dumps({
             "score": str(get_score(message.user)),
+            "username": message.user.username
+        }),
+    })
+
+@channel_session_user
+#@catch_client_error
+def request_result(message):
+    # if int(message['room']) not in message.channel_session['rooms']:
+    #     raise ClientError("ROOM_ACCESS_DENIED")
+
+    room = get_room_or_error(message["room"], message.user)
+
+    #print("This is score operation" + message['room'])
+    # Return a message only to the user who make a message request
+    # Three status of win/loss: Win, Lose or Tie
+    message.reply_channel.send({
+        "text": json.dumps({
+            "result": str(get_score(message.user)),
             "isWin": judge_contest_status(message.user, room),
             "username": message.user.username
         }),

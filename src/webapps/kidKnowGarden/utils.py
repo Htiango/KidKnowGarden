@@ -51,6 +51,9 @@ def get_random_room():
 
 def get_random_question(room):
     question = Question.objects.order_by('?')
+    answered_questions_number = room.answered_questions.count()
+    if answered_questions_number > 6:
+        return "Contest End"
     answered_questions_id = room.answered_questions.all().values('id')
     question_to_pick = question.exclude(id__in=answered_questions_id)
     q = question_to_pick.first()
@@ -120,30 +123,42 @@ def judge_contest_status(user, room):
     members = room.room_profile_set.all()
     first = members.first().user
     last = members.last().user
+    origin_level = user.profile.level
     # Room has only one person
+    # Will not count into database
     if first == last:
         if user == first:
-            return "Win"
+            return "-"
         else:
-            return "Lose"
+            return "-"
     # Room has two persons
     else:
         first_score = ContestScore.objects.get(user=first).score
         last_score = ContestScore.objects.get(user=last).score
         if (first == user):
             if first_score > last_score:
+                user.profile.level = origin_level + 1
+                user.profile.save()
                 return "Win"
             elif first_score == last_score:
                 return "Tie"
             else:
+                if origin_level != 0:
+                    user.profile.level = origin_level - 1
+                    user.profile.save()
                 return "Lose"
 
         elif (last == user):
             if first_score > last_score:
+                if origin_level != 0:
+                    user.profile.level = origin_level - 1
+                    user.profile.save()
                 return "Lose"
             elif first_score == last_score:
                 return "Tie"
             else:
+                user.profile.level = origin_level + 1
+                user.profile.save()
                 return "Win"
 
         else:

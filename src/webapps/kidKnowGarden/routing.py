@@ -27,4 +27,5 @@ custom_routing = [
     route("chat.receive", start_timing, command="^start$"),
     route("chat.receive", chat_send, command="^send$"),
     route("chat.receive", request_score, command="^score$"),
+    route("chat.receive", request_result, command="^result$")
 ]
