@@ -19,13 +19,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-pj$0p=q5vls##mx(dd_)pk&x0hy9$%3tv9ux74ayis(c&3x%b'
+read_data = ""
+with open('/home/ubuntu/key', 'r') as f:
+    read_data = f.read()
+f.close()
+
+SECRET_KEY = read_data
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['34.238.232.70']
 
 
 # Application definition
@@ -62,7 +67,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+pass_word = ""
+with open('/home/ubuntu/pass', 'r') as g:
+    pass_word = g.read()
+g.close()
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'fwu.cmu@gmail.com'
+DEFAULT_FROM_EMAIL = 'KidKnowGarden Admin'
+SERVER_EMAIL = 'fwu.cmu@gmail.com'
+EMAIL_HOST_PASSWORD = pass_word
+EMAIL_USE_TLS = True
 
 ROOT_URLCONF = 'webapps.urls'
 
