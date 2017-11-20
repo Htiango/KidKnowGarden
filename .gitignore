@@ -1,5 +1,8 @@
 # Class-specific section #
 
+# system logfile
+nohup.out
+
 # compiler section
 .idea
 
