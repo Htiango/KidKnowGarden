@@ -1,38 +1,45 @@
-{% extends "pages/base_template.html" %}
+{% extends "pages/welcome.html" %}
 
-{% block title %} Glumblr Profile Setting {% endblock %}
+{% block page_title %}
+    Profile Setting
+{% endblock %}
 
-{% block main-page %}
-    <div class="container title-container">
-        <h1 class="welcome-title">Set Your Profile</h1>
-        <p class="welcome-subtitle">To Broadcast You!</p>
-    </div>
+{% block content-part %}
+    <form class="mbr-form" action="{% url 'set-profile' %}" method="post" enctype="multipart/form-data"
+          data-form-title="Mobirise Form">
+        {% csrf_token %}
+        {% load myfilters %}
 
-    <div class="container container-center">
-        <form action="{% url 'set-profile' %}" method="post" enctype="multipart/form-data">
-            {% load myfilters %}
-            {% for field in profile_form.visible_fields %}
-                <div class="container form-container-wide">
-                    <div class="form-group row">
-                        <label class="label-style col-sm-4 col-form-label"
+        {% for field in profile_form.visible_fields %}
+            <div class="row row-sm-offset">
+                <div class="col-md-4" style="text-align: right">
+                    <label class="label-style col-sm-4 col-form-label"
                                for="{{ field.name }}">{{ field.label }}</label>
-                        <div class="col-sm-8">
-                            <td>{{ field|add_class_placeholder:'form-control' }}</td>
-                        </div>
+                </div>
+                <div class="col-md-4" data-for="username">
+                    <div class="form-group">
+                        {{ field|add_class_placeholder:'form-control' }}
                     </div>
                 </div>
-                <div class="container form-container"></div>
-                <div class="warning-font">
-                    {{ field.errors }}
+                <div class="col-md-4">
+                    <div class="warning-font">
+                        {{ field.errors }}
+                    </div>
                 </div>
-
-            {% endfor %}
-
-            {% csrf_token %}
-            <div class="container form-container">
-                <input type="submit" id="submit-btn" class="btn  btn-outline-dark btn-block" value="Submit">
             </div>
-        </form>
+        {% endfor %}
 
-    </div>
+        <div class="row row-sm-offset">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <div class="input-group-btn align-items-center inherit-style">
+                    <button href="" type="submit" class="btn btn-white-outline btn-form display-4">Submit</button>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+
+    </form>
+
 {% endblock %}

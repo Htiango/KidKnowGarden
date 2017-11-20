@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^activate/(?P<username>[^/]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         activate, name='activate'),
     url(r'^profile/setting', set_profile, name='set-profile'),
+    url(r'^profile-page$', profile_page, name='profile-page'),
     url(r'^home', home, name='home'),
     url(r'^avatar/(?P<username>\w+)$', get_avatar, name='get-avatar'),
     url(r'^user/(?P<username>.+)/$', user_page_view, name='user-link'),
@@ -23,6 +24,7 @@ urlpatterns = [
 
     url(r'^learn-page$', learn_page, name='learn_page'),
     url(r'^game-page$', game_page, name='game_page'),
+    url(r'^question-of-grade$', question_grade, name='question_of_grade'),
     url(r'^question-list$', question_list, name='question_list'),
     url(r'^random-question$', random_question, name='random_question'),
     url(r'^question/(?P<question_id>.+)$', question_page, name='question-page'),

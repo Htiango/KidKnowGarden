@@ -93,13 +93,13 @@ def set_profile(request):
     context = {}
     context['profile_form'] = ProfileForm()
     if request.method == 'GET':
-        return render(request, 'pages/set_profile_new.html', context)
+        return render(request, 'pages/set_profile.html', context)
 
     profile_form = ProfileForm(request.POST, request.FILES)
     context['profile_form'] = profile_form
 
     if not profile_form.is_valid():
-        return render(request, 'pages/set_profile_new.html', context)
+        return render(request, 'pages/set_profile.html', context)
 
     new_profile = Profile(user=request.user,
                           grade=profile_form.cleaned_data['grade']
@@ -127,6 +127,12 @@ def home(request):
     #context['users'] = users
     return render(request, 'pages/home.html', context)
 
+
+@login_required
+def profile_page(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    return render(request, 'pages/profile.html', {'profile': profile, "user": user})
 
 @login_required
 def get_avatar(request, username):
@@ -163,7 +169,7 @@ def logout_view(request):
 @login_required
 def matching(request):
     user = request.user
-    return render(request, 'pages/room_matching_new.html', {"user": user})
+    return render(request, 'pages/room_matching.html', {"user": user})
 
 @login_required
 def room(request, id):
@@ -171,7 +177,7 @@ def room(request, id):
         raise Http404("Not found")
     else:
         room_object = get_object_or_404(Rooms, pk=id)
-        return render(request, 'pages/room_new.html', {'room': room_object, "user": request.user})
+        return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
 
 
 # @login_required
@@ -195,7 +201,16 @@ def room(request, id):
 def question_list(request):
     user = request.user
     questions = Question.objects.all()
-    return render(request, 'pages/question_list.html', {"questions":questions, "user": user})
+    subtitle = "Showing all the questions of all grades"
+    return render(request, 'pages/question_list.html', {"questions":questions, "user": user, "subtitle":subtitle})
+
+@login_required
+def question_grade(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    questions = Question.objects.filter(grade=profile.grade)
+    subtitle = "Showing all the questions of your grade."
+    return render(request, 'pages/question_list.html', {"questions":questions, "user": user, "subtitle":subtitle})
 
 
 @login_required

@@ -1,18 +1,24 @@
-{% extends "pages/home_old.html" %}
-{% block additional_link_script %}
-    <script type="text/javascript" src="/static/js/room_matching.js"></script>
+{% extends "pages/question_list.html" %}
+
+{% block page_title %}
+    Room Matching
+{% endblock %}
+
+{% block additional_css %}
+
     <link href="/static/css/home-style.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block title %}Room List{% endblock %}
+{% block subpage-head-title %}
+    Contest
+{% endblock %}
 
-{% block main-page %}
+{% block subpage-head-subtitle %}
+    Have fun contest with friend!
+{% endblock %}
 
+{% block subpage-content-part %}
     <h5 id="username" hidden>{{ user.username }}</h5>
-    <div class="container title-container">
-        <h1 class="welcome-title">Contest</h1>
-        <p class="welcome-subtitle">Have fun contest with friend!</p>
-    </div>
 
     <div class="container contest-question-container">
         <div id='timer' class='room-center timer-text'>
@@ -35,7 +41,9 @@
         </div>
 
     </div>
+{% endblock %}
 
-    <br>
-
+{% block additional_scripts %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+    <script type="text/javascript" src="/static/js/room_matching.js"></script>
 {% endblock %}

@@ -1,3 +1,53 @@
-{% extends "pages/home_old.html" %}
+{% extends "pages/home.html" %}
 
-{% block title %} User Profile {% endblock %}
+{% block page_title %} User Profile {% endblock %}
+
+{% block main-page %}
+<section class="testimonials1 cid-qBuiHHbMHY" id="testimonials1-1y" data-rv-view="462">
+
+
+
+    <div class="mbr-overlay" style="opacity: 0.9; background-color: rgb(239, 239, 239);">
+    </div>
+    <div class="container">
+        <div class="media-container-row">
+            <div class="title col-12 align-center">
+                <h2 class="pb-3 mbr-fonts-style display-2">
+                    PROFILE
+                </h2>
+                <h3 class="mbr-section-subtitle mbr-light pb-3 mbr-fonts-style display-5">
+                    Hello {{ user.username }}, check your profile here!
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pt-3 mt-2">
+        <div class="media-container-row">
+            <div class="mbr-testimonial p-3 align-center col-12 col-md-6">
+                <div class="panel-item p-3">
+                    <div class="card-block">
+                        <div class="testimonial-photo">
+                            <img src="{% url 'get-avatar' user.username %}" media-simple="true">
+                        </div>
+                        <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
+                             {{ user.username }}
+                        </div>
+                        <small class="mbr-author-desc mbr-italic mbr-light mbr-fonts-style display-7">
+                               {{ user.first_name }} {{ user.last_name }} <br>
+                            {{ user.email }}
+                        </small>
+                    </div>
+                    <div class="card-footer">
+                        <p class="mbr-text mbr-fonts-style display-7">
+                            Your grade: {{ profile.grade }}<br>
+                            Your level: {{ profile.level }}
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
