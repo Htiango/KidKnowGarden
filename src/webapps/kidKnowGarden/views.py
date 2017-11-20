@@ -129,6 +129,12 @@ def home(request):
 
 
 @login_required
+def profile_page(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    return render(request, 'pages/profile.html', {'profile': profile, "user": user})
+
+@login_required
 def get_avatar(request, username):
     user = User.objects.filter(username=username)
     profile = get_object_or_404(Profile, user=user)
