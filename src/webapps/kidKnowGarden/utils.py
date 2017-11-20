@@ -52,7 +52,7 @@ def get_random_room():
 def get_random_question(room):
     question = Question.objects.order_by('?')
     answered_questions_number = room.answered_questions.count()
-    if answered_questions_number > 6:
+    if answered_questions_number > 2:
         return "Contest End"
     answered_questions_id = room.answered_questions.all().values('id')
     question_to_pick = question.exclude(id__in=answered_questions_id)
