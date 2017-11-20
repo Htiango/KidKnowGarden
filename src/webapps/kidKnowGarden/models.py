@@ -7,11 +7,16 @@ from channels import Group
 import json
 
 class Question(models.Model):
+    """
+    Add grade informaiton
+    """
     content = models.TextField(default="", max_length=200)
     choice1 = models.TextField(default="", max_length=100)
     choice2 = models.TextField(default="", max_length=100)
     choice3 = models.TextField(default="", max_length=100)
     answer = models.TextField(default="", max_length=100)
+    grade = models.IntegerField(default=0)
+
 
     def __str__(self):
         return self.content
