@@ -24,11 +24,11 @@
         <link rel="stylesheet" href="/static/css/style.css">
 
     {% endblock %}
-
-    {% block page_title %}
-        <title>home</title>
-    {% endblock %}
-
+    <title>
+        {% block page_title %}
+            home
+        {% endblock %}
+    </title>
     {% block additional_css %}
 
     {% endblock %}
@@ -91,7 +91,7 @@
             </div>
         {% endblock %}
 
-        <div class="container  ">
+        <div class="container">
             <div class="media-container">
                 {% block media-container %}
                     <div class="col-md-12 align-center">
