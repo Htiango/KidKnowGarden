@@ -13,10 +13,10 @@
         <div class="media-container-row">
             <div class="title col-12 align-center">
                 <h2 class="pb-3 mbr-fonts-style display-2">
-                    WHAT OUR FANTASTIC USERS SAY
+                    PROFILE
                 </h2>
                 <h3 class="mbr-section-subtitle mbr-light pb-3 mbr-fonts-style display-5">
-                    This theme is based on Bootstrap 4 - most powerful mobile first framework
+                    Hello {{ user.username }}, check your profile here!
                 </h3>
             </div>
         </div>
@@ -24,74 +24,29 @@
 
     <div class="container pt-3 mt-2">
         <div class="media-container-row">
-            <div class="mbr-testimonial p-3 align-center col-12 col-md-6 col-lg-4">
+            <div class="mbr-testimonial p-3 align-center col-12 col-md-6">
                 <div class="panel-item p-3">
                     <div class="card-block">
                         <div class="testimonial-photo">
                             <img src="{% url 'get-avatar' user.username %}" media-simple="true">
                         </div>
-                        <p class="mbr-text mbr-fonts-style display-7">
-                           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, aspernatur, voluptatibus, atque, tempore molestiae.
-                        </p>
-                    </div>
-                    <div class="card-footer">
                         <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
-                             John Smith
+                             {{ user.username }}
                         </div>
                         <small class="mbr-author-desc mbr-italic mbr-light mbr-fonts-style display-7">
-                               Developer
+                               {{ user.first_name }} {{ user.last_name }} <br>
+                            {{ user.email }}
                         </small>
+                    </div>
+                    <div class="card-footer">
+                        <p class="mbr-text mbr-fonts-style display-7">
+                            Your grade: {{ profile.grade }}<br>
+                            Your level: {{ profile.level }}
+                        </p>
+
                     </div>
                 </div>
             </div>
-
-            <div class="mbr-testimonial p-3 align-center col-12 col-md-6 col-lg-4">
-                <div class="panel-item p-3">
-                    <div class="card-block">
-                        <div class="testimonial-photo">
-                            <img src="assets/images/face2.jpg" media-simple="true">
-                        </div>
-                        <p class="mbr-text mbr-fonts-style display-7">
-                           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, aspernatur, voluptatibus, atque, tempore molestiae.
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
-                             John Smith
-                        </div>
-                        <small class="mbr-author-desc mbr-italic mbr-light mbr-fonts-style display-7">
-                               Developer
-                        </small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mbr-testimonial p-3 align-center col-12 col-md-6 col-lg-4">
-                <div class="panel-item p-3">
-                    <div class="card-block">
-                        <div class="testimonial-photo">
-                            <img src="assets/images/face3.jpg" media-simple="true">
-                        </div>
-                        <p class="mbr-text mbr-fonts-style display-7">
-                           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, aspernatur, voluptatibus, atque, tempore molestiae.
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
-                             John Smith
-                        </div>
-                        <small class="mbr-author-desc mbr-italic mbr-light mbr-fonts-style display-7">
-                               Developer
-                        </small>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-
         </div>
     </div>
 </section>

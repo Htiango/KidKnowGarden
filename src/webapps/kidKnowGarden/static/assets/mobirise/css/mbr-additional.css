@@ -4330,7 +4330,8 @@ body {
   color: #767676;
 }
 .cid-qBuiHHbMHY .mbr-testimonial .panel-item {
-  background-color: #ffffff;
+  background-color: #f1f1f1;
+  opacity: 0.8;
 }
 .cid-qBuiHHbMHY .mbr-testimonial .card-block {
   -webkit-flex-grow: 0;
