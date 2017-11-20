@@ -195,7 +195,16 @@ def room(request, id):
 def question_list(request):
     user = request.user
     questions = Question.objects.all()
-    return render(request, 'pages/question_list.html', {"questions":questions, "user": user})
+    subtitle = "Showing all the questions of all grades"
+    return render(request, 'pages/question_list.html', {"questions":questions, "user": user, "subtitle":subtitle})
+
+@login_required
+def question_grade(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    questions = Question.objects.filter(grade=profile.grade)
+    subtitle = "Showing all the questions of your grade."
+    return render(request, 'pages/question_list.html', {"questions":questions, "user": user, "subtitle":subtitle})
 
 
 @login_required
