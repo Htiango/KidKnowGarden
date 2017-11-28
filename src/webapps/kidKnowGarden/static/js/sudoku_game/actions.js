@@ -94,7 +94,9 @@ function generateBoard() {
 function getNewSudoku() {
     $.get("/kidKnowGarden/sudoku-game/generate-sudoku")
         .done(display_sudoku)
-        .fail(error_info("Internal Error Happens"));
+        .fail(function () {
+            error_info("Internal Error Happens")
+        });
 }
 
 function renderBoardCell(id) {
@@ -145,7 +147,9 @@ function getOneHint() {
     var sudoku_json = sudoku.join();
     $.get("/kidKnowGarden/sudoku-game/give-one-hint", {'sudoku': sudoku_json})
         .done(display_one_hint)
-        .fail(error_info("Internal Error Happens"));;
+        .fail(function () {
+            error_info("Internal Error Happens");
+        });
 }
 
 function display_one_hint(data) {
@@ -181,7 +185,9 @@ function getAnswer() {
 
     $.get("/kidKnowGarden/sudoku-game/get-solution", {'sudoku': sudoku_json})
         .done(display_sudoku)
-        .fail(error_info("Internal Error Happens"));
+        .fail(function () {
+            error_info("Internal Error Happens");
+        });
 }
 
 
@@ -190,7 +196,9 @@ function checkAnswer() {
     var sudoku_json = sudoku.join();
     $.get("/kidKnowGarden/sudoku-game/check-answer", {'sudoku': sudoku_json})
         .done(display_check)
-        .fail(error_info("Internal Error Happens"));
+        .fail(function () {
+            error_info("Internal Error Happens")
+        });
 }
 
 
