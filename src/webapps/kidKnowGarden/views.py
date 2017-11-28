@@ -83,6 +83,10 @@ def activate(request, username, token):
         user.is_active = True
         user.save()
         login(request, user)
+        new_profile = Profile(user=user)
+        new_room_profile = Room_Profile(user=user)
+        new_profile.save()
+        new_room_profile.save()
         return redirect(set_profile)
     else:
         return HttpResponse('Activation link is invalid!')
@@ -101,16 +105,18 @@ def set_profile(request):
     if not profile_form.is_valid():
         return render(request, 'pages/set_profile.html', context)
 
-    new_profile = Profile(user=request.user,
-                          grade=profile_form.cleaned_data['grade']
-                          )
-    new_room_profile = Room_Profile(user=request.user)
+    profile = Profile.objects.get(user=request.user)
+
+    # new_profile = Profile(user=request.user,
+    #                       grade=profile_form.cleaned_data['grade']
+    #                       )
+
     if profile_form.cleaned_data['avatar']:
-        new_profile.avatar = profile_form.cleaned_data['avatar']
+        profile.avatar = profile_form.cleaned_data['avatar']
     if profile_form.cleaned_data['bio']:
-        new_profile.bio = profile_form.cleaned_data['bio']
-    new_profile.save()
-    new_room_profile.save()
+        profile.bio = profile_form.cleaned_data['bio']
+    # new_profile.save()
+
     return redirect(home)
 
 
