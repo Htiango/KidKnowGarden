@@ -49,3 +49,11 @@ class ProfileForm(forms.Form):
         if grade > 12:
             raise forms.ValidationError("Grade should be no larger than 12")
         return grade
+
+
+class AnswerSubmitForm(forms.Form):
+    """
+    Django Form to check the submited answer
+    """
+    record_id = forms.IntegerField(min_value=1)
+    index = forms.IntegerField(min_value=0, max_value=3)
