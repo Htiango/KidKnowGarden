@@ -232,6 +232,12 @@ def check_answer(request):
     record_id = int(request.POST['record_id'])
     question_id = int(request.POST['question_id'])
     index = int(request.POST['index'])
+
+    data = {'record_id': record_id, 'index':index}
+    answer_submit_form = AnswerSubmitForm(data)
+    if not answer_submit_form.is_valid():
+        return render(request, 'pages/error_msg.json', {'error': "Submit has some errors"}, content_type='application/json')
+
     correct_answer = CorrectAnswer.objects.get(id=record_id)
     status = (correct_answer.answer_index == index)
     sentence = Question.objects.get(id=question_id).answer
