@@ -281,7 +281,10 @@ def sudoku_game(request):
 
 @login_required
 def generate_sudoku(request):
-    sudoku = generate(40)
+    levels = [40, 45, 50]
+    level = int(request.GET.get('level'))
+    empty_num = levels[level-1]
+    sudoku = generate(empty_num)
     context = {"sudoku": sudoku}
     return render(request, 'pages/sudoku_new.json', context, content_type='application/json')
 

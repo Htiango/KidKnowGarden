@@ -92,7 +92,14 @@ function generateBoard() {
 }
 
 function getNewSudoku() {
-    $.get("/kidKnowGarden/sudoku-game/generate-sudoku")
+    var level = 1;
+    if ($("#radio2").is(":checked")){
+        level = 2;
+    }
+    if ($("#radio3").is(":checked")){
+        level = 3;
+    }
+    $.get("/kidKnowGarden/sudoku-game/generate-sudoku", {"level": level})
         .done(display_sudoku)
         .fail(function () {
             error_info("Internal Error Happens")
