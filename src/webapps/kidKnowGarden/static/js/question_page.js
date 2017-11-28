@@ -35,12 +35,16 @@ $(document).ready(function () {
 
     console.log("hello");
 
-    add_submit_listener();
+    var record_id = $("#record_id").attr("value");
+    var question_id = $("#question_id").attr("value");
+    $("#record_id").remove();
+    $("#question_id").remove();
+    add_submit_listener(record_id, question_id);
 
 });
 
 
-function add_submit_listener() {
+function add_submit_listener(record_id, question_id) {
     var submit_btn = $("#submit-btn");
     submit_btn.click(function (event) {
         event.preventDefault();
@@ -59,8 +63,6 @@ function add_submit_listener() {
         }
         console.log(index);
         if (index >= 0){
-            var record_id = $("#record_id").attr("value");
-            var question_id = $("#question_id").attr("value");
             console.log(record_id);
             $.post("/kidKnowGarden/submit-answer", {"record_id": record_id, "question_id": question_id, "index": index}).done(show_result);
         }
