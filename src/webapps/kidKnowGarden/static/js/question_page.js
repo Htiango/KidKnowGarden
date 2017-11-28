@@ -65,6 +65,9 @@ $(document).ready(function () {
             $.post("/kidKnowGarden/submit-answer",
                 {"record_id": record_id, "question_id": question_id, "index": index})
                 .done(function (data) {
+                    if (data["error"]){
+                        error_info(data["error"]);
+                    }
                     var result_left = $("#result-left");
                     var result_right = $('#result-right');
                     var status = data["status"];
