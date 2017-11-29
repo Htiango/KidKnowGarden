@@ -222,26 +222,26 @@ def matching(request):
     user = request.user
     return render(request, 'pages/room_matching.html', {"user": user})
 
-@login_required
-def room(request, id):
-    if id == 1 or id == '1':
-        raise Http404("Not found")
-    else:
-        room_object = get_object_or_404(Rooms, pk=id)
-        return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
-
 # @login_required
-# def room(request, id, user1, user2):
+# def room(request, id):
 #     if id == 1 or id == '1':
 #         raise Http404("Not found")
 #     else:
 #         room_object = get_object_or_404(Rooms, pk=id)
-#         username = request.user.username
-#         if username == user1:
-#             opponent = User.objects.get(username=user2)
-#         else:
-#             opponent = User.objects.get(username=user1)
-#         return render(request, 'pages/room.html', {'room': room_object, "user": request.user, "opponent": opponent})
+#         return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
+
+@login_required
+def room(request, id, user1, user2):
+    if id == 1 or id == '1':
+        raise Http404("Not found")
+    else:
+        room_object = get_object_or_404(Rooms, pk=id)
+        username = request.user.username
+        if username == user1:
+            opponent = User.objects.get(username=user2)
+        else:
+            opponent = User.objects.get(username=user1)
+        return render(request, 'pages/room.html', {'room': room_object, "user": request.user, "opponent": opponent})
 
 # @login_required
 # def user_list(request):
