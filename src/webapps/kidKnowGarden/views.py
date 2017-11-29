@@ -110,12 +110,13 @@ def set_profile(request):
     # new_profile = Profile(user=request.user,
     #                       grade=profile_form.cleaned_data['grade']
     #                       )
-
+    if profile_form.cleaned_data['grade']:
+        profile.grade = profile_form.cleaned_data['grade']
     if profile_form.cleaned_data['avatar']:
         profile.avatar = profile_form.cleaned_data['avatar']
     if profile_form.cleaned_data['bio']:
         profile.bio = profile_form.cleaned_data['bio']
-    # new_profile.save()
+    profile.save()
 
     return redirect(home)
 
