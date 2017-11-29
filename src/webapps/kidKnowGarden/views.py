@@ -364,7 +364,7 @@ def sudoku_game(request):
 
 @login_required
 def generate_sudoku(request):
-    levels = [40, 45, 50]
+    levels = [30, 40, 50]
     level = int(request.GET.get('level'))
     empty_num = levels[level-1]
     sudoku = generate(empty_num)
