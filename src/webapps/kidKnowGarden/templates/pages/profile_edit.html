@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content-part %}
-    <form class="mbr-form" action="{% url 'set-profile' %}" method="post" enctype="multipart/form-data"
+    <form class="mbr-form" action="{% url 'edit-profile' %}" method="post" enctype="multipart/form-data"
           data-form-title="Mobirise Form">
         {% csrf_token %}
         {% load myfilters %}

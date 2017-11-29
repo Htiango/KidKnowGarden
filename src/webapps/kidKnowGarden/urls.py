@@ -11,7 +11,9 @@ urlpatterns = [
     url(r'^activate/(?P<username>[^/]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         activate, name='activate'),
     url(r'^profile/setting$', set_profile, name='set-profile'),
-    url(r'^edit-profile$', edit_profile_page, name='edit-profile-page'),
+    url(r'^edit-profile-page$', edit_profile_page, name='edit-profile-page'),
+    url(r'^edit-profile$', edit_profile, name='edit-profile'),
+
     url(r'^profile-page$', profile_page, name='profile-page'),
     url(r'^home', home, name='home'),
     url(r'^avatar/(?P<username>\w+)$', get_avatar, name='get-avatar'),

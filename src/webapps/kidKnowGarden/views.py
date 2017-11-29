@@ -153,6 +153,37 @@ def edit_profile_page(request):
     context = {'edit_profile_form': edit_profile_form, 'user':user}
     return render(request, 'pages/profile_edit.html', context)
 
+
+@login_required
+def edit_profile(request):
+    if request.method == 'GET':
+        return redirect(edit_profile_page)
+
+    context = {}
+    user = request.user
+    context['user'] = user
+    edit_profile_form = EditProfileForm(request.POST, request.FILES)
+    context['edit_profile_form'] = edit_profile_form
+
+    if not edit_profile_form.is_valid():
+        return render(request, 'pages/profile_edit.html', context)
+
+    user.first_name = edit_profile_form.cleaned_data['first_name']
+    user.last_name = edit_profile_form.cleaned_data['last_name']
+    user.email = edit_profile_form.cleaned_data['email']
+    user.save()
+
+    profile = Profile.objects.get(user=user)
+    profile.grade = edit_profile_form.cleaned_data['grade']
+    if edit_profile_form.cleaned_data['bio']:
+        profile.bio = edit_profile_form.cleaned_data['bio']
+    if edit_profile_form.cleaned_data['avatar']:
+        profile.avatar = edit_profile_form.cleaned_data['avatar']
+    profile.save()
+
+    return redirect(profile_page)
+
+
 @login_required
 def get_avatar(request, username):
     user = User.objects.filter(username=username)
