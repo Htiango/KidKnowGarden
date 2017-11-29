@@ -4333,12 +4333,12 @@ body {
   background-color: #f1f1f1;
   opacity: 0.8;
 }
-.cid-qBuiHHbMHY .mbr-testimonial .card-block {
+.card-block {
   -webkit-flex-grow: 0;
   flex-grow: 0;
   padding: 2.4rem 2.4rem 0 2.4rem;
 }
-.cid-qBuiHHbMHY .mbr-testimonial .card-block .testimonial-photo {
+.card-block .testimonial-photo {
   display: inline-block;
   width: 120px;
   height: 120px;
@@ -4346,12 +4346,12 @@ body {
   overflow: hidden;
   border-radius: 50%;
 }
-.cid-qBuiHHbMHY .mbr-testimonial .card-block .testimonial-photo img {
+.card-block .testimonial-photo img {
   width: 100%;
   min-width: 100%;
   min-height: 100%;
 }
-.cid-qBuiHHbMHY .mbr-testimonial .card-footer {
+.mbr-testimonial .card-footer {
   padding-bottom: 2.4rem;
   border-top: 0;
   padding-top: 1rem;
