@@ -140,6 +140,19 @@ def profile_page(request):
     profile = Profile.objects.get(user=user)
     return render(request, 'pages/profile.html', {'profile': profile, "user": user})
 
+
+@login_required
+def edit_profile_page(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    edit_profile_form = EditProfileForm(initial={'first_name': user.first_name,
+                                                 'last_name': user.last_name,
+                                                 'email': user.email,
+                                                 'grade': profile.grade,
+                                                 'bio': profile.bio})
+    context = {'edit_profile_form': edit_profile_form, 'user':user}
+    return render(request, 'pages/profile_edit.html', context)
+
 @login_required
 def get_avatar(request, username):
     user = User.objects.filter(username=username)
