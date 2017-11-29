@@ -596,7 +596,7 @@ a:hover {
   padding: 0;
 }
 .alert {
-  color: #ffffff;
+  /*color: #ffffff;*/
   border-radius: 0;
   border: 0;
   font-size: .875rem;
@@ -4337,6 +4337,7 @@ body {
   -webkit-flex-grow: 0;
   flex-grow: 0;
   padding: 2.4rem 2.4rem 0 2.4rem;
+  text-align: center;
 }
 .card-block .testimonial-photo {
   display: inline-block;
