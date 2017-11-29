@@ -75,12 +75,19 @@ class Profile(models.Model):
     # Information on global scoreboard, display in user's profile is optional.
     score = models.IntegerField(default=0)
     level = models.IntegerField(default=0)
-
     # Stats for each user
     # stats = models.ManyToManyField(UserStats, related_name="user_stats", blank=True)
 
     def __str__(self):
         return self.user.username
+
+
+class LearnHistory(models.Model):
+    question_id = models.IntegerField()
+    content = models.TextField(default="", max_length=200)
+    user = models.ForeignKey(User)
+    time = models.DateTimeField(auto_now_add=True)
+    status = models.BooleanField()
 
 
 class CorrectAnswer(models.Model):

@@ -139,7 +139,15 @@ def home(request):
 def profile_page(request):
     user = request.user
     profile = Profile.objects.get(user=user)
-    return render(request, 'pages/profile.html', {'profile': profile, "user": user})
+    question_num = len(LearnHistory.objects.filter(user=user))
+    correct_num = len(LearnHistory.objects.filter(user=user, status=True))
+    if question_num == 0:
+        accuracy = 100
+    else:
+        accuracy = int(100 * correct_num / question_num)
+    return render(request, 'pages/profile.html', {'profile': profile, "user": user,
+                                                  "accuracy":accuracy, "question_num": question_num,
+                                                  "correct_num": correct_num})
 
 
 @login_required
@@ -277,6 +285,13 @@ def question_grade(request):
 
 
 @login_required
+def question_history(request):
+    user = request.user
+    learn_history = LearnHistory.objects.filter(user=user)
+    return render(request, 'pages/learning_history.html', {"learning_history": learn_history, "user":user})
+
+
+@login_required
 def question_page(request, question_id):
     user = request.user
     question = Question.objects.get(id=question_id)
@@ -303,6 +318,11 @@ def check_answer(request):
 
     correct_answer = CorrectAnswer.objects.get(id=record_id)
     status = (correct_answer.answer_index == index)
+
+    content = Question.objects.get(id=question_id).content
+    new_learn_history = LearnHistory(question_id=question_id, content=content, user=request.user, status=status)
+    new_learn_history.save()
+
     sentence = Question.objects.get(id=question_id).answer
     context = {"status":status, "answer": sentence}
     return render(request, 'pages/answer_status.json', context, content_type='application/json')

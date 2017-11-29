@@ -1,0 +1,86 @@
+{% extends "pages/question_list.html" %}
+
+{% block page_title %}
+    Learning History
+{% endblock %}
+
+{% block subpage-head-title %}
+    Learning History
+{% endblock %}
+
+{% block subpage-head-subtitle %}
+    View your learning history
+{% endblock %}
+
+
+{% block subpage-content-part %}
+    <div class="table-wrapper">
+        <div class="container">
+            <div class="row search">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <div class="dataTables_filter">
+                        <label class="searchInfo mbr-fonts-style display-7">Search:</label>
+                        <input class="form-control input-sm" disabled="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container scroll">
+            <table class="table isSearch" cellspacing="0">
+                <thead>
+                <tr class="table-heads ">
+                    <th class="head-item mbr-fonts-style display-7">
+                        CONTENT
+                    </th>
+                    <th class="head-item mbr-fonts-style display-7">
+                        DATE
+                    </th>
+                    <th class="head-item mbr-fonts-style display-7">
+                        STATUS
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for question in learning_history %}
+                    <tr>
+                        <td class="body-item mbr-fonts-style display-7">
+                            <a href="{% url "question-page" question.question_id %}">
+                                {{ question.content }}
+                            </a>
+                        </td>
+
+                        <td class="body-item mbr-fonts-style display-7">{{ question.time }}</td>
+                        <td class="body-item mbr-fonts-style display-7">{{ question.status }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="container table-info-container">
+            <div class="row info">
+                <div class="col-md-6">
+                    <div class="dataTables_info mbr-fonts-style display-7">
+                        <span class="infoBefore">Showing</span>
+                        <span class="inactive infoRows"></span>
+                        <span class="infoAfter">questions</span>
+                        <span class="infoFilteredBefore">(filtered from</span>
+                        <span class="inactive infoRows"></span>
+                        <span class="infoFilteredAfter"> total questions)</span>
+                    </div>
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+        </div>
+        <div class="container" style="text-align: center">
+            <a href="{% url 'profile-page' %}">
+                <button id="back-btn" class="btn btn-md btn-primary display-4" style="border-radius: 100px">
+                    Back to Profile Page
+                </button>
+            </a>
+        </div>
+    </div>
+{% endblock %}

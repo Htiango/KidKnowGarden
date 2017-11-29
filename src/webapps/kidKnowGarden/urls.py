@@ -15,6 +15,9 @@ urlpatterns = [
     url(r'^edit-profile$', edit_profile, name='edit-profile'),
 
     url(r'^profile-page$', profile_page, name='profile-page'),
+
+    url(r'^learning-history$', question_history, name='learning-history'),
+
     url(r'^home', home, name='home'),
     url(r'^avatar/(?P<username>\w+)$', get_avatar, name='get-avatar'),
     url(r'^user/(?P<username>.+)/$', user_page_view, name='user-link'),
