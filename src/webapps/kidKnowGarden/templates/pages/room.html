@@ -18,90 +18,89 @@
 
 {% block subpage-content-part %}
     <div class="container contest-question-container">
-        <div id='timer' class='room-center timer-text'>
-        </div>
+    <div id='timer' class='room-center timer-text'>
+    </div>
 
-        <div id='room' room-id='{{ room.id }}'>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card-block">
-                        <div class="testimonial-photo">
-                            <img src="{% url 'get-avatar' user.username %}" media-simple="true">
-                        </div>
-                        <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
-                            {{ user.username }}
-                        </div>
-                        <small class="mbr-author-desc mbr-italic mbr-light mbr-fonts-style display-7">
-                            {{ user.first_name }} {{ user.last_name }} <br>
-                            {{ user.email }}
-                        </small>
+    <div id='room' room-id='{{ room.id }}'>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card-block">
+                    <div class="testimonial-photo">
+                        <img src="{% url 'get-avatar' user.username %}" media-simple="true">
                     </div>
-                    <div id="result-left" class="align-center"></div>
+                    <div id="user-name" class="mbr-author-name mbr-bold mbr-fonts-style display-7">
+                        {{ user.username }}
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div class='room-center'>
-                        <h3 id='title'> {{ room.title }}</h3>
-                        <p id='status'></p>
+                <br>
+                <div class="card-footer">
+                    <div class='messages' id='messages1'>
                     </div>
-                    <div class='messages' id='messages'>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class='room-center'>
+                    <h3 id='title'> {{ room.title }}</h3>
+                    <p id='status'></p>
+                </div>
+                <div class='messages' id='messages'>
+                </div>
+
+                <div id='answer_group' class='display-contest-form' hidden>
+                    <input type='hidden' id='record_id' value="" hidden>
+                    <div class='choice-row form-check-label'>
+                        <input type='radio' name='choice' id='choice1' class='form-check-input' value="">
+                        <label for="choice1"></label><br>
                     </div>
-
-                    <div id='answer_group' class='display-contest-form' hidden>
-                        <input type='hidden' id='record_id' value="" hidden>
-                        <div class='choice-row form-check-label'>
-                            <input type='radio' name='choice' id='choice1' class='form-check-input' value="">
-                            <label for="choice1"></label><br>
-                        </div>
-                        <div class='choice-row form-check-label'>
-                            <input type='radio' name='choice' id='choice2' class='form-check-input' value="">
-                            <label for="choice2"></label><br>
-                        </div>
-                        <div class='choice-row form-check-label'>
-                            <input type='radio' name='choice' id='choice3' class='form-check-input' value="">
-                            <label for="choice3"></label><br>
-                        </div>
-                        <div class='choice-row form-check-label'>
-                            <input type='radio' name='choice' id='choice4' class='form-check-input' value="">
-                            <label for="choice4"></label><br>
-                        </div>
-                        <div class='mbr-section-btn align-center py-2'>
-                            <button id="submit-btn" class="btn btn-md btn-primary display-4"
-                                    style="border-radius: 100px">
-                                submit
-                            </button>
-                        </div>
-
-
+                    <div class='choice-row form-check-label'>
+                        <input type='radio' name='choice' id='choice2' class='form-check-input' value="">
+                        <label for="choice2"></label><br>
                     </div>
-                    <br>
-
-                    <div class='mbr-section-btn align-center py-2 room-center'>
-                        <button id='start' class="btn btn-md btn-primary display-4"
-                                style="border-radius: 100px" hidden>
-                            Start
+                    <div class='choice-row form-check-label'>
+                        <input type='radio' name='choice' id='choice3' class='form-check-input' value="">
+                        <label for="choice3"></label><br>
+                    </div>
+                    <div class='choice-row form-check-label'>
+                        <input type='radio' name='choice' id='choice4' class='form-check-input' value="">
+                        <label for="choice4"></label><br>
+                    </div>
+                    <div class='mbr-section-btn align-center py-2'>
+                        <button id="submit-btn" class="btn btn-md btn-primary display-4"
+                                style="border-radius: 100px">
+                            submit
                         </button>
                     </div>
-                    <br>
-                    <div class='mbr-section-btn align-center py-2 room-center'>
-                        <a class="btn btn-md btn-primary display-4"
-                           style="border-radius: 100px" href="{% url 'home' %}"> Leave </a>
-                    </div>
+
 
                 </div>
-                <div class="col-md-3">
-                    <div class="card-block">
+                <br>
+
+                <div class='mbr-section-btn align-center py-2 room-center'>
+                    <button id='start' class="btn btn-md btn-primary display-4"
+                            style="border-radius: 100px" hidden>
+                        Start
+                    </button>
+                </div>
+                <br>
+                <div class='mbr-section-btn align-center py-2 room-center'>
+                    <a class="btn btn-md btn-primary display-4"
+                       style="border-radius: 100px" href="{% url 'home' %}"> Leave </a>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="card-block">
                     <div class="testimonial-photo">
                         <img src="{% url 'get-avatar' opponent.username %}" media-simple="true">
                     </div>
-                    <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
+                    <div id="opponent-name" class="mbr-author-name mbr-bold mbr-fonts-style display-7">
                         {{ opponent.username }}
                     </div>
-                    <small class="mbr-author-desc mbr-italic mbr-light mbr-fonts-style display-7">
-                        {{ opponent.first_name }} {{ opponent.last_name }} <br>
-                        {{ opponent.email }}
-                    </small>
                 </div>
-                    <div id="result-right" class="align-center"></div>
+                <br>
+                <div class="card-footer">
+                    <div class='messages' id='messages2'>
+                    </div>
                 </div>
             </div>
 

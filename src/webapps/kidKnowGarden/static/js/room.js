@@ -19,7 +19,11 @@ $(function () {
 
     var title = $("#title");
     var start_btn = $("#start");
-    var messages = $("#messages");
+    var messages_my = $("#messages1");
+    var messages_opp = $("#messages2");
+    var user_name = $.trim($("#user-name").text());
+    var opponent_name = $.trim($("#opponent-name").text());
+
     var status = $("#status");
     var submit_btn = $("#submit-btn");
     var answer_group = $("#answer_group");
@@ -44,7 +48,10 @@ $(function () {
     }
 
     function initial_status(){
-        messages.empty();
+        // messages.empty();
+        messages_my.empty();
+        messages_opp.empty();
+
         status.empty();
         start_btn.prop("hidden", true);
         answer_group.prop('hidden', true);
@@ -66,7 +73,10 @@ $(function () {
 
     function contest_end(){
         title.text("Contest ends.");
-        messages.empty();
+        // messages.empty();
+        messages_my.empty();
+        messages_opp.empty();
+
         status.empty();
         start_btn.prop("hidden", true);
         answer_group.prop('hidden', true);
@@ -114,7 +124,10 @@ $(function () {
         radios.prop("checked", false);
         radios.prop('disabled', false);
         submit_btn.prop("disabled", false);
-        messages.empty();
+        // messages.empty();
+        messages_my.empty();
+        messages_opp.empty();
+
         status.empty();
         start_btn.prop("hidden", true);
 
@@ -248,8 +261,20 @@ $(function () {
                 ok_msg = "<div class='message alert alert-primary single-message-container'>" +
                     data.username + " : "  + data.message +
                     "</div>";
-                messages.append(ok_msg);
-                messages.scrollTop(messages.prop("scrollHeight"));
+                console.log(data.username);
+                console.log(typeof(data.username));
+                console.log(data.username.length);
+                console.log(user_name);
+                console.log(typeof(user_name));
+                console.log(user_name.length);
+                if (data.username === user_name){
+                    messages_my.append(ok_msg);
+                }
+                else{
+                    messages_opp.append(ok_msg);
+                }
+                // messages.append(ok_msg);
+                // messages.scrollTop(messages.prop("scrollHeight"));
                 if (data.xmessage === 'True' || data.xmessage === 'true'){
                     contest_stop();
                 }
