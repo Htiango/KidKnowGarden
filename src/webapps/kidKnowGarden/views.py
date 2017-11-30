@@ -232,7 +232,8 @@ def matching(request):
     if not is_in_another_room(user):
         return render(request, 'pages/room_matching.html', {"user": user})
     else:
-        raise Http404("You are already in contest status!")
+        return render(request, 'pages/error_page.html', {"user": user})
+        # raise Http404("You are already in contest status!")
 
 # @login_required
 # def room(request, id):
@@ -306,7 +307,9 @@ def question_history(request):
 @login_required
 def question_page(request, question_id):
     user = request.user
-    question = Question.objects.get(id=question_id)
+    question = get_object_or_404(Rooms, pk=question_id)
+
+    # question = Question.objects.get(id=question_id)
     ls = [question.choice1, question.choice2, question.choice3, question.answer]
     random.shuffle(ls)
     index = ls.index(question.answer)
