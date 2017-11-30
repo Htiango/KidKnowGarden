@@ -229,14 +229,16 @@ def start_timing(message):
         if int(message['room']) not in message.channel_session['rooms']:
             raise ClientError("ROOM_ACCESS_DENIED")
         room = get_room_or_error(message["room"], message.user)
-
-        question_string = get_random_question(room)
-        #print(question_string)
-        if question_string != "Contest End":
-            room.send_message(question_string, message.user, "Question")
-            room.send_message("Start timing", message.user, "Start timing")
+        if start_confirm(message.user, room):
+            question_string = get_random_question(room)
+            #print(question_string)
+            if question_string != "Contest End":
+                room.send_message(question_string, message.user, "Question")
+                room.send_message("Start timing", message.user, "Start timing")
+            else:
+                room.send_message("Contest End", message.user, "Contest End")
         else:
-            room.send_message("Contest End", message.user, "Contest End")
+            room.send_message("Waiting for confirm", message.user, "Waiting for confirm")
     except:
         message.reply_channel.send({
             "text": json.dumps({

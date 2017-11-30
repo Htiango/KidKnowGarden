@@ -171,6 +171,7 @@ $(function () {
         // Handle joining
         if (data.join) {
             console.log("Joining room " + data.join);
+
             start_btn.off().on("click", function () {
                 socket.send(JSON.stringify({
                     "command": "start",
@@ -210,6 +211,10 @@ $(function () {
             else if (data.message === "Contest End" && data.xmessage === "Contest End") {
                 contest_end();
                 request_result();
+            }
+
+            else if (data.message === "Waiting for confirm" && data.xmessage === "Waiting for confirm") {
+                status.text("Wait for another people proceed.");
             }
 
             else if (data.message === "USER ENTER" || data.message === "USER LEAVE"){
