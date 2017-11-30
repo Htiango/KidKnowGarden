@@ -55,14 +55,14 @@ def register(request):
     token = default_token_generator.make_token(new_user)
 
     email_body = """
-        Welcome to the grumblr. Please click the link below to verify your email address and complete the registration of your account:
+        Welcome to the kidKnowGarden. Please click the link below to verify your email address and complete the registration of your account:
 
         http://%s%s
     """ % (request.get_host(), reverse('activate', args=(new_user.username, token)))
 
-    send_mail(subject="Verify your email address",
+    send_mail(subject="Verify your email address - DO NOT REPLY",
               message=email_body,
-              from_email="register@grumblr.com",
+              from_email="register@kidsgarden.ga",
               recipient_list=[new_user.email])
 
     context['email'] = form.cleaned_data['email']
