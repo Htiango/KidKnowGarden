@@ -21,42 +21,43 @@
     <h5 id="username" hidden>{{ user.username }}</h5>
 
     <div class="container contest-question-container">
-    <div id='timer' class='room-center timer-text'>
-    </div>
+        <div id='timer' class='room-center timer-text'>
+        </div>
 
-    <div id='room' room-id="1">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card-block">
-                    <div class="testimonial-photo">
-                        <img src="{% url 'get-avatar' user.username %}" media-simple="true">
+        <div id='room' room-id="1">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card-block">
+                        <div class="testimonial-photo">
+                            <img src="{% url 'get-avatar' user.username %}" media-simple="true">
+                        </div>
+                        <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
+                            {{ user.username }}
+                        </div>
                     </div>
-                    <div class="mbr-author-name mbr-bold mbr-fonts-style display-7">
-                        {{ user.username }}
+                    <br>
+
+                </div>
+                <div class="col-md-6">
+                    <div class='room-center'>
+                        <h2 id='title'>You are now entering contest</h2>
+                        <h5 id='status'>We are finding a suitable opponent</h5>
                     </div>
-                </div>
-                <br>
-
-            </div>
-            <div class="col-md-6">
-                <div class='room-center'>
-                    <h2 id='title'>You are now entering contest</h2>
-                    <h5 id='status'>We are finding a suitable opponent</h5>
-                </div>
 
 
-                <div class='mbr-section-btn align-center py-2 room-center'>
-                    <a class="btn btn-md btn-primary display-4"
-                       style="border-radius: 100px" href="{% url 'home' %}"> Leave </a>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-footer">
-                    <div class='messages' id='messages'>
+                    <div class='mbr-section-btn align-center py-2 room-center'>
+                        <a class="btn btn-md btn-primary display-4"
+                           style="border-radius: 100px" href="{% url 'home' %}"> Leave </a>
                     </div>
                 </div>
-            </div>
+                <div class="col-md-3">
+                    <div class="card-footer">
+                        <div class='messages' id='messages'>
+                        </div>
+                    </div>
+                </div>
 
+            </div>
         </div>
     </div>
 {% endblock %}
