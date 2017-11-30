@@ -59,81 +59,97 @@ def chat_join(message):
     # Find the room they requested (by ID) and add ourselves to the send group
     # Note that, because of channel_session_user, we have a message.user
     # object that works just like request.user would. Security!
-    room = get_room_or_error(message["room"], message.user)
 
-    if room.id == 1:
-        result = match_user(message.user)
-        if result is None:
-            room_profile = Room_Profile.objects.get(user=message.user)
-            room.room_profile_set.add(room_profile)
-            room.save()
-            # Send a "enter message" to the room if available
-            room.send_message("USER ENTER", message.user, None)
-            room.websocket_group.add(message.reply_channel)
-            message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
-            message.reply_channel.send({
-                "text": json.dumps({
-                    "join": str(room.id),
-                    "title": room.title,
-                }),
-            })
-        else:
-            # TODO: If two users are identical, deal with it.
-            new_room = create_new_room(message.user, result.user)
-            new_url = reverse('room', kwargs={'id': new_room.id})
-            room.send_message("MATCHED", result.user, new_url)
-            message.reply_channel.send({
-                "text": json.dumps({
-                    "matched": new_url,
-                    "title": new_room.title,
-                }),
-            })
+    try:
+        room = get_room_or_error(message["room"], message.user)
+    except:
+        message.reply_channel.send({
+            "text": json.dumps({
+                "error": "You have no access to the room!",
+            }),
+        })
+        return
+
+    if is_in_another_room(message.user):
+        message.reply_channel.send({
+            "text": json.dumps({
+                "error": "You are already in one contest!",
+            }),
+        })
     else:
-        ## Add one for this room
-        clear_contest_score(message.user)
-        members = room.room_profile_set.count()
-        if members >= 2:
-            message.reply_channel.send({
-                "text": json.dumps({
-                    "error": "The contest has reach a member limit!",
-                }),
-            })
-        else:
-            if room.room_profile_set.all().filter(user=message.user).exists():
-                message.reply_channel.send({
-                    "text": json.dumps({
-                        "error": "You are already in this contest!",
-                    }),
-                })
-            else:
+        if room.id == 1:
+            result = match_user(message.user)
+            if result is None:
                 room_profile = Room_Profile.objects.get(user=message.user)
                 room.room_profile_set.add(room_profile)
                 room.save()
                 # Send a "enter message" to the room if available
-                #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-                room.send_message("USER ENTER", message.user, str(members+1))
-
-                # OK, add them in. The websocket_group is what we'll send messages
-                # to so that everyone in the chat room gets them.
+                room.send_message("USER ENTER", message.user, None)
                 room.websocket_group.add(message.reply_channel)
                 message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
-                # Send a message back that will prompt them to open the room
-                # Done server-side so that we could, for example, make people
-                # join rooms automatically.
                 message.reply_channel.send({
                     "text": json.dumps({
                         "join": str(room.id),
                         "title": room.title,
-                        "members": str(members+1)
                     }),
                 })
+            else:
+                # TODO: If two users are identical, deal with it.
+                new_room = create_new_room(message.user, result.user)
+                # new_url = reverse('room', kwargs={'id': new_room.id})
+                new_url = reverse('room', kwargs={'id': new_room.id})
+                room.send_message("MATCHED", result.user, new_url)
+                message.reply_channel.send({
+                    "text": json.dumps({
+                        "matched": new_url,
+                        "title": new_room.title,
+                    }),
+                })
+        else:
+            ## Add one for this room
+            clear_contest_score(message.user)
+            members = room.room_profile_set.count()
+            if members >= 2:
+                message.reply_channel.send({
+                    "text": json.dumps({
+                        "error": "The contest has reach a member limit!",
+                    }),
+                })
+            else:
+                if room.room_profile_set.all().filter(user=message.user).exists():
+                    message.reply_channel.send({
+                        "text": json.dumps({
+                            "error": "You are already in this contest!",
+                        }),
+                    })
+                else:
+                    room_profile = Room_Profile.objects.get(user=message.user)
+                    room.room_profile_set.add(room_profile)
+                    room.save()
+                    # Send a "enter message" to the room if available
+                    #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+                    room.send_message("USER ENTER", message.user, str(members+1))
+
+                    # OK, add them in. The websocket_group is what we'll send messages
+                    # to so that everyone in the chat room gets them.
+                    room.websocket_group.add(message.reply_channel)
+                    message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
+                    # Send a message back that will prompt them to open the room
+                    # Done server-side so that we could, for example, make people
+                    # join rooms automatically.
+                    message.reply_channel.send({
+                        "text": json.dumps({
+                            "join": str(room.id),
+                            "title": room.title,
+                            "members": str(members+1)
+                        }),
+                    })
 
 @channel_session_user
 #@catch_client_error
 def chat_leave(message):
     # Reverse of join - remove them from everything.
     room = get_room_or_error(message["room"], message.user)
-
     members = room.room_profile_set.count()
     if members < 0:
         raise ClientError("ROOM_ACCESS_DENIED")
@@ -155,7 +171,7 @@ def chat_leave(message):
                 "leave": str(room.id),
             }),
         })
-        if room.room_profile_set.count() == 0 and room.id != 1:
+        if room.id != 1:
             room.delete()
 
 
@@ -171,58 +187,68 @@ def chat_send(message):
 @channel_session_user
 #@catch_client_error
 def answer(message):
-    if int(message['room']) not in message.channel_session['rooms']:
-        raise ClientError("ROOM_ACCESS_DENIED")
-    room = get_room_or_error(message["room"], message.user)
-    answer = message["answer"]
-    record_id = message["record_id"]
-    status = judge_question_correctness(int(record_id), int(answer))
+    try:
+        if int(message['room']) not in message.channel_session['rooms']:
+            raise ClientError("ROOM_ACCESS_DENIED")
+        room = get_room_or_error(message["room"], message.user)
+        answer = message["answer"]
+        record_id = message["record_id"]
+        status = judge_question_correctness(int(record_id), int(answer))
 
-    if status:
-        answer = "Got the right answer!"
-        score = message["current_time"]
-        save_contest_score(score,message.user)
-    else:
-        answer = "Made a wrong guess!"
-        save_contest_score(0, message.user)
+        if status:
+            answer = "Got the right answer!"
+            score = message["current_time"]
+            save_contest_score(score, message.user)
+        else:
+            answer = "Made a wrong guess!"
+            save_contest_score(0, message.user)
 
-    time_up = judge_time_up(message.user, room)
-    # Send message to all members in the room
-    room.send_message(answer, message.user, str(time_up))
-    # Return a message only to the user who make a message request
-    message.reply_channel.send({
-        "text": json.dumps({
-            "answer": answer,
-            "correctness": status,
-        }),
-    })
+        time_up = judge_time_up(message.user, room)
+        # Send message to all members in the room
+        room.send_message(answer, message.user, str(time_up))
+        # Return a message only to the user who make a message request
+        message.reply_channel.send({
+            "text": json.dumps({
+                "answer": answer,
+                "correctness": status,
+            }),
+        })
+    except:
+        message.reply_channel.send({
+            "text": json.dumps({
+                "error": "You have no access to the room!",
+            }),
+        })
+
 
 
 @channel_session_user
 #@catch_client_error
 def start_timing(message):
-    if int(message['room']) not in message.channel_session['rooms']:
-        raise ClientError("ROOM_ACCESS_DENIED")
-    room = get_room_or_error(message["room"], message.user)
+    try:
+        if int(message['room']) not in message.channel_session['rooms']:
+            raise ClientError("ROOM_ACCESS_DENIED")
+        room = get_room_or_error(message["room"], message.user)
 
-    question_string = get_random_question(room)
-    #print(question_string)
-    if question_string != "Contest End":
-        room.send_message(question_string, message.user, "Question")
-        room.send_message("Start timing", message.user, "Start timing")
-    else:
-        room.send_message("Contest End", message.user, "Contest End")
+        question_string = get_random_question(room)
+        #print(question_string)
+        if question_string != "Contest End":
+            room.send_message(question_string, message.user, "Question")
+            room.send_message("Start timing", message.user, "Start timing")
+        else:
+            room.send_message("Contest End", message.user, "Contest End")
+    except:
+        message.reply_channel.send({
+            "text": json.dumps({
+                "error": "You are no longer inside the contest room!",
+            }),
+        })
 
 
 @channel_session_user
 #@catch_client_error
 def request_score(message):
-    # if int(message['room']) not in message.channel_session['rooms']:
-    #     raise ClientError("ROOM_ACCESS_DENIED")
 
-    room = get_room_or_error(message["room"], message.user)
-
-    #print("This is score operation" + message['room'])
     # Return a message only to the user who make a message request
     # Three status of win/loss: Win, Lose or Tie
     message.reply_channel.send({
@@ -232,21 +258,27 @@ def request_score(message):
         }),
     })
 
+
 @channel_session_user
 #@catch_client_error
 def request_result(message):
-    # if int(message['room']) not in message.channel_session['rooms']:
-    #     raise ClientError("ROOM_ACCESS_DENIED")
+    try:
+        if int(message['room']) not in message.channel_session['rooms']:
+            raise ClientError("ROOM_ACCESS_DENIED")
+        room = get_room_or_error(message["room"], message.user)
 
-    room = get_room_or_error(message["room"], message.user)
-
-    #print("This is score operation" + message['room'])
-    # Return a message only to the user who make a message request
-    # Three status of win/loss: Win, Lose or Tie
-    message.reply_channel.send({
-        "text": json.dumps({
-            "result": str(get_score(message.user)),
-            "isWin": judge_contest_status(message.user, room),
-            "username": message.user.username
-        }),
-    })
+        # Return a message only to the user who make a message request
+        # Three status of win/loss: Win, Lose or Tie
+        message.reply_channel.send({
+            "text": json.dumps({
+                "result": str(get_score(message.user)),
+                "isWin": judge_contest_status(message.user, room),
+                "username": message.user.username
+            }),
+        })
+    except:
+        message.reply_channel.send({
+            "text": json.dumps({
+                "error": "You are no longer inside the contest room!",
+            }),
+        })

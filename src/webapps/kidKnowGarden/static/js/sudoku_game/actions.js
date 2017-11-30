@@ -92,7 +92,18 @@ function generateBoard() {
 }
 
 function getNewSudoku() {
-    $.get("/kidKnowGarden/sudoku-game/generate-sudoku").done(display_sudoku);
+    var level = 1;
+    if ($("#radio2").is(":checked")){
+        level = 2;
+    }
+    if ($("#radio3").is(":checked")){
+        level = 3;
+    }
+    $.get("/kidKnowGarden/sudoku-game/generate-sudoku", {"level": level})
+        .done(display_sudoku)
+        .fail(function () {
+            error_info("Internal Error Happens")
+        });
 }
 
 function renderBoardCell(id) {
@@ -141,7 +152,11 @@ function getOneHint() {
     var sudoku = getCurrentSudoku();
     console.log(sudoku);
     var sudoku_json = sudoku.join();
-    $.get("/kidKnowGarden/sudoku-game/give-one-hint", {'sudoku': sudoku_json}).done(display_one_hint);
+    $.get("/kidKnowGarden/sudoku-game/give-one-hint", {'sudoku': sudoku_json})
+        .done(display_one_hint)
+        .fail(function () {
+            error_info("Internal Error Happens");
+        });
 }
 
 function display_one_hint(data) {
@@ -175,14 +190,22 @@ function getAnswer() {
     var sudoku = getCurrentSudoku();
     var sudoku_json = sudoku.join();
 
-    $.get("/kidKnowGarden/sudoku-game/get-solution", {'sudoku': sudoku_json}).done(display_sudoku);
+    $.get("/kidKnowGarden/sudoku-game/get-solution", {'sudoku': sudoku_json})
+        .done(display_sudoku)
+        .fail(function () {
+            error_info("Internal Error Happens");
+        });
 }
 
 
 function checkAnswer() {
     var sudoku = getCurrentSudoku();
     var sudoku_json = sudoku.join();
-    $.get("/kidKnowGarden/sudoku-game/check-answer", {'sudoku': sudoku_json}).done(display_check);
+    $.get("/kidKnowGarden/sudoku-game/check-answer", {'sudoku': sudoku_json})
+        .done(display_check)
+        .fail(function () {
+            error_info("Internal Error Happens")
+        });
 }
 
 

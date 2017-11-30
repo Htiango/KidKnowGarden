@@ -19,6 +19,34 @@
 {% endblock %}
 
 {% block subpage-content-part %}
+    <div class="container container-level">
+        <label class="custom-control custom-radio">
+            <span class="custom-control-description">CHOOSE LEVEL: </span>
+        </label>
+        <label class="custom-control custom-radio">
+            <input id="radio1" name="radio" type="radio" class="custom-control-input" checked="">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">EASY</span>
+        </label>
+        <label class="custom-control custom-radio">
+            <input id="radio2" name="radio" type="radio" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">MIDDLE</span>
+        </label>
+        <label class="custom-control custom-radio">
+            <input id="radio3" name="radio" type="radio" class="custom-control-input">
+            <span class="custom-control-indicator"></span>
+            <span class="custom-control-description">HARD</span>
+        </label>
+
+        {#        <label> Level:</label>#}
+        {#        <select class="custom-select">#}
+        {#            <option value="1">Easy</option>#}
+        {#            <option value="2">Two</option>#}
+        {#            <option value="3">Three</option>#}
+        {#        </select>#}
+
+    </div>
     <div class="container sudoku-board-container">
         <div id="sudoku_board" class="sudoku-board">
 

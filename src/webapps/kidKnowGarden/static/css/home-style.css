@@ -119,8 +119,7 @@
 }
 
 .display-contest-form {
-    padding-left: 28%;
-    padding-top: 20px;
+    text-align: left;
 }
 
 .alert-text {
@@ -137,8 +136,6 @@
 
 
 .single-message-container {
-    margin-left: 20%;
-    margin-right: 20%;
     text-align: center;
 }
 

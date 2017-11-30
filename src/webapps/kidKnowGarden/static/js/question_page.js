@@ -19,14 +19,16 @@ $(document).ready(function () {
         }
         return cookieValue;
     }
+
     var csrftoken = getCookie('csrftoken');
 
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
+
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
@@ -35,58 +37,73 @@ $(document).ready(function () {
 
     console.log("hello");
 
-    add_submit_listener();
+    var record_id = $("#record_id").attr("value");
+    var question_id = $("#question_id").attr("value");
+    $("#record_id").remove();
+    $("#question_id").remove();
 
-});
 
-
-function add_submit_listener() {
     var submit_btn = $("#submit-btn");
     submit_btn.click(function (event) {
         event.preventDefault();
         var index = -1;
-        if ($("#choice1").is(":checked")){
+        if ($("#choice1").is(":checked")) {
             index = 0;
         }
-        else if ($("#choice2").is(":checked")){
+        else if ($("#choice2").is(":checked")) {
             index = 1;
         }
-        else if ($("#choice3").is(":checked")){
+        else if ($("#choice3").is(":checked")) {
             index = 2;
         }
-        else if ($("#choice4").is(":checked")){
+        else if ($("#choice4").is(":checked")) {
             index = 3;
         }
         console.log(index);
-        if (index >= 0){
-            var record_id = $("#record_id").attr("value");
-            var question_id = $("#question_id").attr("value");
+        if (index >= 0) {
             console.log(record_id);
-            $.post("/kidKnowGarden/submit-answer", {"record_id": record_id, "question_id": question_id, "index": index}).done(show_result);
+            $.post("/kidKnowGarden/submit-answer",
+                {"record_id": record_id, "question_id": question_id, "index": index})
+                .done(function (data) {
+                    if (data["error"]){
+                        error_info(data["error"]);
+                    }
+                    var result_left = $("#result-left");
+                    var result_right = $('#result-right');
+                    var status = data["status"];
+                    result_left.empty();
+                    result_right.empty();
+                    if (status == "True") {
+                        result_left.append($("<span class='mbr-iconfont mbri-smile-face question-feedback-icons' style='color: green;' media-simple='true'></span>"));
+                        result_left.append($("<br><br><span class='align-center question-success-text'>Correct!</span>"));
+                        result_right.append($("<span class='mbr-iconfont mbri-smile-face question-feedback-icons' style='color: green;' media-simple='true'></span>"));
+                        result_right.append($("<br><br><span class='align-center question-success-text'>Correct!</span>"));
+                    }
+                    else {
+                        result_left.append($("<span class='mbr-iconfont mbri-sad-face question-feedback-icons' style='color: red;' media-simple='true'></span>"));
+                        result_right.append($("<span class='mbr-iconfont mbri-sad-face question-feedback-icons' style='color: red;' media-simple='true'></span>"));
+                        result_left.append($("<br><br><span class='align-center question-wrong-text'>Sorry, wrong answer.<br>" +
+                            "Correct answer is: " + data["answer"] + "</span>"));
+                        result_right.append($("<br><br><span class='align-center question-wrong-text'>Sorry, wrong answer.<br>" +
+                            "Correct answer is: " + data["answer"] + "</span>"));
+                    }
+                })
+                .fail(function () {
+                    error_info("Request failed... ");
+                });
         }
     })
-}
 
-function show_result(data){
-    console.log(data);
+});
 
-    var result_left = $("#result-left");
-    var result_right = $('#result-right');
-    var status = data["status"];
-    result_left.empty();
-    result_right.empty();
-    if (status == "True"){
-        result_left.append($("<span class='mbr-iconfont mbri-smile-face question-feedback-icons' style='color: green;' media-simple='true'></span>"));
-        result_left.append($("<br><br><span class='align-center question-success-text'>Correct!</span>"));
-        result_right.append($("<span class='mbr-iconfont mbri-smile-face question-feedback-icons' style='color: green;' media-simple='true'></span>"));
-        result_right.append($("<br><br><span class='align-center question-success-text'>Correct!</span>"));
-    }
-    else{
-        result_left.append($("<span class='mbr-iconfont mbri-sad-face question-feedback-icons' style='color: red;' media-simple='true'></span>"));
-        result_right.append($("<span class='mbr-iconfont mbri-sad-face question-feedback-icons' style='color: red;' media-simple='true'></span>"));
-        result_left.append($("<br><br><span class='align-center question-wrong-text'>Sorry, wrong answer.<br>" +
-            "Correct answer is: " + data["answer"] + "</span>"));
-        result_right.append($("<br><br><span class='align-center question-wrong-text'>Sorry, wrong answer.<br>" +
-            "Correct answer is: " + data["answer"] + "</span>"));
-    }
+
+function error_info(content) {
+    $.alert({
+        title: 'ERROR',
+        titleClass: 'alert-fail-text',
+        icon: 'mbri-sad-face alert-fail-text',
+        content: content,
+        theme: 'bootstrap',
+        type: 'red'
+    });
 }

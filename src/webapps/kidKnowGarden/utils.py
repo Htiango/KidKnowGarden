@@ -40,14 +40,13 @@ def get_room_or_error(room_id, user):
     return room
 
 
-# Extend this function to return a set of string
-# To generate questions and answers
-def get_random_room():
+def is_in_another_room(user):
     # Performance will be largely affected!!!
-    room = Rooms.objects.order_by('?')
-    r = room.first()
-    return r.title
-
+    room_profile = Room_Profile.objects.get(user=user)
+    if room_profile.inroom is not None:
+        return True
+    else:
+        return False
 
 def get_random_question(room):
     question = Question.objects.order_by('?')
@@ -180,5 +179,8 @@ def match_user(user):
 def create_new_room(user1, user2):
     title = user1.username + "  vs  " + user2.username
     new_room = Rooms(title=title)
+    new_room.save()
+    new_room.granted_users.add(user1)
+    new_room.granted_users.add(user2)
     new_room.save()
     return new_room

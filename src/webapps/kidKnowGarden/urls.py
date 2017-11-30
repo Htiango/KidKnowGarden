@@ -10,15 +10,21 @@ urlpatterns = [
     url(r'^accounts/login', LoginView.as_view(template_name='pages/login.html'), name='auto-login'),
     url(r'^activate/(?P<username>[^/]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         activate, name='activate'),
-    url(r'^profile/setting', set_profile, name='set-profile'),
+    url(r'^profile/setting$', set_profile, name='set-profile'),
+    url(r'^edit-profile-page$', edit_profile_page, name='edit-profile-page'),
+    url(r'^edit-profile$', edit_profile, name='edit-profile'),
+
     url(r'^profile-page$', profile_page, name='profile-page'),
+
+    url(r'^learning-history$', question_history, name='learning-history'),
+
     url(r'^home', home, name='home'),
     url(r'^avatar/(?P<username>\w+)$', get_avatar, name='get-avatar'),
     url(r'^user/(?P<username>.+)/$', user_page_view, name='user-link'),
     url(r'^logout', logout_view, name='logout'),
     url(r'^room_list$', matching, name='room_list'),
-    url(r'^room/(?P<id>\d+)$', room, name='room'),
-
+    # url(r'^room/(?P<id>\d+)$', room, name='room'),
+    url(r'^room/(?P<id>\d+)/$', room, name='room'),
     #url(r'^user_list$', user_list, name='user_list'),
     #url(r'^user_invite/(?P<username>.+)/$', user_invite, name='user-invite'),
 

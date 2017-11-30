@@ -1,0 +1,52 @@
+{% extends "pages/home.html" %}
+
+{% block page_title %}
+    Setting
+{% endblock %}
+
+{% block page-head-title %}
+    Setting
+{% endblock %}
+
+{% block page-head-subtitle %}
+    Edit Your Profile Here!
+{% endblock %}
+
+{% block content-part %}
+    <form class="mbr-form" action="{% url 'edit-profile' %}" method="post" enctype="multipart/form-data"
+          data-form-title="Mobirise Form">
+        {% csrf_token %}
+        {% load myfilters %}
+
+        {% for field in edit_profile_form.visible_fields %}
+            <div class="row row-sm-offset">
+                <div class="col-md-4" style="text-align: right">
+                    <label class="label-style col-sm-4 col-form-label"
+                               for="{{ field.name }}">{{ field.label }}</label>
+                </div>
+                <div class="col-md-4" data-for="username">
+                    <div class="form-group">
+                        {{ field|add_class_placeholder:'form-control' }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="warning-font">
+                        {{ field.errors }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="row row-sm-offset">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <div class="input-group-btn align-items-center inherit-style">
+                    <button href="" type="submit" class="btn btn-white-outline btn-form display-4">Submit</button>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+
+    </form>
+{% endblock %}

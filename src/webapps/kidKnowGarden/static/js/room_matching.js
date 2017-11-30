@@ -87,6 +87,7 @@ $(function () {
         }
     };
 
+
     $( window ).on("unload", function(e) {
         socket.send(JSON.stringify({
             "command": "leave",  // determines which handler will be used (see chat/routing.py)

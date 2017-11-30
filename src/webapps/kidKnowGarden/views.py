@@ -10,6 +10,7 @@ from mimetypes import guess_type
 from django.contrib.auth import authenticate, login, logout
 import random
 from kidKnowGarden.sudoku import *
+from kidKnowGarden.utils import *
 
 from channels import Group
 
@@ -83,6 +84,10 @@ def activate(request, username, token):
         user.is_active = True
         user.save()
         login(request, user)
+        new_profile = Profile(user=user)
+        new_room_profile = Room_Profile(user=user)
+        new_profile.save()
+        new_room_profile.save()
         return redirect(set_profile)
     else:
         return HttpResponse('Activation link is invalid!')
@@ -101,16 +106,19 @@ def set_profile(request):
     if not profile_form.is_valid():
         return render(request, 'pages/set_profile.html', context)
 
-    new_profile = Profile(user=request.user,
-                          grade=profile_form.cleaned_data['grade']
-                          )
-    new_room_profile = Room_Profile(user=request.user)
+    profile = Profile.objects.get(user=request.user)
+
+    # new_profile = Profile(user=request.user,
+    #                       grade=profile_form.cleaned_data['grade']
+    #                       )
+    if profile_form.cleaned_data['grade']:
+        profile.grade = profile_form.cleaned_data['grade']
     if profile_form.cleaned_data['avatar']:
-        new_profile.avatar = profile_form.cleaned_data['avatar']
+        profile.avatar = profile_form.cleaned_data['avatar']
     if profile_form.cleaned_data['bio']:
-        new_profile.bio = profile_form.cleaned_data['bio']
-    new_profile.save()
-    new_room_profile.save()
+        profile.bio = profile_form.cleaned_data['bio']
+    profile.save()
+
     return redirect(home)
 
 
@@ -132,7 +140,59 @@ def home(request):
 def profile_page(request):
     user = request.user
     profile = Profile.objects.get(user=user)
-    return render(request, 'pages/profile.html', {'profile': profile, "user": user})
+    question_num = len(LearnHistory.objects.filter(user=user))
+    correct_num = len(LearnHistory.objects.filter(user=user, status=True))
+    if question_num == 0:
+        accuracy = 100
+    else:
+        accuracy = int(100 * correct_num / question_num)
+    return render(request, 'pages/profile.html', {'profile': profile, "user": user,
+                                                  "accuracy":accuracy, "question_num": question_num,
+                                                  "correct_num": correct_num})
+
+
+@login_required
+def edit_profile_page(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    edit_profile_form = EditProfileForm(initial={'first_name': user.first_name,
+                                                 'last_name': user.last_name,
+                                                 'email': user.email,
+                                                 'grade': profile.grade,
+                                                 'bio': profile.bio})
+    context = {'edit_profile_form': edit_profile_form, 'user':user}
+    return render(request, 'pages/profile_edit.html', context)
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'GET':
+        return redirect(edit_profile_page)
+
+    context = {}
+    user = request.user
+    context['user'] = user
+    edit_profile_form = EditProfileForm(request.POST, request.FILES)
+    context['edit_profile_form'] = edit_profile_form
+
+    if not edit_profile_form.is_valid():
+        return render(request, 'pages/profile_edit.html', context)
+
+    user.first_name = edit_profile_form.cleaned_data['first_name']
+    user.last_name = edit_profile_form.cleaned_data['last_name']
+    user.email = edit_profile_form.cleaned_data['email']
+    user.save()
+
+    profile = Profile.objects.get(user=user)
+    profile.grade = edit_profile_form.cleaned_data['grade']
+    if edit_profile_form.cleaned_data['bio']:
+        profile.bio = edit_profile_form.cleaned_data['bio']
+    if edit_profile_form.cleaned_data['avatar']:
+        profile.avatar = edit_profile_form.cleaned_data['avatar']
+    profile.save()
+
+    return redirect(profile_page)
+
 
 @login_required
 def get_avatar(request, username):
@@ -169,7 +229,19 @@ def logout_view(request):
 @login_required
 def matching(request):
     user = request.user
-    return render(request, 'pages/room_matching.html', {"user": user})
+    if not is_in_another_room(user):
+        return render(request, 'pages/room_matching.html', {"user": user})
+    else:
+        return render(request, 'pages/error_page.html', {"user": user})
+        # raise Http404("You are already in contest status!")
+
+# @login_required
+# def room(request, id):
+#     if id == 1 or id == '1':
+#         raise Http404("Not found")
+#     else:
+#         room_object = get_object_or_404(Rooms, pk=id)
+#         return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
 
 @login_required
 def room(request, id):
@@ -177,8 +249,20 @@ def room(request, id):
         raise Http404("Not found")
     else:
         room_object = get_object_or_404(Rooms, pk=id)
-        return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
+        users = room_object.granted_users.all()
+        if users.count() != 2:
+            raise Http404("Unexpected granted user number!")
+        else:
+            user1 = users.first()
+            user2 = users.last()
 
+            if request.user == user1:
+                opponent = User.objects.get(username=user2)
+            elif request.user == user2:
+                opponent = User.objects.get(username=user1)
+            else:
+                raise Http404("Not found")
+            return render(request, 'pages/room.html', {'room': room_object, "user": request.user, "opponent": opponent})
 
 # @login_required
 # def user_list(request):
@@ -214,9 +298,18 @@ def question_grade(request):
 
 
 @login_required
+def question_history(request):
+    user = request.user
+    learn_history = LearnHistory.objects.filter(user=user)
+    return render(request, 'pages/learning_history.html', {"learning_history": learn_history, "user":user})
+
+
+@login_required
 def question_page(request, question_id):
     user = request.user
-    question = Question.objects.get(id=question_id)
+    question = get_object_or_404(Rooms, pk=question_id)
+
+    # question = Question.objects.get(id=question_id)
     ls = [question.choice1, question.choice2, question.choice3, question.answer]
     random.shuffle(ls)
     index = ls.index(question.answer)
@@ -232,8 +325,19 @@ def check_answer(request):
     record_id = int(request.POST['record_id'])
     question_id = int(request.POST['question_id'])
     index = int(request.POST['index'])
+
+    data = {'record_id': record_id, 'index':index}
+    answer_submit_form = AnswerSubmitForm(data)
+    if not answer_submit_form.is_valid():
+        return render(request, 'pages/error_msg.json', {'error': "Submit has some errors"}, content_type='application/json')
+
     correct_answer = CorrectAnswer.objects.get(id=record_id)
     status = (correct_answer.answer_index == index)
+
+    content = Question.objects.get(id=question_id).content
+    new_learn_history = LearnHistory(question_id=question_id, content=content, user=request.user, status=status)
+    new_learn_history.save()
+
     sentence = Question.objects.get(id=question_id).answer
     context = {"status":status, "answer": sentence}
     return render(request, 'pages/answer_status.json', context, content_type='application/json')
@@ -275,7 +379,10 @@ def sudoku_game(request):
 
 @login_required
 def generate_sudoku(request):
-    sudoku = generate(40)
+    levels = [30, 40, 50]
+    level = int(request.GET.get('level'))
+    empty_num = levels[level-1]
+    sudoku = generate(empty_num)
     context = {"sudoku": sudoku}
     return render(request, 'pages/sudoku_new.json', context, content_type='application/json')
 

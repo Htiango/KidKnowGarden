@@ -2,6 +2,11 @@
     text-align: center;
 }
 
+.container-level{
+    text-align: center;
+    padding-bottom: 20px;
+}
+
 .sudoku-board {
     min-height: 22.75rem;
     margin-bottom: 2em;
