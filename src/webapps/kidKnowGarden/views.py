@@ -307,7 +307,7 @@ def question_history(request):
 @login_required
 def question_page(request, question_id):
     user = request.user
-    question = get_object_or_404(Rooms, pk=question_id)
+    question = get_object_or_404(Question, pk=question_id)
 
     # question = Question.objects.get(id=question_id)
     ls = [question.choice1, question.choice2, question.choice3, question.answer]
