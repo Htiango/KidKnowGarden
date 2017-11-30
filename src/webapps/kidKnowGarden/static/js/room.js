@@ -297,6 +297,10 @@ $(function () {
         return $("#room-" + roomId).length > 0;
     }
 
+    window.onbeforeunload = function() {
+      return "Are you sure you want to navigate away?";
+    };
+    
     $( window ).on("unload", function(e) {
         socket.send(JSON.stringify({
             "command": "leave",  // determines which handler will be used (see chat/routing.py)
