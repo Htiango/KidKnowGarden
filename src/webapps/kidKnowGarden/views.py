@@ -17,17 +17,25 @@ from channels import Group
 import json
 
 
-# response a welcome page. If already login, then direct to the home page
 def welcome(request):
+    """
+    response a welcome page. If already login, then direct to the home page
+    :param request:
+    :return: welcome page or home
+    """
     user = request.user
     if not user.is_anonymous:
         return redirect(home)
     return render(request, 'pages/welcome.html', {})
 
 
-# If request method is get, then present the register page. Otherwise save the user, send activate email and direct to
-# a notification page.
 def register(request):
+    """
+    If request method is get, then present the register page.
+    Otherwise save the user, send activate email and direct to a notification page.
+    :param request:
+    :return: register page or home
+    """
     user = request.user
     if not user.is_anonymous:
         return redirect(home)
@@ -70,8 +78,12 @@ def register(request):
     return render(request, 'pages/notification.html', context)
 
 
-# login page
 def login_page(request):
+    """
+    go to login page or home
+    :param request:
+    :return:
+    """
     user = request.user
     if not user.is_anonymous:
         return redirect(home)
@@ -79,6 +91,13 @@ def login_page(request):
 
 
 def activate(request, username, token):
+    """
+    activate a user and generate user's profile and room profile
+    :param request:
+    :param username:
+    :param token:
+    :return:
+    """
     user = User.objects.get(username=username)
     if default_token_generator.check_token(user, token):
         user.is_active = True
@@ -95,6 +114,12 @@ def activate(request, username, token):
 
 @login_required
 def set_profile(request):
+    """
+    If request is a GET, then return the profile setting page.
+    Otherwise, check if post information is correct and write to database
+    :param request:
+    :return: home page if profile set valid
+    """
     context = {}
     context['profile_form'] = ProfileForm()
     if request.method == 'GET':
@@ -124,20 +149,22 @@ def set_profile(request):
 
 @login_required
 def home(request):
+    """
+    home page
+    :param request:
+    :return:
+    """
     context = {'user': request.user}
-    #if not LoggedInUser.objects.filter(user=request.user):
-    #    user_now = LoggedInUser(user=request.user)
-    #    user_now.save()
-
-    #users = User.objects.select_related('logged_in_user')
-    #for user in users:
-    #    user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
-    #context['users'] = users
     return render(request, 'pages/home.html', context)
 
 
 @login_required
 def profile_page(request):
+    """
+    profile page, showing user's personal information and learning history
+    :param request:
+    :return:
+    """
     user = request.user
     profile = Profile.objects.get(user=user)
     question_num = len(LearnHistory.objects.filter(user=user))
@@ -153,6 +180,11 @@ def profile_page(request):
 
 @login_required
 def edit_profile_page(request):
+    """
+    the page that can edit personal information
+    :param request:
+    :return:
+    """
     user = request.user
     profile = Profile.objects.get(user=user)
     edit_profile_form = EditProfileForm(initial={'first_name': user.first_name,
@@ -166,6 +198,11 @@ def edit_profile_page(request):
 
 @login_required
 def edit_profile(request):
+    """
+    handle the post request of edit profile
+    :param request:
+    :return:
+    """
     if request.method == 'GET':
         return redirect(edit_profile_page)
 
@@ -196,6 +233,12 @@ def edit_profile(request):
 
 @login_required
 def get_avatar(request, username):
+    """
+    get user's avatar
+    :param request:
+    :param username:
+    :return:
+    """
     user = User.objects.filter(username=username)
     profile = get_object_or_404(Profile, user=user)
 
@@ -208,6 +251,12 @@ def get_avatar(request, username):
 
 @login_required
 def user_page_view(request, username):
+    """
+    older version of user profile, can view other user's profile page.
+    :param request:
+    :param username:
+    :return:
+    """
     try:
         user_select = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -220,31 +269,36 @@ def user_page_view(request, username):
 
 @login_required
 def logout_view(request):
-    #delete_user = LoggedInUser.objects.filter(user=request.user)
-    #if delete_user:
-    #    delete_user.delete()
+    """
+    allow user to log out
+    :param request:
+    :return:
+    """
     logout(request)
     return redirect(welcome)
 
 @login_required
 def matching(request):
+    """
+    matching room for user to waiting
+    :param request:
+    :return:
+    """
     user = request.user
     if not is_in_another_room(user):
         return render(request, 'pages/room_matching.html', {"user": user})
     else:
         return render(request, 'pages/error_page.html', {"user": user})
-        # raise Http404("You are already in contest status!")
 
-# @login_required
-# def room(request, id):
-#     if id == 1 or id == '1':
-#         raise Http404("Not found")
-#     else:
-#         room_object = get_object_or_404(Rooms, pk=id)
-#         return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
 
 @login_required
 def room(request, id):
+    """
+    room for user to enter to contest
+    :param request:
+    :param id:
+    :return:
+    """
     if id == 1 or id == '1':
         raise Http404("Not found")
     else:
@@ -264,25 +318,14 @@ def room(request, id):
                 raise Http404("Not found")
             return render(request, 'pages/room.html', {'room': room_object, "user": request.user, "opponent": opponent})
 
-# @login_required
-# def user_list(request):
-#     users = User.objects.select_related('logged_in_user')
-#     for user in users:
-#         user.status = 'Online' if hasattr(user, 'logged_in_user') else 'Offline'
-#     return render(request, 'pages/user_list.html', {'users': users})
-
-# @login_required
-# def user_invite(request, username):
-#     Group("user-" + username).send({
-#         "text": json.dumps({
-#             "foo": 'username:' + username
-#         })
-#     })
-#     return redirect(home)
-
 
 @login_required
 def question_list(request):
+    """
+    page to list all the questions
+    :param request:
+    :return:
+    """
     user = request.user
     questions = Question.objects.all()
     subtitle = "Showing all the questions of all grades"
@@ -290,6 +333,11 @@ def question_list(request):
 
 @login_required
 def question_grade(request):
+    """
+    page to list all the questions of user's age
+    :param request:
+    :return:
+    """
     user = request.user
     profile = Profile.objects.get(user=user)
     questions = Question.objects.filter(grade=profile.grade)
@@ -299,6 +347,11 @@ def question_grade(request):
 
 @login_required
 def question_history(request):
+    """
+    page to lilst all the questions learned by user
+    :param request:
+    :return:
+    """
     user = request.user
     learn_history = LearnHistory.objects.filter(user=user)
     return render(request, 'pages/learning_history.html', {"learning_history": learn_history, "user":user})
@@ -306,6 +359,12 @@ def question_history(request):
 
 @login_required
 def question_page(request, question_id):
+    """
+    page to show question and its relative choices
+    :param request:
+    :param question_id:
+    :return:
+    """
     user = request.user
     question = get_object_or_404(Question, pk=question_id)
 
@@ -322,6 +381,11 @@ def question_page(request, question_id):
 
 @login_required
 def check_answer(request):
+    """
+    handle user's answer and check whether correct
+    :param request:
+    :return:
+    """
     record_id = int(request.POST['record_id'])
     question_id = int(request.POST['question_id'])
     index = int(request.POST['index'])
@@ -344,6 +408,11 @@ def check_answer(request):
 
 @login_required
 def memory_game(request):
+    """
+    the page of memory game
+    :param request:
+    :return:
+    """
     user = request.user
     context = {'user': user}
     return render(request, "pages/memory_game.html", context)
@@ -351,13 +420,26 @@ def memory_game(request):
 
 @login_required
 def random_question(request):
-    question = Question.objects.order_by('?').first()
+    """
+    randomly show a question of user's age to the user
+    :param request:
+    :return:
+    """
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    questions = Question.objects.filter(grade=profile.grade)
+    question = questions.order_by('?').first()
     question_id = question.id
     return question_page(request, question_id)
 
 
 @login_required
 def learn_page(request):
+    """
+    the navigate page for learning
+    :param request:
+    :return:
+    """
     user = request.user
     context = {'user':user}
     return render(request, "pages/learn_page.html", context)
@@ -365,6 +447,11 @@ def learn_page(request):
 
 @login_required
 def game_page(request):
+    """
+    the naviagte page for games
+    :param request:
+    :return:
+    """
     user = request.user
     context = {'user': user}
     return render(request, "pages/game_page.html", context)
@@ -372,6 +459,11 @@ def game_page(request):
 
 @login_required
 def sudoku_game(request):
+    """
+    the page for sudoku.
+    :param request:
+    :return:
+    """
     user = request.user
     context = {'user': user}
     return render(request, "pages/sudoku_page.html", context)
@@ -379,9 +471,17 @@ def sudoku_game(request):
 
 @login_required
 def generate_sudoku(request):
+    """
+    generate sudoku based on the difficulty level user choose
+    :param request:
+    :return:
+    """
     levels = [30, 40, 50]
-    level = int(request.GET.get('level'))
-    empty_num = levels[level-1]
+    try:
+        level = int(request.GET.get('level'))
+    except:
+        level = 1
+    empty_num = levels[level - 1]
     sudoku = generate(empty_num)
     context = {"sudoku": sudoku}
     return render(request, 'pages/sudoku_new.json', context, content_type='application/json')
@@ -389,6 +489,11 @@ def generate_sudoku(request):
 
 @login_required
 def hint_sudoku(request):
+    """
+    give one hint to sudoku.
+    :param request:
+    :return:
+    """
     sudoku = request.GET.get('sudoku')
     (index, answer) = get_one_hint(sudoku)
     context = {"index": index, "answer": answer}
@@ -396,6 +501,11 @@ def hint_sudoku(request):
 
 @login_required
 def get_sudoku_solution(request):
+    """
+    return the sudoku solution
+    :param request:
+    :return:
+    """
     sudoku = request.GET.get('sudoku')
     result = get_answer(sudoku)
     context = {"sudoku": result}
@@ -405,6 +515,11 @@ def get_sudoku_solution(request):
 
 @login_required
 def check_sudoku_answer(request):
+    """
+    check user's sudoku answer
+    :param request:
+    :return:
+    """
     sudoku = request.GET.get('sudoku')
     status = check_submit_answer(sudoku)
     context = {"status": status}
