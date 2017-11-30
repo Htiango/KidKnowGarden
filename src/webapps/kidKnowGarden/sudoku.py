@@ -5,6 +5,12 @@ import timeit
 
 
 def solve_sudoku(size, grid):
+    """
+    solve sudoku using algorithm X
+    :param size:
+    :param grid:
+    :return:
+    """
     R, C = size
     N = R * C
     X = ([("rc", rc) for rc in product(range(N), range(N))] +
@@ -31,6 +37,12 @@ def solve_sudoku(size, grid):
 
 
 def exact_cover(X, Y):
+    """
+    if no conflict
+    :param X:
+    :param Y:
+    :return:
+    """
     X = {j: set() for j in X}
     for i, row in Y.items():
         for j in row:
@@ -39,6 +51,13 @@ def exact_cover(X, Y):
 
 
 def solve(X, Y, solution):
+    """
+    solve sudoku
+    :param X:
+    :param Y:
+    :param solution:
+    :return:
+    """
     if not X:
         yield list(solution)
     else:
@@ -53,6 +72,13 @@ def solve(X, Y, solution):
 
 
 def select(X, Y, r):
+    """
+    select if OK
+    :param X:
+    :param Y:
+    :param r:
+    :return:
+    """
     cols = []
     for j in Y[r]:
         for i in X[j]:
@@ -64,6 +90,14 @@ def select(X, Y, r):
 
 
 def deselect(X, Y, r, cols):
+    """
+    deselect if not OK
+    :param X:
+    :param Y:
+    :param r:
+    :param cols:
+    :return:
+    """
     for j in reversed(Y[r]):
         X[j] = cols.pop()
         for i in X[j]:
@@ -73,6 +107,12 @@ def deselect(X, Y, r, cols):
 
 
 def get_random_num(sudoku, index):
+    """
+    get a random index of possible candidates
+    :param sudoku:
+    :param index:
+    :return:
+    """
     candidate = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     row = int(index / 9)
@@ -107,6 +147,10 @@ def get_random_num(sudoku, index):
 
 
 def sudoku_generate_backtracking():
+    """
+    use backtracking to generate a full matrix sudoku
+    :return:
+    """
     sudoku = [0] * 81
     i = 0
     while i < 81:
@@ -121,6 +165,11 @@ def sudoku_generate_backtracking():
 
 
 def change_style(sudoku):
+    """
+    format the sudoku input
+    :param sudoku:
+    :return:
+    """
     sudoku = sudoku.split(',')
     sudoku = [int(i) for i in sudoku]
     sudoku = [sudoku[x:x + 9] for x in range(0, 81, 9)]
@@ -129,6 +178,7 @@ def change_style(sudoku):
 
 def check_submit_answer(sudoku):
     """
+    check if submit answer is correct
     :param sudoku:
     :return: 0 for not complete answer, -1 for wrong answer, 1 for correct answer
     """
@@ -145,6 +195,11 @@ def check_submit_answer(sudoku):
 
 
 def get_answer(sudoku):
+    """
+    get the solution of teh sudoku
+    :param sudoku:
+    :return:
+    """
     sudoku = change_style(sudoku)
     generator = solve_sudoku((3, 3), sudoku)
     solution = next(generator)
@@ -154,6 +209,7 @@ def get_answer(sudoku):
 
 def get_one_hint(sudoku):
     """
+    give user a hint step
     :param sudoku:
     :return: (false, false) if nowhere to hint, (-1,-1) if KeyError or valueError happens, otherwise (index, value)
     """
@@ -178,6 +234,11 @@ def get_one_hint(sudoku):
 
 
 def unique_answer(grid):
+    """
+    check if there is unique solution
+    :param grid:
+    :return:
+    """
     generator = solve_sudoku((3, 3), grid)
     count = 0
     try:
@@ -193,6 +254,11 @@ def unique_answer(grid):
 
 
 def generate(max_iter):
+    """
+    generate a random sudoku
+    :param max_iter: the maximum missing cell in a matrix
+    :return:
+    """
     full_sudoku = sudoku_generate_backtracking()
     full_sudoku = [full_sudoku[x:x + 9] for x in range(0, 81, 9)]
     enable_pairs = [(i, j) for i in range(9) for j in range(9)]
