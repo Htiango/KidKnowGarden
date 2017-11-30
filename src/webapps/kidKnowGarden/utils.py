@@ -118,6 +118,23 @@ def judge_time_up(user, room):
     return False
 
 
+def start_confirm(user, room):
+    roomid = room.id
+    userid = user.id
+    cachekey = 'roomstart' + str(roomid)
+    currentid = cache.get(cachekey)
+    if currentid is None:
+        cache.set( cachekey, str(user.id) )
+    else:
+        currentval = cache.get(cachekey)
+        if (currentval != str(userid)):
+            cache.delete(cachekey)
+            return True
+        else:
+            return False
+    return False
+
+
 def judge_contest_status(user, room):
     members = room.room_profile_set.all()
     first = members.first().user
