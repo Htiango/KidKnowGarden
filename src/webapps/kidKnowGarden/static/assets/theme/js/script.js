@@ -1190,7 +1190,8 @@
         var $target = $(card);
             $target.find('table').dataTable({
             retrieve:true,
-            paging:false,
+            paging:true,
+            pageLength: 10,
             aaSorting:[],
             scrollX:true,
             searching:isSearch,
