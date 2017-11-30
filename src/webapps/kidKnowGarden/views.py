@@ -244,11 +244,15 @@ def room(request, id, user1, user2):
         raise Http404("Not found")
     else:
         room_object = get_object_or_404(Rooms, pk=id)
+        if len(User.objects.filter(username=user1)) == 0 or len(User.objects.filter(username=user2)) == 0:
+            raise Http404("Not found")
         username = request.user.username
         if username == user1:
             opponent = User.objects.get(username=user2)
-        else:
+        elif username == user2:
             opponent = User.objects.get(username=user1)
+        else:
+            raise Http404("Not found")
         return render(request, 'pages/room.html', {'room': room_object, "user": request.user, "opponent": opponent})
 
 # @login_required
