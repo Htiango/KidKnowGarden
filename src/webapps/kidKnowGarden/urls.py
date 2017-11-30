@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^logout', logout_view, name='logout'),
     url(r'^room_list$', matching, name='room_list'),
     # url(r'^room/(?P<id>\d+)$', room, name='room'),
-    url(r'^room/(?P<id>\d+)/(?P<user1>\w+)/(?P<user2>\w+)$', room, name='room'),
+    url(r'^room/(?P<id>\d+)/$', room, name='room'),
     #url(r'^user_list$', user_list, name='user_list'),
     #url(r'^user_invite/(?P<username>.+)/$', user_invite, name='user-invite'),
 

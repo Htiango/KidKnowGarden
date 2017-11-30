@@ -88,9 +88,7 @@ def chat_join(message):
                 # TODO: If two users are identical, deal with it.
                 new_room = create_new_room(message.user, result.user)
                 # new_url = reverse('room', kwargs={'id': new_room.id})
-                new_url = reverse('room', kwargs={'id': new_room.id,
-                                                  'user1': message.user.username,
-                                                  'user2': result.user.username})
+                new_url = reverse('room', kwargs={'id': new_room.id})
                 room.send_message("MATCHED", result.user, new_url)
                 message.reply_channel.send({
                     "text": json.dumps({

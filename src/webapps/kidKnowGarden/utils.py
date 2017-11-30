@@ -180,4 +180,7 @@ def create_new_room(user1, user2):
     title = user1.username + "  vs  " + user2.username
     new_room = Rooms(title=title)
     new_room.save()
+    new_room.granted_users.add(user1)
+    new_room.granted_users.add(user2)
+    new_room.save()
     return new_room

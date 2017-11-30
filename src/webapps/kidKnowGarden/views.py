@@ -243,21 +243,25 @@ def matching(request):
 #         return render(request, 'pages/room.html', {'room': room_object, "user": request.user})
 
 @login_required
-def room(request, id, user1, user2):
+def room(request, id):
     if id == 1 or id == '1':
         raise Http404("Not found")
     else:
         room_object = get_object_or_404(Rooms, pk=id)
-        if len(User.objects.filter(username=user1)) == 0 or len(User.objects.filter(username=user2)) == 0:
-            raise Http404("Not found")
-        username = request.user.username
-        if username == user1:
-            opponent = User.objects.get(username=user2)
-        elif username == user2:
-            opponent = User.objects.get(username=user1)
+        users = room_object.granted_users.all()
+        if users.count() != 2:
+            raise Http404("Unexpected granted user number!")
         else:
-            raise Http404("Not found")
-        return render(request, 'pages/room.html', {'room': room_object, "user": request.user, "opponent": opponent})
+            user1 = users.first()
+            user2 = users.last()
+
+            if request.user == user1:
+                opponent = User.objects.get(username=user2)
+            elif request.user == user2:
+                opponent = User.objects.get(username=user1)
+            else:
+                raise Http404("Not found")
+            return render(request, 'pages/room.html', {'room': room_object, "user": request.user, "opponent": opponent})
 
 # @login_required
 # def user_list(request):

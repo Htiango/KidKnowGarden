@@ -34,6 +34,9 @@ class Rooms(models.Model):
     # Questions that has answered in during contest
     answered_questions = models.ManyToManyField(Question, blank=True)
 
+    # Granted users
+    granted_users = models.ManyToManyField(User, blank=True)
+
     def __str__(self):
         return self.title
 
