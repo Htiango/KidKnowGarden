@@ -16,6 +16,7 @@ class Question(models.Model):
     choice3 = models.TextField(default="", max_length=100)
     answer = models.TextField(default="", max_length=100)
     grade = models.IntegerField(default=0)
+    category = models.TextField(default="Math")
 
 
     def __str__(self):
