@@ -20,7 +20,7 @@ urlpatterns = [
 
     url(r'^home', home, name='home'),
     url(r'^avatar/(?P<username>\w+)$', get_avatar, name='get-avatar'),
-    url(r'^user/(?P<username>.+)/$', user_page_view, name='user-link'),
+    # url(r'^user/(?P<username>.+)/$', user_page_view, name='user-link'),
     url(r'^logout', logout_view, name='logout'),
     url(r'^room_list$', matching, name='room_list'),
     # url(r'^room/(?P<id>\d+)$', room, name='room'),
