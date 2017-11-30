@@ -61,75 +61,82 @@ def chat_join(message):
     # object that works just like request.user would. Security!
     room = get_room_or_error(message["room"], message.user)
 
-    if room.id == 1:
-        result = match_user(message.user)
-        if result is None:
-            room_profile = Room_Profile.objects.get(user=message.user)
-            room.room_profile_set.add(room_profile)
-            room.save()
-            # Send a "enter message" to the room if available
-            room.send_message("USER ENTER", message.user, None)
-            room.websocket_group.add(message.reply_channel)
-            message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
-            message.reply_channel.send({
-                "text": json.dumps({
-                    "join": str(room.id),
-                    "title": room.title,
-                }),
-            })
-        else:
-            # TODO: If two users are identical, deal with it.
-            new_room = create_new_room(message.user, result.user)
-            # new_url = reverse('room', kwargs={'id': new_room.id})
-            new_url = reverse('room', kwargs={'id': new_room.id,
-                                              'user1': message.user.username,
-                                              'user2': result.user.username})
-            room.send_message("MATCHED", result.user, new_url)
-            message.reply_channel.send({
-                "text": json.dumps({
-                    "matched": new_url,
-                    "title": new_room.title,
-                }),
-            })
+    if is_in_another_room(message.user):
+        message.reply_channel.send({
+            "text": json.dumps({
+                "error": "You are already in one contest!",
+            }),
+        })
     else:
-        ## Add one for this room
-        clear_contest_score(message.user)
-        members = room.room_profile_set.count()
-        if members >= 2:
-            message.reply_channel.send({
-                "text": json.dumps({
-                    "error": "The contest has reach a member limit!",
-                }),
-            })
-        else:
-            if room.room_profile_set.all().filter(user=message.user).exists():
-                message.reply_channel.send({
-                    "text": json.dumps({
-                        "error": "You are already in this contest!",
-                    }),
-                })
-            else:
+        if room.id == 1:
+            result = match_user(message.user)
+            if result is None:
                 room_profile = Room_Profile.objects.get(user=message.user)
                 room.room_profile_set.add(room_profile)
                 room.save()
                 # Send a "enter message" to the room if available
-                #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-                room.send_message("USER ENTER", message.user, str(members+1))
-
-                # OK, add them in. The websocket_group is what we'll send messages
-                # to so that everyone in the chat room gets them.
+                room.send_message("USER ENTER", message.user, None)
                 room.websocket_group.add(message.reply_channel)
                 message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
-                # Send a message back that will prompt them to open the room
-                # Done server-side so that we could, for example, make people
-                # join rooms automatically.
                 message.reply_channel.send({
                     "text": json.dumps({
                         "join": str(room.id),
                         "title": room.title,
-                        "members": str(members+1)
                     }),
                 })
+            else:
+                # TODO: If two users are identical, deal with it.
+                new_room = create_new_room(message.user, result.user)
+                # new_url = reverse('room', kwargs={'id': new_room.id})
+                new_url = reverse('room', kwargs={'id': new_room.id,
+                                                  'user1': message.user.username,
+                                                  'user2': result.user.username})
+                room.send_message("MATCHED", result.user, new_url)
+                message.reply_channel.send({
+                    "text": json.dumps({
+                        "matched": new_url,
+                        "title": new_room.title,
+                    }),
+                })
+        else:
+            ## Add one for this room
+            clear_contest_score(message.user)
+            members = room.room_profile_set.count()
+            if members >= 2:
+                message.reply_channel.send({
+                    "text": json.dumps({
+                        "error": "The contest has reach a member limit!",
+                    }),
+                })
+            else:
+                if room.room_profile_set.all().filter(user=message.user).exists():
+                    message.reply_channel.send({
+                        "text": json.dumps({
+                            "error": "You are already in this contest!",
+                        }),
+                    })
+                else:
+                    room_profile = Room_Profile.objects.get(user=message.user)
+                    room.room_profile_set.add(room_profile)
+                    room.save()
+                    # Send a "enter message" to the room if available
+                    #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+                    room.send_message("USER ENTER", message.user, str(members+1))
+
+                    # OK, add them in. The websocket_group is what we'll send messages
+                    # to so that everyone in the chat room gets them.
+                    room.websocket_group.add(message.reply_channel)
+                    message.channel_session['rooms'] = list(set(message.channel_session['rooms']).union([room.id]))
+                    # Send a message back that will prompt them to open the room
+                    # Done server-side so that we could, for example, make people
+                    # join rooms automatically.
+                    message.reply_channel.send({
+                        "text": json.dumps({
+                            "join": str(room.id),
+                            "title": room.title,
+                            "members": str(members+1)
+                        }),
+                    })
 
 @channel_session_user
 #@catch_client_error

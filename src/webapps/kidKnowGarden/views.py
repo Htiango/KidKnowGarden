@@ -10,6 +10,7 @@ from mimetypes import guess_type
 from django.contrib.auth import authenticate, login, logout
 import random
 from kidKnowGarden.sudoku import *
+from kidKnowGarden.utils import *
 
 from channels import Group
 
@@ -228,7 +229,10 @@ def logout_view(request):
 @login_required
 def matching(request):
     user = request.user
-    return render(request, 'pages/room_matching.html', {"user": user})
+    if not is_in_another_room(user):
+        return render(request, 'pages/room_matching.html', {"user": user})
+    else:
+        raise Http404("You are already in contest status!")
 
 # @login_required
 # def room(request, id):
