@@ -25,6 +25,8 @@ def catch_client_error(func):
 def get_room_or_error(room_id, user):
     """
     Tries to fetch a room for the user, checking permissions along the way.
+    :param: user - User model object
+    :param: room_id - Integer
     """
     # Check if the user is logged in
     if not user.is_authenticated():
@@ -41,6 +43,10 @@ def get_room_or_error(room_id, user):
 
 
 def is_in_another_room(user):
+    """
+    Judge if the user is in another contest room
+    :param: user - User model object
+    """
     # Performance will be largely affected!!!
     room_profile = Room_Profile.objects.get(user=user)
     if room_profile.inroom is not None:
@@ -49,6 +55,10 @@ def is_in_another_room(user):
         return False
 
 def get_random_question(room):
+    """
+    Get a random question from database
+    :param: room - Room model object
+    """
     question = Question.objects.order_by('?')
     answered_questions_number = room.answered_questions.count()
     if answered_questions_number > 2:
@@ -71,12 +81,22 @@ def get_random_question(room):
 
 
 def judge_question_correctness(record_id, answer_index):
+    """
+    Judge if the question is correct or not
+    :param: record_id - Integer
+    :param: answer_index - Integer
+    """
     correct_answer = CorrectAnswer.objects.get(id=record_id)
     status = (correct_answer.answer_index == answer_index)
     return status
 
 
 def save_contest_score(score, user):
+    """
+    Save the contest score to a temp entry of database
+    :param: user - User model object
+    :param: score - String
+    """
     try:
         contest_score = ContestScore.objects.get(user=user)
         if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
@@ -90,6 +110,10 @@ def save_contest_score(score, user):
 
 
 def clear_contest_score(user):
+    """
+    Clear the contest score before starting a new contest
+    :param: user - User model object
+    """
     try:
         contest_score = ContestScore.objects.get(user=user)
         if ContestScore.objects.all().filter(pk=contest_score.pk).exists():
@@ -102,6 +126,11 @@ def clear_contest_score(user):
 
 
 def judge_time_up(user, room):
+    """
+    Judge if the time has ran out by judging the commiting status for user
+    :param: user - User model object
+    :param: room - Room model object
+    """
     roomid = room.id
     userid = user.id
     cachekey = 'room' + str(roomid)
@@ -119,6 +148,11 @@ def judge_time_up(user, room):
 
 
 def start_confirm(user, room):
+    """
+    Both users shall confirm start then the contest starts
+    :param: user - User model object
+    :param: room - Room model object
+    """
     roomid = room.id
     userid = user.id
     cachekey = 'roomstart' + str(roomid)
@@ -136,6 +170,11 @@ def start_confirm(user, room):
 
 
 def judge_contest_status(user, room):
+    """
+    Judge final result of the room - Win or Lose
+    :param: user - User model object
+    :param: room - Room model object
+    """
     members = room.room_profile_set.all()
     first = members.first().user
     last = members.last().user
@@ -181,11 +220,19 @@ def judge_contest_status(user, room):
             return "Unknown user"
 
 def get_score(user):
+    """
+    Get a score for given user
+    :param: user - User model object
+    """
     contest_score = ContestScore.objects.get(user=user)
     return contest_score.score
 
 
 def match_user(user):
+    """
+    Match two users by their grades
+    :param: user - User model object
+    """
     room = Rooms.objects.get(pk=1)
     room_profiles = room.room_profile_set.all().order_by('time').reverse()
     for p in room_profiles:
@@ -194,6 +241,11 @@ def match_user(user):
     return None
 
 def create_new_room(user1, user2):
+    """
+    Both users shall confirm start then the contest starts
+    :param: user1 - User model object
+    :param: user2 - User model object
+    """
     title = user1.username + "  vs  " + user2.username
     new_room = Rooms(title=title)
     new_room.save()

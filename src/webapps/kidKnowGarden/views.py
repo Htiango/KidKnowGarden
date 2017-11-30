@@ -8,12 +8,9 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from mimetypes import guess_type
 from django.contrib.auth import authenticate, login, logout
-import random
 from kidKnowGarden.sudoku import *
 from kidKnowGarden.utils import *
-
 from channels import Group
-
 import json
 
 

@@ -1,4 +1,3 @@
-from channels.auth import channel_session_user_from_http
 from channels.auth import channel_session_user_from_http, channel_session_user
 import json
 from channels import Channel
@@ -10,12 +9,21 @@ from django.core.urlresolvers import reverse
 
 @channel_session_user_from_http
 def ws_connect(message):
+    """
+    Establish connection to websocket
+    :param: message - channels header
+    """
     message.reply_channel.send({"accept": True})
     message.channel_session['rooms'] = []
 
 
 @channel_session_user
 def ws_disconnect(message):
+    """
+    Disconnect from websocket
+    :param: message - channels header
+    """
+
     # Unsubscribe from any connected rooms
     for room_id in Rooms.objects.values_list('id', flat=True):
         try:
@@ -54,12 +62,14 @@ def ws_receive(message):
 # a low-level HTTP handler, or just channel_session if all you want is the
 # message.channel_session object without the auth fetching overhead.
 @channel_session_user
-#@catch_client_error
 def chat_join(message):
     # Find the room they requested (by ID) and add ourselves to the send group
     # Note that, because of channel_session_user, we have a message.user
     # object that works just like request.user would. Security!
-
+    """
+    Dealing with chatroom joining semantics
+    :param: message - channels header
+    """
     try:
         room = get_room_or_error(message["room"], message.user)
     except:
@@ -94,9 +104,8 @@ def chat_join(message):
                     }),
                 })
             else:
-                # TODO: If two users are identical, deal with it.
+                # Generate a new room for the users
                 new_room = create_new_room(message.user, result.user)
-                # new_url = reverse('room', kwargs={'id': new_room.id})
                 new_url = reverse('room', kwargs={'id': new_room.id})
                 room.send_message("MATCHED", result.user, new_url)
                 message.reply_channel.send({
@@ -106,7 +115,7 @@ def chat_join(message):
                     }),
                 })
         else:
-            ## Add one for this room
+            # Add one for this room
             clear_contest_score(message.user)
             members = room.room_profile_set.count()
             if members >= 2:
@@ -127,7 +136,6 @@ def chat_join(message):
                     room.room_profile_set.add(room_profile)
                     room.save()
                     # Send a "enter message" to the room if available
-                    #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
                     room.send_message("USER ENTER", message.user, str(members+1))
 
                     # OK, add them in. The websocket_group is what we'll send messages
@@ -146,8 +154,11 @@ def chat_join(message):
                     })
 
 @channel_session_user
-#@catch_client_error
 def chat_leave(message):
+    """
+    Dealing with chatroom leaving semantics
+    :param: message - channels header
+    """
     # Reverse of join - remove them from everything.
     room = get_room_or_error(message["room"], message.user)
     members = room.room_profile_set.count()
@@ -160,7 +171,6 @@ def chat_leave(message):
             room_profile.save()
 
         # Send a "leave message" to the room if available
-        #if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
         room.send_message("USER LEAVE", message.user, members-1)
 
         room.websocket_group.discard(message.reply_channel)
@@ -176,8 +186,11 @@ def chat_leave(message):
 
 
 @channel_session_user
-#@catch_client_error
 def chat_send(message):
+    """
+    Generic message sending function for websocket room
+    :param: message - channels header
+    """
     if int(message['room']) not in message.channel_session['rooms']:
         raise ClientError("ROOM_ACCESS_DENIED")
     room = get_room_or_error(message["room"], message.user)
@@ -185,8 +198,11 @@ def chat_send(message):
 
 
 @channel_session_user
-#@catch_client_error
 def answer(message):
+    """
+    Judge if the question is correct and save scores to the database
+    :param: message - channels header
+    """
     try:
         if int(message['room']) not in message.channel_session['rooms']:
             raise ClientError("ROOM_ACCESS_DENIED")
@@ -223,15 +239,17 @@ def answer(message):
 
 
 @channel_session_user
-#@catch_client_error
 def start_timing(message):
+    """
+    Start another random question and pass it through websocket
+    :param: message - channels header
+    """
     try:
         if int(message['room']) not in message.channel_session['rooms']:
             raise ClientError("ROOM_ACCESS_DENIED")
         room = get_room_or_error(message["room"], message.user)
         if start_confirm(message.user, room):
             question_string = get_random_question(room)
-            #print(question_string)
             if question_string != "Contest End":
                 room.send_message(question_string, message.user, "Question")
                 room.send_message("Start timing", message.user, "Start timing")
@@ -248,9 +266,11 @@ def start_timing(message):
 
 
 @channel_session_user
-#@catch_client_error
 def request_score(message):
-
+    """
+    Users use this function to request score
+    :param: message - channels header
+    """
     # Return a message only to the user who make a message request
     # Three status of win/loss: Win, Lose or Tie
     message.reply_channel.send({
@@ -262,8 +282,11 @@ def request_score(message):
 
 
 @channel_session_user
-#@catch_client_error
 def request_result(message):
+    """
+    Users use this function to judge final result and save the result to database
+    :param: message - channels header
+    """
     try:
         if int(message['room']) not in message.channel_session['rooms']:
             raise ClientError("ROOM_ACCESS_DENIED")
